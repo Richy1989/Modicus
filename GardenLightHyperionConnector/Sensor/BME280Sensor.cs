@@ -2,15 +2,15 @@
 using System.Device.I2c;
 using System.Diagnostics;
 using System.Threading;
-using GardenLightHyperionConnector.Settings;
+using Modicus.Settings;
 using Iot.Device.Bmxx80;
 using Iot.Device.Common;
 using nanoFramework.Hardware.Esp32;
 using nanoFramework.Json;
-using NFApp1.Interfaces;
+using Modicus.Interfaces;
 using UnitsNet;
 
-namespace GardenLightHyperionConnector.Sensor
+namespace Modicus.Sensor
 {
     public class BME280Sensor : IDisposable
     {
@@ -22,24 +22,22 @@ namespace GardenLightHyperionConnector.Sensor
         private I2cDevice i2cDevice;
         private GlobalSettings globalSettings;
 
-        public int MeasurementIntervall { get; }
 
         public BME280Sensor(IPublishMqtt mqttPublisher, GlobalSettings settings, CancellationToken token)
         {
             this.token = token;
             this.mqttPublisher = mqttPublisher;
             this.globalSettings = settings;
-            MeasurementIntervall = settings.MeasurementInterval;
         }
 
         public void Init()
         {
-            //////////////////////////////////////////////////////////////////////GlobalSettings.I2CSDA, GlobalSettings.I2CSCL
+            //////////////////////////////////////////////////////////////////////
             // when connecting to an ESP32 device, need to configure the I2C GPIOs
             // used for the bus
+            //////////////////////////////////////////////////////////////////////
             Configuration.SetPinFunction(globalSettings.I2C_SDA, DeviceFunction.I2C1_DATA);
             Configuration.SetPinFunction(globalSettings.I2C_SCL, DeviceFunction.I2C1_CLOCK);
-
 
             // set this to the current sea level pressure in the area for correct altitude readings
             defaultSeaLevelPressure = WeatherHelper.MeanSeaLevel;
@@ -64,6 +62,8 @@ namespace GardenLightHyperionConnector.Sensor
             i2CBme280.TemperatureSampling = Sampling.UltraHighResolution;
             i2CBme280.PressureSampling = Sampling.UltraHighResolution;
             i2CBme280.HumiditySampling = Sampling.UltraHighResolution;
+
+            i2CBme280.SetPowerMode(Iot.Device.Bmxx80.PowerMode.Bmx280PowerMode.Normal);
         }
 
         public void DoMeasurement()
@@ -77,7 +77,7 @@ namespace GardenLightHyperionConnector.Sensor
                 // var altValue = WeatherHelper.CalculateAltitude(preValue, defaultSeaLevelPressure, tempValue) which would be more performant.
                 i2CBme280.TryReadAltitude(defaultSeaLevelPressure, out var altValue);
 
-                Bmp280Measurement measurement = new ();
+                Bmp280Measurement measurement = new();
 
                 if (readResult.TemperatureIsValid)
                 {
@@ -112,12 +112,12 @@ namespace GardenLightHyperionConnector.Sensor
                 if (readResult.TemperatureIsValid || readResult.PressureIsValid)
                 {
                     var message = JsonConvert.SerializeObject(measurement);
-                    Debug.WriteLine($"BMP208 Measurement Value: {message}");
+                    Debug.WriteLine($"BME208 Measurement Value: {message}");
                     //mqttPublisher.Publish("SENSOR/modicus_sensorrange_livingroom", message);
                     mqttPublisher.MainMqttMessage.Environment = measurement;
                 }
 
-                Thread.Sleep(MeasurementIntervall);
+                Thread.Sleep(globalSettings.MeasurementInterval);
             }
         }
 

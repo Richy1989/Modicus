@@ -1,12 +1,9 @@
-﻿using System;
-using nanoFramework.Json;
-using NFApp1.MQTT.Commands;
+﻿using Modicus.Interfaces;
 
-namespace NFApp1.MQTT.Interfaces
+namespace Modicus.MQTT.Interfaces
 {
-    public interface IMqttSubscriber
+    internal interface IMqttSubscriber : ICommand
     {
         string Topic { get; set; }
-        void Execute(string content);
     }
 }

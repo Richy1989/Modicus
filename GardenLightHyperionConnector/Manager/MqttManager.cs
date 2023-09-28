@@ -3,20 +3,18 @@ using System.Collections;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
-using GardenLightHyperionConnector.MQTT;
-using GardenLightHyperionConnector.Sensor;
-using GardenLightHyperionConnector.Settings;
+using GardenLightHyperionConnector.Interfaces;
+using Modicus.Interfaces;
+using Modicus.MQTT;
+using Modicus.MQTT.Interfaces;
+using Modicus.Settings;
 using nanoFramework.Json;
 using nanoFramework.M2Mqtt;
 using nanoFramework.M2Mqtt.Messages;
-using NFApp1.Interfaces;
-using NFApp1.MQTT;
-using NFApp1.MQTT.Commands;
-using NFApp1.MQTT.Interfaces;
 
-namespace LuminInside.MQTT
+namespace Modicus.Manager
 {
-    public class MqttManager : IPublishMqtt
+    internal class MqttManager : IPublishMqtt, ICommandCapable
     {
         private MqttClient mqtt;
         private bool closeConnection = false;
@@ -24,29 +22,29 @@ namespace LuminInside.MQTT
         private string clientID;
         private string user;
         private string password;
-        public IDictionary SubscribeTopics;
         private CancellationToken token;
+        private ModicusStartupManager modicusStartupManager;
+        private GlobalSettings globalSettings;
 
-        public int SendInterval { get; }
-        public IDictionary Messages { get; set; }
         public MainMqttMessage MainMqttMessage { get; set; }
+        public StateMessage State { get; set; }
+        public IDictionary SubscribeTopics { get; }
 
-        public MqttManager(GlobalSettings settings, CancellationToken token)
+        public MqttManager(ModicusStartupManager modicusStartupManager, string clientID, CancellationToken token)
         {
-            SendInterval = settings.MqttSettings.SendInterval;
+            this.globalSettings = modicusStartupManager.GlobalSettings;
+            this.clientID = clientID;
+            this.modicusStartupManager = modicusStartupManager;
             this.token = token;
-            Messages = new Hashtable();
-            //Messages.Add(typeof(SensorEnvironmentMessage), new SensorEnvironmentMessage());
-            //Messages.Add(typeof(SensorAirQualityMessage), new SensorAirQualityMessage());
-            Messages.Add(typeof(Bmp280Measurement), new Bmp280Measurement());
             SubscribeTopics = new Hashtable();
             MainMqttMessage = new MainMqttMessage();
+            State = new StateMessage();
+            State.WiFi = new WiFiMessage();
         }
 
-        public void Connect(string ip, string clientID, string user, string password)
+        public void Connect(string ip, string user, string password)
         {
             this.ip = ip;
-            this.clientID = clientID;
             this.user = user;
             this.password = password;
 
@@ -56,9 +54,6 @@ namespace LuminInside.MQTT
         public void InitializeMQTT()
         {
             EstablishConnection();
-
-            MqttCommandLightOnOff dd = new ();
-            AddSubcriber(dd);
 
             string[] topics = new string[SubscribeTopics.Keys.Count];
             MqttQoSLevel[] level = new MqttQoSLevel[SubscribeTopics.Keys.Count];
@@ -83,6 +78,11 @@ namespace LuminInside.MQTT
 
             var subscriber = (IMqttSubscriber)SubscribeTopics[e.Topic];
             subscriber?.Execute(Encoding.UTF8.GetString(e.Message, 0, e.Message.Length));
+        }
+
+        public void RegisterCommand(ICommand command)
+        {
+            AddSubcriber(command as IMqttSubscriber);
         }
 
         public void AddSubcriber(IMqttSubscriber subscriber)
@@ -138,8 +138,13 @@ namespace LuminInside.MQTT
 
                 //Set current time
                 MainMqttMessage.Time = DateTime.UtcNow;
+                State.Uptime = DateTime.UtcNow - modicusStartupManager.startupTime;
+                State.UptimeSec = State.Uptime.TotalSeconds;
+
+
+                Publish("STATE", JsonConvert.SerializeObject(State));
                 Publish("SENSOR", JsonConvert.SerializeObject(MainMqttMessage));
-                Thread.Sleep(SendInterval);
+                Thread.Sleep(globalSettings.MqttSettings.SendInterval);
             }
         }
     }

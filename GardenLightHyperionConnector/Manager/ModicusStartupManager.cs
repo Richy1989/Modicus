@@ -3,25 +3,24 @@ using System.Device.Gpio;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Threading;
-using GardenLightHyperionConnector.NotPushable;
-using GardenLightHyperionConnector.Sensor;
-using GardenLightHyperionConnector.Services;
-using GardenLightHyperionConnector.Settings;
-using GardenLightHyperionConnector.WiFi;
-using LuminInside.MQTT;
+using GardenLightHyperionConnector.Manager;
+using Modicus.Sensor;
+using Modicus.Services;
+using Modicus.Settings;
 using nanoFramework.Hardware.Esp32;
 
-namespace NFApp1.Manager
+namespace Modicus.Manager
 {
-    public class ModicusStartupManager
-
+    internal class ModicusStartupManager
     {
         public SettingsManager SettingsManager { get; set; }
+        public CommandManager CommandManager { get; set; }
         public GlobalSettings GlobalSettings { get; set; }
         public string AsseblyName { get; }
 
         private readonly GpioController controller;
         private MqttManager mqttManager = null;
+        public DateTime startupTime { get; set; }
 
         public ModicusStartupManager()
         {
@@ -34,22 +33,22 @@ namespace NFApp1.Manager
             this.SettingsManager = new();
             this.SettingsManager.LoadSettings(true);
             this.GlobalSettings = this.SettingsManager.GlobalSettings;
-            this.GlobalSettings.MqttSettings.MqttClientID = "modicus_sensorrange_livingroom";
+            this.GlobalSettings.MqttSettings.MqttClientID = "modicus_sensorrange_office";
             //Load the default values only valid for the build environment. Do not make these values Public
 #if DEBUG
             Debug.WriteLine("+++++ Write Build Variables to Settings: +++++");
             SettingsManager.GlobalSettings.WifiSettings.ConnectToWifi = true;
-            SettingsManager.GlobalSettings.WifiSettings.Ssid = NotPushable.WifiSsid;
-            SettingsManager.GlobalSettings.WifiSettings.Password = NotPushable.WifiPassword;
+            SettingsManager.GlobalSettings.WifiSettings.Ssid = NotPushable.NotPushable.WifiSsid;
+            SettingsManager.GlobalSettings.WifiSettings.Password = NotPushable.NotPushable.WifiPassword;
             SettingsManager.GlobalSettings.MqttSettings.ConnectToMqtt = true;
-            SettingsManager.GlobalSettings.MqttSettings.MqttUserName = NotPushable.MQTTUserName;
-            SettingsManager.GlobalSettings.MqttSettings.MqttPassword = NotPushable.MQTTPassword;
-            SettingsManager.GlobalSettings.MqttSettings.MqttHostName = NotPushable.MQTTHostName;
+            SettingsManager.GlobalSettings.MqttSettings.MqttUserName = NotPushable.NotPushable.MQTTUserName;
+            SettingsManager.GlobalSettings.MqttSettings.MqttPassword = NotPushable.NotPushable.MQTTPassword;
+            SettingsManager.GlobalSettings.MqttSettings.MqttHostName = NotPushable.NotPushable.MQTTHostName;
 #endif
 
             CancellationTokenSource source = new();
             CancellationToken token = source.Token;
-            mqttManager = new(GlobalSettings, token);
+            mqttManager = new(this, string.Format("{0}/{1}", AsseblyName, GlobalSettings.MqttSettings.MqttClientID), token);
 
             /*
             WebManager webManager = new WebManager();
@@ -57,7 +56,7 @@ namespace NFApp1.Manager
             webThread.Start();
             */
 
-            BME280Sensor bME280Sensor = new BME280Sensor(mqttManager, GlobalSettings, token);
+            BME280Sensor bME280Sensor = new(mqttManager, GlobalSettings, token);
             bME280Sensor.Init();
             Thread bme280Thread = new(new ThreadStart(bME280Sensor.DoMeasurement));
             bme280Thread.Start();
@@ -65,7 +64,7 @@ namespace NFApp1.Manager
             WiFiManager wifi = null;
             if (GlobalSettings.WifiSettings.ConnectToWifi)
             {
-                wifi = new(token);
+                wifi = new(mqttManager, token);
                 wifi.Connect(GlobalSettings.WifiSettings.Ssid, GlobalSettings.WifiSettings.Password);
                 Thread wifiThread = new(new ThreadStart(wifi.KeepConnected));
                 wifiThread.Start();
@@ -81,13 +80,16 @@ namespace NFApp1.Manager
             //Starts the NTP Service .. wait 500ms to be sure we have the time
             NTPService ntp = new ();
             Thread.Sleep(1000);
-            
+
+            //Set all Commands for command capable managers
+            CommandManager = new CommandManager(GlobalSettings);
+            CommandManager.AddCommandCapableManager(typeof(MqttManager), mqttManager);
+            CommandManager.SetMqttCommands();
 
             if (GlobalSettings.MqttSettings.ConnectToMqtt)
             {
                 mqttManager.Connect(
                     GlobalSettings.MqttSettings.MqttHostName,
-                    string.Format("{0}/{1}", AsseblyName, GlobalSettings.MqttSettings.MqttClientID),
                     GlobalSettings.MqttSettings.MqttUserName,
                     GlobalSettings.MqttSettings.MqttPassword);
                 mqttManager.InitializeMQTT();
@@ -96,6 +98,9 @@ namespace NFApp1.Manager
                mqttThread.Start();
             }
 
+
+
+            startupTime = DateTime.UtcNow;
             //Set LED on GPIO Pin 2 ON to show successful startup
             pin.Write(PinValue.High);
         }

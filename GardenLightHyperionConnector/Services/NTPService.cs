@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using nanoFramework.Networking;
+﻿using nanoFramework.Networking;
 
-namespace GardenLightHyperionConnector.Services
+namespace Modicus.Services
 {
     public class NTPService
     {

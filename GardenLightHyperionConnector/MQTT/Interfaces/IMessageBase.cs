@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-
-namespace NFApp1.MQTT.Interfaces
+﻿namespace Modicus.MQTT.Interfaces
 {
     internal interface IMessageBase
     {

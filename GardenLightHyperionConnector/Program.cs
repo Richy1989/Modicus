@@ -1,15 +1,14 @@
-using System;
 using System.Diagnostics;
 using System.Threading;
-using NFApp1.Manager;
+using Modicus.Manager;
 
-namespace GardenLightHyperionConnector
+namespace Modicus
 {
     public class Program
     {
         public static void Main()
         {
-            Debug.WriteLine("Hello from nanoFramework!");
+            Debug.WriteLine("Hello from Modicus!");
 
             ModicusStartupManager envLightManager = new();
 

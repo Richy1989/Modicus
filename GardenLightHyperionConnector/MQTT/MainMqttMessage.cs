@@ -1,7 +1,7 @@
 ﻿using System;
-using GardenLightHyperionConnector.Sensor;
+using Modicus.Sensor;
 
-namespace GardenLightHyperionConnector.MQTT
+namespace Modicus.MQTT
 {
     public class MainMqttMessage
     {

@@ -2,10 +2,11 @@
 using System.IO;
 using System.Text;
 using System.Threading;
+using Modicus.Manager;
+using Modicus.Settings;
 using nanoFramework.Json;
-using NFApp1.Manager;
 
-namespace GardenLightHyperionConnector.Settings
+namespace Modicus.Manager
 {
     public class SettingsManager
     {
@@ -47,7 +48,7 @@ namespace GardenLightHyperionConnector.Settings
             Debug.WriteLine("+++++ Settings Text: +++++");
             Debug.WriteLine(settingsText);
 
-            this.GlobalSettings = (GlobalSettings)JsonConvert.DeserializeObject(settingsText, typeof(GlobalSettings));
+            GlobalSettings = (GlobalSettings)JsonConvert.DeserializeObject(settingsText, typeof(GlobalSettings));
 
             mreSettings.Set();
         }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace GardenLightHyperionConnector.Extensions
+namespace Modicus.Extensions
 {
     public static class CommonExtensions
     {

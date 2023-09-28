@@ -1,18 +1,29 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Net.NetworkInformation;
 using System.Threading;
 using nanoFramework.Networking;
+using Modicus.Interfaces;
 
-namespace GardenLightHyperionConnector.WiFi
+namespace Modicus.Manager
 {
     public class WiFiManager
     {
         private CancellationToken token;
+        private IPublishMqtt publishMqtt;
+        private TimeSpan downTime;
         public bool IsConnected { get; private set; }
 
-        public WiFiManager(CancellationToken token)
+        public WiFiManager(IPublishMqtt publishMqtt, CancellationToken token)
         {
+            this.publishMqtt = publishMqtt;
             this.token = token;
+            var ni = NetworkInterface.GetAllNetworkInterfaces();
+            if (ni.Length > 0)
+            {
+                var physicalAddress = ni[0].PhysicalAddress;
+                publishMqtt.State.WiFi.BSSId = BitConverter.ToString(physicalAddress);
+            }
         }
 
         public void Connect(string ssid, string password)
@@ -22,7 +33,6 @@ namespace GardenLightHyperionConnector.WiFi
 
             var success = WifiNetworkHelper.ScanAndConnectDhcp(ssid, password, token: cs.Token);
 
-            //  var success = WifiNetworkHelper.ConnectDhcp(ssid, password, requiresDateTime: true, token: cs.Token);
             IsConnected = false;
             if (!success)
             {
@@ -34,7 +44,10 @@ namespace GardenLightHyperionConnector.WiFi
                 }
             }
             else
+            {
                 IsConnected = true;
+                publishMqtt.State.WiFi.SSId = ssid;
+            }
 
             Debug.WriteLine($"Successfully Connected to WiFi: {WifiNetworkHelper.Status}");
         }
@@ -45,6 +58,7 @@ namespace GardenLightHyperionConnector.WiFi
             {
                 if (WifiNetworkHelper.Status != NetworkHelperStatus.NetworkIsReady)
                 {
+                    downTime = downTime + TimeSpan.FromSeconds(1);
                     var success = WifiNetworkHelper.Reconnect();
 
                     if (!success)
@@ -56,8 +70,10 @@ namespace GardenLightHyperionConnector.WiFi
                             Debug.WriteLine($"ex: {WifiNetworkHelper.HelperException}");
                         }
                     }
+
+                    publishMqtt.State.WiFi.DownTime = downTime;
                 }
-                Thread.Sleep(1000);
+                Thread.Sleep(TimeSpan.FromSeconds(1));
             }
         }
     }

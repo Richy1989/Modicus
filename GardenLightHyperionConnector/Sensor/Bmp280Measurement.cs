@@ -1,11 +1,7 @@
-﻿using NFApp1.MQTT.Interfaces;
-
-namespace GardenLightHyperionConnector.Sensor
+﻿namespace Modicus.Sensor
 {
-    public class Bmp280Measurement// : IMessageBase
+    public class Bmp280Measurement
     {
-       // public string Topic { get; set; } = "modicus/sensorrange_livingroom";
-
         public double Temperature { get; set; }
         public double Pressure { get; set; }
         public double Altitude { get; set; }

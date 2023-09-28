@@ -18,19 +18,19 @@
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
-    <Compile Include="Enumerations\GpioPressDuration.cs" />
-    <Compile Include="Enumerations\PowerOnOff.cs" />
     <Compile Include="Extensions\CommonExtensions.cs" />
+    <Compile Include="Interfaces\ICommand.cs" />
+    <Compile Include="Interfaces\ICommandCapable.cs" />
     <Compile Include="Interfaces\IPublishMqtt.cs" />
+    <Compile Include="Manager\CommandManager.cs" />
     <Compile Include="Manager\ModicusStartupManager.cs" />
-    <Compile Include="MQTT\Commands\MqttCommandLightOnOff.cs" />
-    <Compile Include="MQTT\Commands\MqttCommandStrings.cs" />
+    <Compile Include="Commands\CmdMeasurementInterval.cs" />
     <Compile Include="MQTT\Interfaces\IMessageBase.cs" />
     <Compile Include="MQTT\Interfaces\IMqttSubscriber.cs" />
-    <Compile Include="MQTT\MqttManager.cs" />
+    <Compile Include="MQTT\WiFiMessage.cs" />
+    <Compile Include="MQTT\StateMessage.cs" />
+    <Compile Include="Manager\MqttManager.cs" />
     <Compile Include="MQTT\MainMqttMessage.cs" />
-    <Compile Include="MQTT\SensorAirQualityMessage.cs" />
-    <Compile Include="MQTT\SensorEnvironmentMessage.cs" />
     <Compile Include="NotPushable\NotPushable.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -39,9 +39,9 @@
     <Compile Include="Services\NTPService.cs" />
     <Compile Include="Settings\MqttSettings.cs" />
     <Compile Include="Settings\GlobalSettings.cs" />
-    <Compile Include="Settings\SettingsManager.cs" />
+    <Compile Include="Manager\SettingsManager.cs" />
     <Compile Include="Settings\WifiSettings.cs" />
-    <Compile Include="WiFi\WiFiManager.cs" />
+    <Compile Include="Manager\WiFiManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Iot.Device.Bmxx80">
@@ -140,6 +140,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Enumerations\" />
   </ItemGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets')" />
   <ProjectExtensions>

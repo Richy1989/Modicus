@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Text;
-using GardenLightHyperionConnector.MQTT;
+﻿using Modicus.MQTT;
 
-namespace NFApp1.Interfaces
+namespace Modicus.Interfaces
 {
     public  interface IPublishMqtt
     {
         void Publish(string topic, string message);
-        IDictionary Messages { get; set; }
         MainMqttMessage MainMqttMessage { get; set; }
+        StateMessage State { get; set; }
     }
 }

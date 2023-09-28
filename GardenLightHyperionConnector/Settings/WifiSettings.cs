@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-
-namespace GardenLightHyperionConnector.Settings
+﻿namespace Modicus.Settings
 {
     public class WifiSettings
     {

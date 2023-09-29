@@ -75,18 +75,13 @@ namespace Modicus.Manager
             Thread.Sleep(1000);
 
             //Set all Commands for command capable managers
-            CommandManager = new CommandManager(SettingsManager);
+            CommandManager = new CommandManager(SettingsManager, mqttManager);
             CommandManager.AddCommandCapableManager(typeof(MqttManager), mqttManager);
             CommandManager.SetMqttCommands();
 
             if (GlobalSettings.MqttSettings.ConnectToMqtt)
             {
                 mqttManager.InitializeMQTT();
-                ////Thread mqttInitThread = new(new ThreadStart(mqttManager.PeriodicallyInitializeMQTT));
-                ////mqttInitThread.Start();
-
-                Thread mqttThread = new(new ThreadStart(mqttManager.StartSending));
-                mqttThread.Start();
             }
 
             startupTime = DateTime.UtcNow;

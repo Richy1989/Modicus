@@ -19,6 +19,7 @@
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
     <Compile Include="Commands\BaseCommand.cs" />
+    <Compile Include="Commands\CmdMqttOnOff.cs" />
     <Compile Include="Commands\CmdMqttSendInterval.cs" />
     <Compile Include="Commands\CmdMqttClientID.cs" />
     <Compile Include="EventArgs\CommandRaisedEventArgs.cs" />
@@ -46,6 +47,7 @@
     <Compile Include="Manager\SettingsManager.cs" />
     <Compile Include="Settings\WifiSettings.cs" />
     <Compile Include="Manager\WiFiManager.cs" />
+    <Compile Include="Web\ModicusWebpages.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Iot.Device.Bmxx80">
@@ -72,6 +74,9 @@
     <Reference Include="nanoFramework.Networking.Sntp">
       <HintPath>..\packages\nanoFramework.Networking.Sntp.1.6.18\lib\nanoFramework.Networking.Sntp.dll</HintPath>
     </Reference>
+    <Reference Include="nanoFramework.ResourceManager">
+      <HintPath>..\packages\nanoFramework.ResourceManager.1.2.13\lib\nanoFramework.ResourceManager.dll</HintPath>
+    </Reference>
     <Reference Include="nanoFramework.Runtime.Events">
       <HintPath>..\packages\nanoFramework.Runtime.Events.1.11.6\lib\nanoFramework.Runtime.Events.dll</HintPath>
     </Reference>
@@ -83,6 +88,9 @@
     </Reference>
     <Reference Include="nanoFramework.System.Text">
       <HintPath>..\packages\nanoFramework.System.Text.1.2.37\lib\nanoFramework.System.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="nanoFramework.WebServer">
+      <HintPath>..\packages\nanoFramework.WebServer.1.1.75\lib\nanoFramework.WebServer.dll</HintPath>
     </Reference>
     <Reference Include="System.Buffers.Binary.BinaryPrimitives">
       <HintPath>..\packages\nanoFramework.System.Buffers.Binary.BinaryPrimitives.1.2.325\lib\System.Buffers.Binary.BinaryPrimitives.dll</HintPath>
@@ -120,6 +128,9 @@
     <Reference Include="System.Net">
       <HintPath>..\packages\nanoFramework.System.Net.1.10.52\lib\System.Net.dll</HintPath>
     </Reference>
+    <Reference Include="System.Net.Http">
+      <HintPath>..\packages\nanoFramework.System.Net.Http.Server.1.5.99\lib\System.Net.Http.dll</HintPath>
+    </Reference>
     <Reference Include="System.Threading">
       <HintPath>..\packages\nanoFramework.System.Threading.1.1.19\lib\System.Threading.dll</HintPath>
     </Reference>
@@ -141,12 +152,21 @@
     <Reference Include="UnitsNet.Temperature">
       <HintPath>..\packages\UnitsNet.nanoFramework.Temperature.5.32.0\lib\UnitsNet.Temperature.dll</HintPath>
     </Reference>
+    <Reference Include="Windows.Storage">
+      <HintPath>..\packages\nanoFramework.Windows.Storage.1.5.33\lib\Windows.Storage.dll</HintPath>
+    </Reference>
+    <Reference Include="Windows.Storage.Streams">
+      <HintPath>..\packages\nanoFramework.Windows.Storage.Streams.1.14.24\lib\Windows.Storage.Streams.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Enumerations\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\settings.html" />
   </ItemGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets')" />
   <ProjectExtensions>

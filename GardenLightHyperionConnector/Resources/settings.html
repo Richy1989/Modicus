@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        section {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+        }
+
+        input[type="text"] {
+            width: 90%;
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <h2>Settings</h2>
+        <label for="ip-address">IP Address</label>
+        <input onclick="btn('ms?p=1')" type="text" id="ip-address" name="ip-address"><br>
+
+        <label for="subnetmask">Subnet Mask</label>
+        <input onclick="btn('ms?p=1')" type="text" id="subnetmask" name="subnetmask"><br>
+
+        <label for="default-gateway">Default Gateway</label>
+        <input onclick="btn('ms?p=1')" type="text" id="default-gateway" name="default-gateway"><br>
+
+        <label for="mqtt-clientid">MQTT Client ID</label>
+        <input onclick="btn('ms?p=1')" type="text" id="mqtt-clientid" name="mqtt-clientid"><br>
+
+        <label for="mqtt-send-interval">MQTT Send Interval</label>
+        <input onclick="btn('ms?p=1')" type="text" id="mqtt-send-interval" name="mqtt-send-interval"><br>
+    </section>
+</body>
+</html>

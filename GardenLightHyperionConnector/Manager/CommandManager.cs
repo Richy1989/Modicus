@@ -7,18 +7,20 @@ namespace Modicus.Manager
 {
     internal class CommandManager
     {
+        private MqttManager mqttManager;
         public CmdMeasurementInterval CmdMeasurementInterval { get; }
         public CmdMqttClientID CmdMQTTClientID { get; }
         public CmdMqttSendInterval CmdMqttSendInterval { get; }
         public IDictionary CommandCapableManagers { get; }
 
-        public CommandManager(ISettingsManager settingsManager)
+        public CommandManager(ISettingsManager settingsManager, MqttManager mqttManager)
         {
+            this.mqttManager = mqttManager;
+            CommandCapableManagers = new Hashtable();
+
             CmdMeasurementInterval = new CmdMeasurementInterval("MeasurementInterval", settingsManager);
             CmdMQTTClientID = new CmdMqttClientID("MqttClientId", settingsManager);
             CmdMqttSendInterval = new CmdMqttSendInterval("MqttSendInterval", settingsManager);
-
-            CommandCapableManagers = new Hashtable();
         }
 
         public void AddCommandCapableManager(Type type, ICommandCapable commandCapable)

@@ -21,9 +21,11 @@ namespace Modicus.Manager
         private readonly ModicusStartupManager modicusStartupManager;
         private readonly GlobalSettings globalSettings;
         private bool restartService = false;
+        private bool stopService = false;
 
         //Make sure only one thread at the time can work with the mqtt service
         private readonly ManualResetEvent mreMQTT = new(true);
+        private Thread mqttThread;
 
         public MainMqttMessage MainMqttMessage { get; set; }
         public StateMessage State { get; set; }
@@ -50,6 +52,7 @@ namespace Modicus.Manager
         /// </summary>
         public void InitializeMQTT()
         {
+            stopService = false;
             mqtt?.Close();
             mqtt?.Dispose();
 
@@ -83,6 +86,26 @@ namespace Modicus.Manager
                 mqtt.MqttMsgPublishReceived += Mqtt_MqttMsgPublishReceived;
             }
             restartService = false;
+
+            mqttThread = new(new ThreadStart(StartSending));
+            mqttThread.Start();
+
+        }
+
+        public void StopMqtt()
+        {
+            //make sure we do not restart the service automatically on stopping
+            stopService = true;
+
+            //Set this variable to ensure a gracefull startup when we resart the service
+            restartService = true;
+
+            mreMQTT.WaitOne();
+
+            mqtt?.Disconnect();
+            mqtt?.Close();
+
+            mreMQTT.Set();
         }
 
         /// <summary>
@@ -90,7 +113,7 @@ namespace Modicus.Manager
         /// </summary>
         public void StartSending()
         {
-            while (!token.IsCancellationRequested)
+            while (!token.IsCancellationRequested && !restartService)
             {
                 if (!restartService && mqtt != null && mqtt.IsConnected)
                 {
@@ -132,7 +155,8 @@ namespace Modicus.Manager
 
             mqtt.ConnectionClosed += (s, e) =>
             {
-                InitializeMQTT();
+                if(!stopService)
+                    InitializeMQTT();
             };
 
             Debug.WriteLine($"++++ MQTT connecting successful: {ret} ++++");

@@ -22,6 +22,7 @@
     <Compile Include="Interfaces\ICommand.cs" />
     <Compile Include="Interfaces\ICommandCapable.cs" />
     <Compile Include="Interfaces\IPublishMqtt.cs" />
+    <Compile Include="Interfaces\ISettingsManager.cs" />
     <Compile Include="Manager\CommandManager.cs" />
     <Compile Include="Manager\ModicusStartupManager.cs" />
     <Compile Include="Commands\CmdMeasurementInterval.cs" />

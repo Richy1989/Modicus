@@ -1,11 +1,16 @@
 ﻿using System;
+using Modicus.Interfaces;
+using Modicus.Manager;
 using nanoFramework.Hardware.Esp32;
 
 namespace Modicus.Settings
 {
-    public class GlobalSettings
+    internal class GlobalSettings
     {
-        //Default Measurement Interval is 2 Minutes
+        //Indicated if this is a new initialized instance to set default values
+        public bool IsFreshInstall { get; set; }
+
+        //Default Measurement Interval
         public TimeSpan MeasurementInterval { get; set; } = TimeSpan.FromSeconds(1);
         public bool UseBME208 { get; set; } = true;
 

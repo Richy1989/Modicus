@@ -31,20 +31,14 @@ namespace Modicus.Manager
 
             this.AsseblyName = "modicus";
             this.SettingsManager = new();
-            this.SettingsManager.LoadSettings(true);
+            this.SettingsManager.LoadSettings(false);
             this.GlobalSettings = this.SettingsManager.GlobalSettings;
-            this.GlobalSettings.MqttSettings.MqttClientID = "modicus_sensorrange_office";
-            //Load the default values only valid for the build environment. Do not make these values Public
-#if DEBUG
-            Debug.WriteLine("+++++ Write Build Variables to Settings: +++++");
-            SettingsManager.GlobalSettings.WifiSettings.ConnectToWifi = true;
-            SettingsManager.GlobalSettings.WifiSettings.Ssid = NotPushable.NotPushable.WifiSsid;
-            SettingsManager.GlobalSettings.WifiSettings.Password = NotPushable.NotPushable.WifiPassword;
-            SettingsManager.GlobalSettings.MqttSettings.ConnectToMqtt = true;
-            SettingsManager.GlobalSettings.MqttSettings.MqttUserName = NotPushable.NotPushable.MQTTUserName;
-            SettingsManager.GlobalSettings.MqttSettings.MqttPassword = NotPushable.NotPushable.MQTTPassword;
-            SettingsManager.GlobalSettings.MqttSettings.MqttHostName = NotPushable.NotPushable.MQTTHostName;
-#endif
+
+            if (this.GlobalSettings.IsFreshInstall)
+            {
+                InitializeFrehInstall();
+                SettingsManager.UpdateSettings();
+            }
 
             CancellationTokenSource source = new();
             CancellationToken token = source.Token;
@@ -82,7 +76,7 @@ namespace Modicus.Manager
             Thread.Sleep(1000);
 
             //Set all Commands for command capable managers
-            CommandManager = new CommandManager(GlobalSettings);
+            CommandManager = new CommandManager(SettingsManager);
             CommandManager.AddCommandCapableManager(typeof(MqttManager), mqttManager);
             CommandManager.SetMqttCommands();
 
@@ -103,6 +97,23 @@ namespace Modicus.Manager
             startupTime = DateTime.UtcNow;
             //Set LED on GPIO Pin 2 ON to show successful startup
             pin.Write(PinValue.High);
+        }
+
+        //Initialize the settings for a fresh install. This happens only once
+        public void InitializeFrehInstall()
+        {
+            this.GlobalSettings.MqttSettings.MqttClientID = "modicus_sensorrange_office";
+            //Load the default values only valid for the build environment. Do not make these values Public
+#if DEBUG
+            Debug.WriteLine("+++++ Write Build Variables to Settings: +++++");
+            SettingsManager.GlobalSettings.WifiSettings.ConnectToWifi = true;
+            SettingsManager.GlobalSettings.WifiSettings.Ssid = NotPushable.NotPushable.WifiSsid;
+            SettingsManager.GlobalSettings.WifiSettings.Password = NotPushable.NotPushable.WifiPassword;
+            SettingsManager.GlobalSettings.MqttSettings.ConnectToMqtt = true;
+            SettingsManager.GlobalSettings.MqttSettings.MqttUserName = NotPushable.NotPushable.MQTTUserName;
+            SettingsManager.GlobalSettings.MqttSettings.MqttPassword = NotPushable.NotPushable.MQTTPassword;
+            SettingsManager.GlobalSettings.MqttSettings.MqttHostName = NotPushable.NotPushable.MQTTHostName;
+#endif
         }
 
         //Create a Unique ID based on the MAC address of the controller

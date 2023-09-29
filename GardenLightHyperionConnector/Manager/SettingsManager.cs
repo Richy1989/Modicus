@@ -2,13 +2,13 @@
 using System.IO;
 using System.Text;
 using System.Threading;
-using Modicus.Manager;
+using Modicus.Interfaces;
 using Modicus.Settings;
 using nanoFramework.Json;
 
 namespace Modicus.Manager
 {
-    public class SettingsManager
+    internal class SettingsManager : ISettingsManager
     {
         //Setings file Path (I = Internal Flash Memory)
         private const string FilePath = "I:\\settings.json";
@@ -19,7 +19,7 @@ namespace Modicus.Manager
         public GlobalSettings GlobalSettings { get; private set; }
         public void LoadSettings(bool resetSettings = false)
         {
-            mreSettings.WaitOne();
+          //  mreSettings.WaitOne();
 
             //Delete Settings File
             if (resetSettings)
@@ -28,40 +28,61 @@ namespace Modicus.Manager
             //If not exist -> Create new Setting File
             if (!File.Exists(FilePath))
             {
-                Debug.WriteLine("+++++ Create new Settings File +++++");
-                GlobalSettings newSettings = new();
-                var uniqueID = ModicusStartupManager.GetUniqueID();
-                newSettings.MqttSettings.MqttClientID = string.Format("EnvLight_{0}", uniqueID);
-
-                CreateSettingFile(newSettings);
+                CreateNewSettingsFile();
             }
+            else
+            {
+                //Read settings from settings file
+                Debug.WriteLine("+++++ Read settings from file +++++");
+                FileStream fs2 = new(FilePath, FileMode.Open, FileAccess.ReadWrite);
+                byte[] fileContent = new byte[fs2.Length];
+                fs2.Read(fileContent, 0, (int)fs2.Length);
 
-            //Read settings from settings file
-            Debug.WriteLine("+++++ Read settings from file +++++");
-            FileStream fs2 = new(FilePath, FileMode.Open, FileAccess.ReadWrite);
-            byte[] fileContent = new byte[fs2.Length];
-            fs2.Read(fileContent, 0, (int)fs2.Length);
+                if (fileContent.Length == 0)
+                {
+                    CreateNewSettingsFile();
+                }
+                else
+                {
+                    var settingsText = Encoding.UTF8.GetString(fileContent, 0, (int)fs2.Length);
+                    fs2.Dispose();
 
-            var settingsText = Encoding.UTF8.GetString(fileContent, 0, (int)fs2.Length);
-            fs2.Dispose();
+                    Debug.WriteLine("+++++ Settings Text: +++++");
+                    Debug.WriteLine(settingsText);
 
-            Debug.WriteLine("+++++ Settings Text: +++++");
-            Debug.WriteLine(settingsText);
-
-            GlobalSettings = (GlobalSettings)JsonConvert.DeserializeObject(settingsText, typeof(GlobalSettings));
-
-            mreSettings.Set();
+                    GlobalSettings = (GlobalSettings)JsonConvert.DeserializeObject(settingsText, typeof(GlobalSettings));
+                    GlobalSettings.IsFreshInstall = false;
+                }
+            }
+        //    mreSettings.Set();
         }
+
+        private void CreateNewSettingsFile()
+        {
+            Debug.WriteLine("+++++ Create new Settings File +++++");
+            GlobalSettings newSettings = new()
+            {
+                IsFreshInstall = true
+            };
+            ////var uniqueID = ModicusStartupManager.GetUniqueID();
+            ////newSettings.MqttSettings.MqttClientID = string.Format("EnvLight_{0}", uniqueID);
+            CreateSettingFile(newSettings);
+            GlobalSettings = newSettings;
+        }
+
 
         //Delete the settings file and create a new one according to the actual Settings File
         public void UpdateSettings()
         {
-            mreSettings.WaitOne();
+            Debug.WriteLine("+++++ Updating the settings file: +++++");
+            //   mreSettings.WaitOne();
 
             if (GlobalSettings != null)
+            {
                 CreateSettingFile(GlobalSettings);
-
-            mreSettings.Set();
+            }
+         //   mreSettings.Set();
+            Debug.WriteLine("+++++ Settings file updated. +++++");
         }
 
         //Create the settings json file
@@ -70,6 +91,9 @@ namespace Modicus.Manager
             File.Create(FilePath);
             FileStream fileStream = new(FilePath, FileMode.Open, FileAccess.ReadWrite);
             var newSettingsText = JsonConvert.SerializeObject(settingsFile);
+
+            Debug.WriteLine($"++++ Settings File to create: {newSettingsText}");
+
             var settingsBuffer = Encoding.UTF8.GetBytes(newSettingsText);
             fileStream.Write(settingsBuffer, 0, settingsBuffer.Length);
             fileStream.Dispose();

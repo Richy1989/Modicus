@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using GardenLightHyperionConnector.Commands;
-using GardenLightHyperionConnector.Interfaces;
+using Modicus.Interfaces;
 using Modicus.Settings;
 
 namespace GardenLightHyperionConnector.Manager
@@ -14,9 +14,9 @@ namespace GardenLightHyperionConnector.Manager
         public IDictionary CommandCapableManagers { get; }
 
 
-        public CommandManager(GlobalSettings globalSettings)
+        public CommandManager(ISettingsManager settingsManager)
         {
-            CmdMeasurementInterval = new CmdMeasurementInterval(globalSettings);
+            CmdMeasurementInterval = new CmdMeasurementInterval(settingsManager);
             CommandCapableManagers = new Hashtable();
         }
         public void AddCommandCapableManager(Type type, ICommandCapable commandCapable)

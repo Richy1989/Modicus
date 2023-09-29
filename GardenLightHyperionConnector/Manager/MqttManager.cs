@@ -3,7 +3,6 @@ using System.Collections;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
-using GardenLightHyperionConnector.Interfaces;
 using Modicus.Interfaces;
 using Modicus.MQTT;
 using Modicus.MQTT.Interfaces;

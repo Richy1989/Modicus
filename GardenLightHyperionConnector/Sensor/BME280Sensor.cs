@@ -12,7 +12,7 @@ using UnitsNet;
 
 namespace Modicus.Sensor
 {
-    public class BME280Sensor : IDisposable
+    internal class BME280Sensor : IDisposable
     {
         private Bme280 i2CBme280;
         private Pressure defaultSeaLevelPressure;

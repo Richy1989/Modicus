@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Modicus.Interfaces;
 
-namespace GardenLightHyperionConnector.Interfaces
+namespace Modicus.Interfaces
 {
     internal interface ICommandCapable
     {

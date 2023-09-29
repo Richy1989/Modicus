@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using nanoFramework.WebServer;
+﻿using nanoFramework.WebServer;
 
-namespace GardenLightHyperionConnector.Web
+namespace Modicus.Web
 {
-    internal class ModicusWebpages
+    public class ModicusWebpages
     {
         /// <summary>
         /// Serves the favicon
@@ -14,7 +11,7 @@ namespace GardenLightHyperionConnector.Web
         [Route("favicon.ico")]
         public void Favico(WebServerEventArgs e)
         {
-           // WebServer.SendFileOverHTTP(e.Context.Response, "favico.ico", Resources.GetBytes(Resources.BinaryResources.favico), "image/ico");
+            // WebServer.SendFileOverHTTP(e.Context.Response, "favico.ico", Resources.GetBytes(Resources.BinaryResources.favico), "image/ico");
         }
 
         /// <summary>
@@ -25,7 +22,7 @@ namespace GardenLightHyperionConnector.Web
         public void Script(WebServerEventArgs e)
         {
             e.Context.Response.ContentType = "text/javascript";
-         //   WebServer.OutPutStream(e.Context.Response, Resources.GetString(Resources.StringResources.script));
+            WebServer.OutPutStream(e.Context.Response, Resources.Resources.GetString(Resources.Resources.StringResources.script));
         }
 
         /// <summary>
@@ -35,21 +32,20 @@ namespace GardenLightHyperionConnector.Web
         [Route("image.svg")]
         public void Image(WebServerEventArgs e)
         {
-          //  WebServer.SendFileOverHTTP(e.Context.Response, "image.svg", Resources.GetBytes(Resources.BinaryResources.image), "image/svg+xml");
+            //  WebServer.SendFileOverHTTP(e.Context.Response, "image.svg", Resources.GetBytes(Resources.BinaryResources.image), "image/svg+xml");
         }
 
         /// <summary>
         /// This is the default page
         /// </summary>
-        /// <remarks>the / route *must* always be the last one and the last of the last controller passed 
+        /// <remarks>the / route *must* always be the last one and the last of the last controller passed
         /// to the constructor</remarks>
         /// <param name="e">Web server context</param>
         [Route("default.html"), Route("index.html"), Route("/")]
         public void Default(WebServerEventArgs e)
         {
             e.Context.Response.ContentType = "text/html";
-            //WebServer.OutPutStream(e.Context.Response, Resourc);
+            WebServer.OutPutStream(e.Context.Response, Resources.Resources.GetString(Resources.Resources.StringResources.settings));
         }
     }
 }
-

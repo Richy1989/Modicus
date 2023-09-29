@@ -3,14 +3,13 @@ using System.Collections;
 using Modicus.Commands;
 using Modicus.Interfaces;
 
-namespace GardenLightHyperionConnector.Manager
+namespace Modicus.Manager
 {
     internal class CommandManager
     {
         public CmdMeasurementInterval CmdMeasurementInterval { get; }
         public CmdMQTTClientID CmdMQTTClientID { get; }
         public IDictionary CommandCapableManagers { get; }
-
 
         public CommandManager(ISettingsManager settingsManager)
         {
@@ -19,14 +18,15 @@ namespace GardenLightHyperionConnector.Manager
 
             CommandCapableManagers = new Hashtable();
         }
+
         public void AddCommandCapableManager(Type type, ICommandCapable commandCapable)
         {
             CommandCapableManagers.Add(type, commandCapable);
         }
 
         public void SetMqttCommands()
-        {   
-            foreach(Type item in CommandCapableManagers.Keys)
+        {
+            foreach (Type item in CommandCapableManagers.Keys)
             {
                 ((ICommandCapable)CommandCapableManagers[item]).RegisterCommand(CmdMeasurementInterval);
                 ((ICommandCapable)CommandCapableManagers[item]).RegisterCommand(CmdMQTTClientID);

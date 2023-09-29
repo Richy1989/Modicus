@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Modicus.Interfaces;
+﻿using Modicus.Interfaces;
 
-namespace GardenLightHyperionConnector.EventArgs
+namespace Modicus.EventArgs
 {
     internal class CommandRaisedEventArgs
     {

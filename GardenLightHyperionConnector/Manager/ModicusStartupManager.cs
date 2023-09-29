@@ -3,7 +3,6 @@ using System.Device.Gpio;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Threading;
-using GardenLightHyperionConnector.Manager;
 using Modicus.Sensor;
 using Modicus.Services;
 using Modicus.Settings;

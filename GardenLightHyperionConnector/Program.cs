@@ -6,18 +6,15 @@ namespace Modicus
 {
     public class Program
     {
+        /// <summary>
+        /// Main class for Modicus, this initializes the main manager
+        /// </summary>
         public static void Main()
         {
             Debug.WriteLine("Hello from Modicus!");
 
-            ModicusStartupManager envLightManager = new();
-
-            //controller.ClosePin(Gpio.IO02);
+            ModicusStartupManager modicusStartupManager = new();
             Thread.Sleep(Timeout.Infinite);
-
-            // Browse our samples repository: https://github.com/nanoframework/samples
-            // Check our documentation online: https://docs.nanoframework.net/
-            // Join our lively Discord community: https://discord.gg/gCyBu8T
         }
     }
 }

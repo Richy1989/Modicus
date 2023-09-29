@@ -1,6 +1,4 @@
 ﻿using System;
-using Modicus.Interfaces;
-using Modicus.Manager;
 using nanoFramework.Hardware.Esp32;
 
 namespace Modicus.Settings
@@ -12,6 +10,7 @@ namespace Modicus.Settings
 
         //Default Measurement Interval
         public TimeSpan MeasurementInterval { get; set; } = TimeSpan.FromSeconds(1);
+
         public bool UseBME208 { get; set; } = true;
 
         public byte I2C_SDA { get; set; } = Gpio.IO21;

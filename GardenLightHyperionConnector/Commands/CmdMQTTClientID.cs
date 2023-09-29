@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
-using GardenLightHyperionConnector.Commands;
 using Modicus.Interfaces;
 using nanoFramework.Json;
 

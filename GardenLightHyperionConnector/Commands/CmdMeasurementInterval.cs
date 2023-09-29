@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
-using GardenLightHyperionConnector.Commands;
 using Modicus.Interfaces;
-using Modicus.MQTT.Interfaces;
-using Modicus.Settings;
 using nanoFramework.Json;
 
 namespace Modicus.Commands
@@ -15,7 +12,7 @@ namespace Modicus.Commands
         private readonly ISettingsManager settingsManager;
 
         public CmdMeasurementInterval(string topic, ISettingsManager settingsManager) : base(topic)
-        { 
+        {
             this.settingsManager = settingsManager;
         }
 

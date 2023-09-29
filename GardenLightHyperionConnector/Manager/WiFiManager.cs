@@ -10,7 +10,7 @@ namespace Modicus.Manager
     public class WiFiManager
     {
         private CancellationToken token;
-        private IPublishMqtt publishMqtt;
+        private readonly IPublishMqtt publishMqtt;
         private TimeSpan downTime;
         public bool IsConnected { get; private set; }
 

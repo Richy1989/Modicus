@@ -16,13 +16,18 @@ namespace Modicus.Sensor
     {
         private Bme280 i2CBme280;
         private Pressure defaultSeaLevelPressure;
-        private CancellationToken token;
-        private IPublishMqtt mqttPublisher;
+        private readonly CancellationToken token;
+        private readonly IPublishMqtt mqttPublisher;
         private I2cConnectionSettings i2cSettings;
         private I2cDevice i2cDevice;
-        private GlobalSettings globalSettings;
+        private readonly GlobalSettings globalSettings;
 
-
+        /// <summary>
+        /// Initializes a new BME280 sensor instance
+        /// </summary>
+        /// <param name="mqttPublisher"></param>
+        /// <param name="settings"></param>
+        /// <param name="token"></param>
         public BME280Sensor(IPublishMqtt mqttPublisher, GlobalSettings settings, CancellationToken token)
         {
             this.token = token;

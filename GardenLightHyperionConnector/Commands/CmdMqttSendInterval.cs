@@ -6,16 +6,12 @@ using nanoFramework.Json;
 
 namespace Modicus.Commands
 {
-    //With this command the Measurement Interval can be set in Seconds
-    internal class CmdMqttClientID : BaseCommand
+    //With this command the MQTT send interval can be set in seconds
+    internal class CmdMqttSendInterval : BaseCommand
     {
         private readonly ISettingsManager settingsManager;
 
-        /// <summary>
-        /// Instantiate the command to set MQTT CLient ID
-        /// </summary>
-        /// <param name="settingsManager"></param>
-        public CmdMqttClientID(string topic, ISettingsManager settingsManager) : base(topic)
+        public CmdMqttSendInterval(string topic, ISettingsManager settingsManager) : base(topic)
         {
             this.settingsManager = settingsManager;
         }
@@ -23,21 +19,20 @@ namespace Modicus.Commands
         //Execute the command
         public new void Execute(string content)
         {
-            CmdMqttClientIdData data = null;
+            CmdMqttSendIntervalData data = null;
             try
             {
-                data = (CmdMqttClientIdData)JsonConvert.DeserializeObject(content, typeof(CmdMqttClientIdData));
-                Debug.WriteLine($"New ClientID: {data.ClientID}s");
+                data = (CmdMqttSendIntervalData)JsonConvert.DeserializeObject(content, typeof(CmdMqttSendIntervalData));
+                Debug.WriteLine($"New MQTT send interval: {data.Interval}s");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error in clientID set command: {ex.Message}");
+                Debug.WriteLine($"Error in MQTT send interval command: {ex.Message}");
             }
 
             if (data != null)
             {
-                settingsManager.GlobalSettings.MqttSettings.MqttClientID = data.ClientID;
-
+                settingsManager.GlobalSettings.MqttSettings.SendInterval = TimeSpan.FromSeconds(data.Interval);
                 Thread updateSettingsThread = new(new ThreadStart(settingsManager.UpdateSettings));
                 updateSettingsThread.Start();
             }
@@ -47,8 +42,8 @@ namespace Modicus.Commands
     }
 
     //This class contraints the content of the message which will be sent via JSON
-    internal class CmdMqttClientIdData
+    internal class CmdMqttSendIntervalData
     {
-        public string ClientID { get; set; }
+        public int Interval { get; set; }
     }
 }

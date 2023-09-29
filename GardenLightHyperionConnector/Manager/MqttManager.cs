@@ -159,7 +159,7 @@ namespace Modicus.Manager
         {
             AddSubcriber(command as ICommand);
 
-            if (command.GetType() == typeof(CmdMQTTClientID))
+            if (command.GetType() == typeof(CmdMqttClientID))
             {
                 command.CommandRaisedEvent += Command_MQTTClientIDCommandRaisedEvent;
             }

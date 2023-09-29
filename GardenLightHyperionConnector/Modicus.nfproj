@@ -19,7 +19,8 @@
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
     <Compile Include="Commands\BaseCommand.cs" />
-    <Compile Include="Commands\CmdMQTTClientID.cs" />
+    <Compile Include="Commands\CmdMqttSendInterval.cs" />
+    <Compile Include="Commands\CmdMqttClientID.cs" />
     <Compile Include="EventArgs\CommandRaisedEventArgs.cs" />
     <Compile Include="Extensions\CommonExtensions.cs" />
     <Compile Include="Interfaces\ICommand.cs" />

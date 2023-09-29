@@ -8,13 +8,15 @@ namespace Modicus.Manager
     internal class CommandManager
     {
         public CmdMeasurementInterval CmdMeasurementInterval { get; }
-        public CmdMQTTClientID CmdMQTTClientID { get; }
+        public CmdMqttClientID CmdMQTTClientID { get; }
+        public CmdMqttSendInterval CmdMqttSendInterval { get; }
         public IDictionary CommandCapableManagers { get; }
 
         public CommandManager(ISettingsManager settingsManager)
         {
-            CmdMeasurementInterval = new CmdMeasurementInterval("measurementinterval", settingsManager);
-            CmdMQTTClientID = new CmdMQTTClientID("mqttclientid", settingsManager);
+            CmdMeasurementInterval = new CmdMeasurementInterval("MeasurementInterval", settingsManager);
+            CmdMQTTClientID = new CmdMqttClientID("MqttClientId", settingsManager);
+            CmdMqttSendInterval = new CmdMqttSendInterval("MqttSendInterval", settingsManager);
 
             CommandCapableManagers = new Hashtable();
         }
@@ -30,6 +32,7 @@ namespace Modicus.Manager
             {
                 ((ICommandCapable)CommandCapableManagers[item]).RegisterCommand(CmdMeasurementInterval);
                 ((ICommandCapable)CommandCapableManagers[item]).RegisterCommand(CmdMQTTClientID);
+                ((ICommandCapable)CommandCapableManagers[item]).RegisterCommand(CmdMqttSendInterval);
             }
         }
     }

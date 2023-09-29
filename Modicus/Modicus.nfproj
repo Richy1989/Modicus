@@ -12,8 +12,8 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <FileAlignment>512</FileAlignment>
-    <RootNamespace>GardenLightHyperionConnector</RootNamespace>
-    <AssemblyName>GardenLightHyperionConnector</AssemblyName>
+    <RootNamespace>Modicus</RootNamespace>
+    <AssemblyName>Modicus</AssemblyName>
     <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
@@ -31,6 +31,7 @@
     <Compile Include="Manager\CommandManager.cs" />
     <Compile Include="Manager\ModicusStartupManager.cs" />
     <Compile Include="Commands\CmdMeasurementInterval.cs" />
+    <Compile Include="Manager\WebManager.cs" />
     <Compile Include="MQTT\Interfaces\IMessageBase.cs" />
     <Compile Include="MQTT\WiFiMessage.cs" />
     <Compile Include="MQTT\StateMessage.cs" />
@@ -39,6 +40,11 @@
     <Compile Include="NotPushable\NotPushable.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Sensor\BME280Sensor.cs" />
     <Compile Include="Sensor\Bmp280Measurement.cs" />
     <Compile Include="Services\NTPService.cs" />
@@ -47,14 +53,15 @@
     <Compile Include="Manager\SettingsManager.cs" />
     <Compile Include="Settings\WifiSettings.cs" />
     <Compile Include="Manager\WiFiManager.cs" />
+    <Compile Include="Web\ModicusWebpageAPI.cs" />
     <Compile Include="Web\ModicusWebpages.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Iot.Device.Bmxx80">
-      <HintPath>..\packages\nanoFramework.Iot.Device.Bmxx80.1.2.384\lib\Iot.Device.Bmxx80.dll</HintPath>
+      <HintPath>..\packages\nanoFramework.Iot.Device.Bmxx80.1.2.396\lib\Iot.Device.Bmxx80.dll</HintPath>
     </Reference>
     <Reference Include="Iot.Device.Common.WeatherHelper">
-      <HintPath>..\packages\nanoFramework.Iot.Device.Common.WeatherHelper.1.2.381\lib\Iot.Device.Common.WeatherHelper.dll</HintPath>
+      <HintPath>..\packages\nanoFramework.Iot.Device.Common.WeatherHelper.1.2.394\lib\Iot.Device.Common.WeatherHelper.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>..\packages\nanoFramework.CoreLibrary.1.14.2\lib\mscorlib.dll</HintPath>
@@ -135,22 +142,22 @@
       <HintPath>..\packages\nanoFramework.System.Threading.1.1.19\lib\System.Threading.dll</HintPath>
     </Reference>
     <Reference Include="UnitsNet.Duration">
-      <HintPath>..\packages\UnitsNet.nanoFramework.Duration.5.32.0\lib\UnitsNet.Duration.dll</HintPath>
+      <HintPath>..\packages\UnitsNet.nanoFramework.Duration.5.34.0\lib\UnitsNet.Duration.dll</HintPath>
     </Reference>
     <Reference Include="UnitsNet.ElectricResistance">
-      <HintPath>..\packages\UnitsNet.nanoFramework.ElectricResistance.5.32.0\lib\UnitsNet.ElectricResistance.dll</HintPath>
+      <HintPath>..\packages\UnitsNet.nanoFramework.ElectricResistance.5.34.0\lib\UnitsNet.ElectricResistance.dll</HintPath>
     </Reference>
     <Reference Include="UnitsNet.Length">
-      <HintPath>..\packages\UnitsNet.nanoFramework.Length.5.32.0\lib\UnitsNet.Length.dll</HintPath>
+      <HintPath>..\packages\UnitsNet.nanoFramework.Length.5.34.0\lib\UnitsNet.Length.dll</HintPath>
     </Reference>
     <Reference Include="UnitsNet.Pressure">
-      <HintPath>..\packages\UnitsNet.nanoFramework.Pressure.5.32.0\lib\UnitsNet.Pressure.dll</HintPath>
+      <HintPath>..\packages\UnitsNet.nanoFramework.Pressure.5.34.0\lib\UnitsNet.Pressure.dll</HintPath>
     </Reference>
     <Reference Include="UnitsNet.RelativeHumidity">
-      <HintPath>..\packages\UnitsNet.nanoFramework.RelativeHumidity.5.32.0\lib\UnitsNet.RelativeHumidity.dll</HintPath>
+      <HintPath>..\packages\UnitsNet.nanoFramework.RelativeHumidity.5.34.0\lib\UnitsNet.RelativeHumidity.dll</HintPath>
     </Reference>
     <Reference Include="UnitsNet.Temperature">
-      <HintPath>..\packages\UnitsNet.nanoFramework.Temperature.5.32.0\lib\UnitsNet.Temperature.dll</HintPath>
+      <HintPath>..\packages\UnitsNet.nanoFramework.Temperature.5.34.0\lib\UnitsNet.Temperature.dll</HintPath>
     </Reference>
     <Reference Include="Windows.Storage">
       <HintPath>..\packages\nanoFramework.Windows.Storage.1.5.33\lib\Windows.Storage.dll</HintPath>
@@ -161,12 +168,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="resources\script.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Enumerations\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\settings.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Resources.resx">
+      <Generator>nFResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets')" />
   <ProjectExtensions>

@@ -3,6 +3,7 @@ using System.Device.Gpio;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Threading;
+using GardenLightHyperionConnector.Manager;
 using Modicus.Sensor;
 using Modicus.Services;
 using Modicus.Settings;
@@ -14,6 +15,7 @@ namespace Modicus.Manager
     {
         public SettingsManager SettingsManager { get; set; }
         public CommandManager CommandManager { get; set; }
+        public WebManager WebManager { get; set; }
         public GlobalSettings GlobalSettings { get; set; }
         public string AsseblyName { get; }
 
@@ -83,6 +85,12 @@ namespace Modicus.Manager
             {
                 mqttManager.InitializeMQTT();
             }
+
+            
+            WebManager = new WebManager();
+            Thread webTask = new(new ThreadStart(WebManager.StartWebManager));
+            webTask.Start();
+
 
             startupTime = DateTime.UtcNow;
             //Set LED on GPIO Pin 2 ON to show successful startup

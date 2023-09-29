@@ -42,7 +42,7 @@ namespace Modicus.Manager
 
             CancellationTokenSource source = new();
             CancellationToken token = source.Token;
-            mqttManager = new(this, string.Format("{0}/{1}", AsseblyName, GlobalSettings.MqttSettings.MqttClientID), token);
+            mqttManager = new(this, token);
 
             /*
             WebManager webManager = new WebManager();
@@ -82,17 +82,13 @@ namespace Modicus.Manager
 
             if (GlobalSettings.MqttSettings.ConnectToMqtt)
             {
-                mqttManager.Connect(
-                    GlobalSettings.MqttSettings.MqttHostName,
-                    GlobalSettings.MqttSettings.MqttUserName,
-                    GlobalSettings.MqttSettings.MqttPassword);
                 mqttManager.InitializeMQTT();
+                ////Thread mqttInitThread = new(new ThreadStart(mqttManager.PeriodicallyInitializeMQTT));
+                ////mqttInitThread.Start();
 
-               Thread mqttThread = new(new ThreadStart(mqttManager.StartSending));
-               mqttThread.Start();
+                Thread mqttThread = new(new ThreadStart(mqttManager.StartSending));
+                mqttThread.Start();
             }
-
-
 
             startupTime = DateTime.UtcNow;
             //Set LED on GPIO Pin 2 ON to show successful startup
@@ -102,7 +98,7 @@ namespace Modicus.Manager
         //Initialize the settings for a fresh install. This happens only once
         public void InitializeFrehInstall()
         {
-            this.GlobalSettings.MqttSettings.MqttClientID = "modicus_sensorrange_office";
+            this.GlobalSettings.MqttSettings.MqttClientID = string.Format("{0}/{1}", AsseblyName, "modicus_sensorrange_office") ;
             //Load the default values only valid for the build environment. Do not make these values Public
 #if DEBUG
             Debug.WriteLine("+++++ Write Build Variables to Settings: +++++");

@@ -64,25 +64,24 @@ namespace Modicus.Manager
             {
                 IsFreshInstall = true
             };
-            ////var uniqueID = ModicusStartupManager.GetUniqueID();
-            ////newSettings.MqttSettings.MqttClientID = string.Format("EnvLight_{0}", uniqueID);
             CreateSettingFile(newSettings);
             GlobalSettings = newSettings;
         }
 
 
-        //Delete the settings file and create a new one according to the actual Settings File
+        //Delete the settings file and create the new one with the actual settings
+        //Make sure only one task can enter this function
         public void UpdateSettings()
         {
+            mreSettings.WaitOne();
             Debug.WriteLine("+++++ Updating the settings file: +++++");
-            //   mreSettings.WaitOne();
 
             if (GlobalSettings != null)
             {
                 CreateSettingFile(GlobalSettings);
             }
-         //   mreSettings.Set();
             Debug.WriteLine("+++++ Settings file updated. +++++");
+            mreSettings.Set();
         }
 
         //Create the settings json file

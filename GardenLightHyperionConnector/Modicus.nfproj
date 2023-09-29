@@ -18,6 +18,9 @@
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
+    <Compile Include="Commands\BaseCommand.cs" />
+    <Compile Include="Commands\CmdMQTTClientID.cs" />
+    <Compile Include="EventArgs\CommandRaisedEventArgs.cs" />
     <Compile Include="Extensions\CommonExtensions.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
     <Compile Include="Interfaces\ICommandCapable.cs" />
@@ -27,7 +30,6 @@
     <Compile Include="Manager\ModicusStartupManager.cs" />
     <Compile Include="Commands\CmdMeasurementInterval.cs" />
     <Compile Include="MQTT\Interfaces\IMessageBase.cs" />
-    <Compile Include="MQTT\Interfaces\IMqttSubscriber.cs" />
     <Compile Include="MQTT\WiFiMessage.cs" />
     <Compile Include="MQTT\StateMessage.cs" />
     <Compile Include="Manager\MqttManager.cs" />

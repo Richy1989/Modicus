@@ -7,5 +7,7 @@ namespace Modicus.Interfaces
         GlobalSettings GlobalSettings { get; }
 
         void UpdateSettings();
+
+        void LoadSettings(bool resetSettings = false);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using Modicus.Commands.Interfaces;
 using Modicus.Interfaces;
 using nanoFramework.Json;
 
@@ -11,8 +12,9 @@ namespace Modicus.Commands
     {
         private readonly ISettingsManager settingsManager;
 
-        public CmdMeasurementInterval(string topic, ISettingsManager settingsManager) : base(topic)
+        public CmdMeasurementInterval(ISettingsManager settingsManager) : base()
         {
+            Topic = settingsManager.GlobalSettings.CommandSettings.MeasurementIntervalTopic;
             this.settingsManager = settingsManager;
         }
 

@@ -1,6 +1,6 @@
 ﻿using Modicus.MQTT;
 
-namespace Modicus.Interfaces
+namespace Modicus.MQTT.Interfaces
 {
     public interface IPublishMqtt
     {

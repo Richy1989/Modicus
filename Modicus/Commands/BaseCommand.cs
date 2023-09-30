@@ -1,6 +1,6 @@
 ﻿using System.Threading;
+using Modicus.Commands.Interfaces;
 using Modicus.EventArgs;
-using Modicus.Interfaces;
 
 namespace Modicus.Commands
 {
@@ -14,11 +14,6 @@ namespace Modicus.Commands
 
         //Make sure only one thread at the time can enter the execute function
         internal readonly ManualResetEvent mreExecute = new(true);
-
-        public BaseCommand(string topic)
-        {
-            this.Topic = topic;
-        }
 
         public void Execute(string content)
         {

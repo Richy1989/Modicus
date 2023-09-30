@@ -32,7 +32,6 @@ namespace Modicus.Resources
         [System.SerializableAttribute()]
         internal enum StringResources : short
         {
-            script = -22589,
             mqtt_settings = -21146,
             ip_settings = -11416,
             style = -5605,

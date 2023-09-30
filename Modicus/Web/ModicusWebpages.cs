@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using nanoFramework.WebServer;
+﻿using nanoFramework.WebServer;
 
 namespace Modicus.Web
 {
@@ -14,17 +12,6 @@ namespace Modicus.Web
         public void Favico(WebServerEventArgs e)
         {
             // WebServer.SendFileOverHTTP(e.Context.Response, "favico.ico", Resources.GetBytes(Resources.BinaryResources.favico), "image/ico");
-        }
-
-        /// <summary>
-        /// Servers the script
-        /// </summary>
-        /// <param name="e">Web server context</param>
-        [Route("script.js")]
-        public void Script(WebServerEventArgs e)
-        {
-            e.Context.Response.ContentType = "text/javascript";
-            WebServer.OutPutStream(e.Context.Response, Resources.Resources.GetString(Resources.Resources.StringResources.script));
         }
 
         [Route("style.css")]
@@ -57,9 +44,6 @@ namespace Modicus.Web
 
             var status_message = "Welcome to Modicus ... Have fun!";
             var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.index), status_message);
-
-        
-            Debug.WriteLine(page);
 
             WebServer.OutPutStream(e.Context.Response, page);
             //WebServer.OutPutStream(e.Context.Response, Resources.Resources.GetString(Resources.Resources.StringResources.index));

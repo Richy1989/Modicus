@@ -17,6 +17,12 @@ namespace Modicus.Manager
         private ManualResetEvent mreSettings = new(true);
 
         public GlobalSettings GlobalSettings { get; private set; }
+
+        public SettingsManager() 
+        {
+            LoadSettings(false);
+        }
+
         public void LoadSettings(bool resetSettings = false)
         {
           //  mreSettings.WaitOne();

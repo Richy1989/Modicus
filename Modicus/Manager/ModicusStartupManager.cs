@@ -45,11 +45,6 @@ namespace Modicus.Manager
             CancellationToken token = source.Token;
             mqttManager = new(this, token);
 
-            /*
-            WebManager webManager = new WebManager();
-            Thread webThread = new(new ThreadStart(webManager.StartServer));
-            webThread.Start();
-            */
 
             BME280Sensor bME280Sensor = new(mqttManager, GlobalSettings, token);
             bME280Sensor.Init();
@@ -65,12 +60,12 @@ namespace Modicus.Manager
                 wifiThread.Start();
             }
 
-            //Wait for successfull wifi connection
-            if (wifi != null)
-            {
-                while (!wifi.IsConnected)
-                    Thread.Sleep(100);
-            }
+            //////Wait for successfull wifi connection
+            ////if (wifi != null)
+            ////{
+            ////    while (!wifi.IsConnected)
+            ////        Thread.Sleep(100);
+            ////}
 
             //Starts the NTP Service .. wait 500ms to be sure we have the time
             NTPService ntp = new ();
@@ -83,7 +78,7 @@ namespace Modicus.Manager
 
             if (GlobalSettings.MqttSettings.ConnectToMqtt)
             {
-                mqttManager.InitializeMQTT();
+                CommandManager.CmdMqttOnOff.Execute(new Commands.CmdMqttOnOffData { On = true });
             }
 
             

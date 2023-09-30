@@ -11,6 +11,7 @@ namespace Modicus.Manager
         public CmdMeasurementInterval CmdMeasurementInterval { get; }
         public CmdMqttClientID CmdMQTTClientID { get; }
         public CmdMqttSendInterval CmdMqttSendInterval { get; }
+        public CmdMqttOnOff CmdMqttOnOff { get; }
         public IDictionary CommandCapableManagers { get; }
 
         public CommandManager(ISettingsManager settingsManager, MqttManager mqttManager)
@@ -21,6 +22,7 @@ namespace Modicus.Manager
             CmdMeasurementInterval = new CmdMeasurementInterval("MeasurementInterval", settingsManager);
             CmdMQTTClientID = new CmdMqttClientID("MqttClientId", settingsManager);
             CmdMqttSendInterval = new CmdMqttSendInterval("MqttSendInterval", settingsManager);
+            CmdMqttOnOff = new CmdMqttOnOff("MqttOnOff", settingsManager, mqttManager);
         }
 
         public void AddCommandCapableManager(Type type, ICommandCapable commandCapable)
@@ -35,6 +37,7 @@ namespace Modicus.Manager
                 ((ICommandCapable)CommandCapableManagers[item]).RegisterCommand(CmdMeasurementInterval);
                 ((ICommandCapable)CommandCapableManagers[item]).RegisterCommand(CmdMQTTClientID);
                 ((ICommandCapable)CommandCapableManagers[item]).RegisterCommand(CmdMqttSendInterval);
+                ((ICommandCapable)CommandCapableManagers[item]).RegisterCommand(CmdMqttOnOff);
             }
         }
     }

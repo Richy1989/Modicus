@@ -19,14 +19,14 @@ namespace Modicus.Commands
             this.settingsManager = settingsManager;
         }
 
-        //Execute the command
-        public new void Execute(string content)
+        public void Execute(CmdMqttOnOffData content)
         {
-            CmdMqttOnOffData data = null;
+            base.mreExecute.WaitOne();
+
             try
             {
-                data = (CmdMqttOnOffData)JsonConvert.DeserializeObject(content, typeof(CmdMqttOnOffData));
-                if (data.On)
+                
+                if (content.On)
                     Debug.WriteLine("Command: Turn MQTT ON");
                 else
                     Debug.WriteLine("Command: Turn MQTT OFF");
@@ -36,14 +36,23 @@ namespace Modicus.Commands
                 Debug.WriteLine($"Error in measurement interval command: {ex.Message}");
             }
 
-            if (data != null)
+            if (content != null)
             {
-                if (data.On)
+                if (content.On)
                     mqttManager.InitializeMQTT();
                 else
                     mqttManager.StopMqtt();
             }
 
+            base.mreExecute.Set();
+        }
+
+
+        //Execute the command
+        public new void Execute(string content)
+        {
+            CmdMqttOnOffData data = (CmdMqttOnOffData)JsonConvert.DeserializeObject(content, typeof(CmdMqttOnOffData));
+            Execute(data);
             base.Execute(content);
         }
     }

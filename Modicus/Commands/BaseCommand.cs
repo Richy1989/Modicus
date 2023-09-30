@@ -1,4 +1,5 @@
-﻿using Modicus.EventArgs;
+﻿using System.Threading;
+using Modicus.EventArgs;
 using Modicus.Interfaces;
 
 namespace Modicus.Commands
@@ -9,8 +10,10 @@ namespace Modicus.Commands
     internal abstract class BaseCommand : ICommand
     {
         public string Topic { get; set; }
-
         public event CommandRaisedHandler CommandRaisedEvent;
+
+        //Make sure only one thread at the time can enter the execute function
+        internal readonly ManualResetEvent mreExecute = new(true);
 
         public BaseCommand(string topic)
         {

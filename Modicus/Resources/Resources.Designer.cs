@@ -33,7 +33,11 @@ namespace Modicus.Resources
         internal enum StringResources : short
         {
             script = -22589,
-            settings = -20938,
+            mqtt_settings = -21146,
+            ip_settings = -11416,
+            style = -5605,
+            index = -2501,
+            wifi_settings = 12993,
         }
     }
 }

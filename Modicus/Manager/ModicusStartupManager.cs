@@ -76,16 +76,21 @@ namespace Modicus.Manager
             CommandManager.AddCommandCapableManager(typeof(MqttManager), mqttManager);
             CommandManager.SetMqttCommands();
 
+
+            ///Start MQTT Service if needed
             if (GlobalSettings.MqttSettings.ConnectToMqtt)
             {
-                CommandManager.CmdMqttOnOff.Execute(new Commands.CmdMqttOnOffData { On = true });
+                Thread mqttStartTask = new(new ThreadStart(() =>
+                {
+                    CommandManager.CmdMqttOnOff.Execute(new Commands.CmdMqttOnOffData { On = true });
+                }));
+
+                mqttStartTask.Start();
             }
 
-            
             WebManager = new WebManager();
             Thread webTask = new(new ThreadStart(WebManager.StartWebManager));
             webTask.Start();
-
 
             startupTime = DateTime.UtcNow;
             //Set LED on GPIO Pin 2 ON to show successful startup
@@ -95,7 +100,7 @@ namespace Modicus.Manager
         //Initialize the settings for a fresh install. This happens only once
         public void InitializeFrehInstall()
         {
-            this.GlobalSettings.MqttSettings.MqttClientID = string.Format("{0}/{1}", AsseblyName, "modicus_sensorrange_office") ;
+            this.GlobalSettings.MqttSettings.MqttClientID = string.Format("{0}/{1}", AsseblyName, $"modicus_sensorrange_{GetUniqueID()}") ;
             //Load the default values only valid for the build environment. Do not make these values Public
 #if DEBUG
             Debug.WriteLine("+++++ Write Build Variables to Settings: +++++");

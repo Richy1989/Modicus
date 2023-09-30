@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MQTT Settings</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <form method='POST' action="mqtt_settings">
+        <h2>MQTT Settings</h2>
+
+        <label for="mqtt-clientid">MQTT Client ID</label>
+        <input type="text" id="mqtt-clientid" name="mqtt-clientid"><br>
+
+        <label for="mqtt-send-interval">MQTT Send Interval</label>
+        <input type="text" id="mqtt-send-interval" name="mqtt-send-interval"><br>
+
+        <input type="submit" value="Save">
+    </form>
+</body>
+</html>

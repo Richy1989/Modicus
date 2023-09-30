@@ -6,6 +6,7 @@ using Modicus.Commands.Interfaces;
 using Modicus.Interfaces;
 using Modicus.Manager;
 using Modicus.MQTT.Interfaces;
+using Modicus.Web;
 using nanoFramework.DependencyInjection;
 
 namespace Modicus
@@ -35,7 +36,9 @@ namespace Modicus
                 .AddSingleton(typeof(ISettingsManager), typeof(SettingsManager))
                 .AddSingleton(typeof(ITokenManager), typeof(TokenManager))
                 .AddSingleton(typeof(IMqttManager), typeof(MqttManager))
-                //.AddSingleton(typeof(ICommandManager), typeof(CommandManager))
+                .AddSingleton(typeof(ICommandManager), typeof(CommandManager))
+                .AddSingleton(typeof(ModicusWebpageAPI))
+                .AddSingleton(typeof(ModicusWebpages))
                 .BuildServiceProvider();
         }
     }

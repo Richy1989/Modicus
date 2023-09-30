@@ -21,31 +21,31 @@ namespace Modicus.Manager
         public GlobalSettings GlobalSettings { get; set; }
         public string AsseblyName { get; }
 
+        private IServiceProvider serviceProvider;
+
         private readonly GpioController controller;
         private IMqttManager mqttManager = null;
-        public DateTime startupTime { get; set; }
 
-        public ModicusStartupManager(IWebManager webManager, IMqttManager mqttManager, ISettingsManager settingsManager, ITokenManager tokenManager)
+        public ModicusStartupManager(IServiceProvider serviceProvider, ITokenManager tokenManager, ISettingsManager settingsManager, IWebManager webManager, IMqttManager mqttManager, ICommandManager commandManager)
         {
             //Close Startup LED to make sure we see the successfull startup at the end
             controller = new GpioController();
             GpioPin pin = controller.OpenPin(Gpio.IO02, PinMode.Output);
             pin.Write(PinValue.Low);
 
-            this.AsseblyName = "modicus";
-            this.SettingsManager = settingsManager;
-            // this.SettingsManager.LoadSettings(false);
-            this.GlobalSettings = SettingsManager.GlobalSettings;
+            AsseblyName = "modicus";
+            SettingsManager = settingsManager;
+            GlobalSettings = SettingsManager.GlobalSettings;
+            CancellationToken token = tokenManager.Token;
 
-            if (this.GlobalSettings.IsFreshInstall)
+            if (GlobalSettings.IsFreshInstall)
             {
                 InitializeFrehInstall();
                 SettingsManager.UpdateSettings();
             }
 
-            CancellationToken token = tokenManager.Token;
-
-            this.mqttManager = mqttManager;// new MqttManager(this, tokenManager);
+            this.serviceProvider = serviceProvider;
+            this.mqttManager = mqttManager;
 
             BME280Sensor bME280Sensor = new(mqttManager, GlobalSettings, token);
             bME280Sensor.Init();
@@ -66,7 +66,7 @@ namespace Modicus.Manager
             Thread.Sleep(1000);
 
             //Set all Commands for command capable managers
-            CommandManager = new CommandManager(settingsManager, mqttManager);
+            CommandManager = commandManager;// new CommandManager(settingsManager, mqttManager);
             CommandManager.AddCommandCapableManager(typeof(MqttManager), mqttManager);
             CommandManager.SetMqttCommands();
 

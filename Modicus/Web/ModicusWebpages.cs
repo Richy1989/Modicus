@@ -44,9 +44,7 @@ namespace Modicus.Web
 
             var status_message = "Welcome to Modicus ... Have fun!";
             var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.index), status_message);
-
             WebServer.OutPutStream(e.Context.Response, page);
-            //WebServer.OutPutStream(e.Context.Response, Resources.Resources.GetString(Resources.Resources.StringResources.index));
         }
     }
 }

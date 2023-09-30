@@ -22,19 +22,8 @@ namespace Modicus.Commands
         }
 
         //Execute the command
-        public new void Execute(string content)
+        public void Execute(CmdMqttClientIdData data)
         {
-            CmdMqttClientIdData data = null;
-            try
-            {
-                data = (CmdMqttClientIdData)JsonConvert.DeserializeObject(content, typeof(CmdMqttClientIdData));
-                Debug.WriteLine($"New ClientID: {data.ClientID}s");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error in clientID set command: {ex.Message}");
-            }
-
             if (data != null)
             {
                 settingsManager.GlobalSettings.MqttSettings.MqttClientID = data.ClientID;
@@ -42,7 +31,20 @@ namespace Modicus.Commands
                 Thread updateSettingsThread = new(new ThreadStart(settingsManager.UpdateSettings));
                 updateSettingsThread.Start();
             }
-
+        }
+        public new void Execute(string content)
+        {
+            CmdMqttClientIdData data = null;
+            try
+            {
+                data = (CmdMqttClientIdData)JsonConvert.DeserializeObject(content, typeof(CmdMqttClientIdData));
+                Debug.WriteLine($"New ClientID: {data.ClientID}s");
+                Execute(data);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in clientID set command: {ex.Message}");
+            }
             base.Execute(content);
         }
     }

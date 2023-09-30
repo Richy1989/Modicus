@@ -21,7 +21,7 @@ namespace Modicus.Manager
         /// </summary>
         /// <param name="settingsManager"></param>
         /// <param name="mqttManager"></param>
-        public CommandManager(ISettingsManager settingsManager,IMqttManager mqttManager)
+        public CommandManager(ISettingsManager settingsManager, IMqttManager mqttManager)
         {
             this.mqttManager = mqttManager;
             CommandCapableManagers = new Hashtable();

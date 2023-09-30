@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Threading;
+using System.Web;
 using Modicus.Interfaces;
 using Modicus.Manager;
 using Modicus.Web;
@@ -12,14 +14,19 @@ namespace GardenLightHyperionConnector.Manager
 {
     internal class WebManager : IWebManager
     {
-        private readonly IServiceProvider serviceProvider;
+        private IServiceProvider ServiceProvider { get; set; }
+
+        public WebManager(IServiceProvider serviceProvider)
+        {
+            this.ServiceProvider = serviceProvider;
+        }
 
         /// <summary>
         /// Start the web service
         /// </summary>
         public void StartWebManager()
         {
-            using WebServer server = new WebServerDI(80, HttpProtocol.Http, new Type[] { typeof(ModicusWebpageAPI), typeof(ModicusWebpages) }, serviceProvider);
+            using WebServer server = new WebServerDI(80, HttpProtocol.Http, new Type[] { typeof(ModicusWebpageAPI), typeof(ModicusWebpages) }, ServiceProvider);
             // Start the server.
             server.Start();
             Thread.Sleep(Timeout.Infinite);
@@ -29,8 +36,8 @@ namespace GardenLightHyperionConnector.Manager
         {
             byte[] buffer = new byte[inputStream.Length];
             inputStream.Read(buffer, 0, (int)inputStream.Length);
-
-            return ParseParams(System.Text.Encoding.UTF8.GetString(buffer, 0, buffer.Length));
+            
+            return ParseParams(HttpUtility.UrlDecode(System.Text.Encoding.UTF8.GetString(buffer, 0, buffer.Length)));
         }
 
         public static Hashtable ParseParams(string rawParams)
@@ -41,9 +48,10 @@ namespace GardenLightHyperionConnector.Manager
             foreach (string pair in parPairs)
             {
                 string[] nameValue = pair.Split('=');
-                hash.Add(nameValue[0], nameValue[1]);
-            }
 
+                if (nameValue.Length >= 2)
+                    hash.Add(nameValue[0], nameValue[1]);
+            }
             return hash;
         }
 

@@ -1,4 +1,6 @@
-﻿using nanoFramework.WebServer;
+﻿using System;
+using System.Diagnostics;
+using nanoFramework.WebServer;
 
 namespace Modicus.Web
 {
@@ -25,6 +27,13 @@ namespace Modicus.Web
             WebServer.OutPutStream(e.Context.Response, Resources.Resources.GetString(Resources.Resources.StringResources.script));
         }
 
+        [Route("style.css")]
+        public void Style(WebServerEventArgs e)
+        {
+            e.Context.Response.ContentType = "text/css";
+            WebServer.OutPutStream(e.Context.Response, Resources.Resources.GetString(Resources.Resources.StringResources.style));
+        }
+
         /// <summary>
         /// Serves the SVG image
         /// </summary>
@@ -45,7 +54,15 @@ namespace Modicus.Web
         public void Default(WebServerEventArgs e)
         {
             e.Context.Response.ContentType = "text/html";
-            WebServer.OutPutStream(e.Context.Response, Resources.Resources.GetString(Resources.Resources.StringResources.settings));
+
+            var status_message = "Welcome to Modicus ... Have fun!";
+            var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.index), status_message);
+
+        
+            Debug.WriteLine(page);
+
+            WebServer.OutPutStream(e.Context.Response, page);
+            //WebServer.OutPutStream(e.Context.Response, Resources.Resources.GetString(Resources.Resources.StringResources.index));
         }
     }
 }

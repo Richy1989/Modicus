@@ -168,13 +168,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Resources\style.css" />
     <None Include="resources\script.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Enumerations\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\settings.html" />
+    <Content Include="Resources\index.html" />
+    <Content Include="Resources\wifi_settings.html" />
+    <Content Include="Resources\mqtt_settings.html" />
+    <Content Include="Resources\ip_settings.html" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Resources.resx">

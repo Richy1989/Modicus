@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading;
 using Modicus.Interfaces;
-using Modicus.Manager;
+using Modicus.MQTT.Interfaces;
 using nanoFramework.Json;
 
 namespace Modicus.Commands
@@ -11,12 +10,13 @@ namespace Modicus.Commands
     internal class CmdMqttOnOff : BaseCommand
     {
         private readonly ISettingsManager settingsManager;
-        private readonly MqttManager mqttManager;
+        private readonly IMqttManager mqttManager;
 
-        public CmdMqttOnOff(string topic, ISettingsManager settingsManager, MqttManager mqttManager) : base(topic)
+        public CmdMqttOnOff(ISettingsManager settingsManager, IMqttManager mqttManager)
         {
             this.mqttManager = mqttManager;
             this.settingsManager = settingsManager;
+            Topic = settingsManager.GlobalSettings.CommandSettings.MqttOnOffTopic;
         }
 
         public void Execute(CmdMqttOnOffData content)
@@ -25,7 +25,6 @@ namespace Modicus.Commands
 
             try
             {
-                
                 if (content.On)
                     Debug.WriteLine("Command: Turn MQTT ON");
                 else
@@ -46,7 +45,6 @@ namespace Modicus.Commands
 
             base.mreExecute.Set();
         }
-
 
         //Execute the command
         public new void Execute(string content)

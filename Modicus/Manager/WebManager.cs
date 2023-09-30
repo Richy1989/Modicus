@@ -3,26 +3,26 @@ using System.Collections;
 using System.IO;
 using System.Net;
 using System.Threading;
+using Modicus.Interfaces;
+using Modicus.Manager;
 using Modicus.Web;
 using nanoFramework.WebServer;
 
 namespace GardenLightHyperionConnector.Manager
 {
-    internal class WebManager
+    internal class WebManager : IWebManager
     {
+        private readonly IServiceProvider serviceProvider;
+
+        /// <summary>
+        /// Start the web service
+        /// </summary>
         public void StartWebManager()
         {
-            using (WebServer server = new WebServer(80, HttpProtocol.Http, new Type[] { typeof(ModicusWebpageAPI), typeof(ModicusWebpages) }))
-            {
-                // To test authentication with various scenarios
-                server.Credential = new NetworkCredential("user", "password");
-                // Add a handler for commands that are received by the server
-
-                // Start the server.
-                server.Start();
-
-                Thread.Sleep(Timeout.Infinite);
-            }
+            using WebServer server = new WebServerDI(80, HttpProtocol.Http, new Type[] { typeof(ModicusWebpageAPI), typeof(ModicusWebpages) }, serviceProvider);
+            // Start the server.
+            server.Start();
+            Thread.Sleep(Timeout.Infinite);
         }
 
         public static Hashtable ParseParamsFromStream(Stream inputStream)

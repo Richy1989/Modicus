@@ -1,4 +1,4 @@
-﻿namespace Modicus.Interfaces
+﻿namespace Modicus.Commands.Interfaces
 {
     internal interface ICommandCapable
     {

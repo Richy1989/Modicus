@@ -1,6 +1,12 @@
 using System.Diagnostics;
 using System.Threading;
+using GardenLightHyperionConnector.Manager;
+using Modicus.Commands;
+using Modicus.Commands.Interfaces;
+using Modicus.Interfaces;
 using Modicus.Manager;
+using Modicus.MQTT.Interfaces;
+using nanoFramework.DependencyInjection;
 
 namespace Modicus
 {
@@ -13,8 +19,24 @@ namespace Modicus
         {
             Debug.WriteLine("Hello from Modicus!");
 
-            ModicusStartupManager modicusStartupManager = new();
+            ServiceProvider services = ConfigureServices();
+            ModicusStartupManager modicusStartupManager = (ModicusStartupManager)services.GetRequiredService(typeof(ModicusStartupManager));
             Thread.Sleep(Timeout.Infinite);
+        }
+
+        /// <summary>
+        /// Configure the Dependency Injection Services
+        /// </summary>
+        private static ServiceProvider ConfigureServices()
+        {
+            return new ServiceCollection()
+                .AddSingleton(typeof(ModicusStartupManager))
+                .AddSingleton(typeof(IWebManager), typeof(WebManager))
+                .AddSingleton(typeof(ISettingsManager), typeof(SettingsManager))
+                .AddSingleton(typeof(ITokenManager), typeof(TokenManager))
+                .AddSingleton(typeof(IMqttManager), typeof(MqttManager))
+                //.AddSingleton(typeof(ICommandManager), typeof(CommandManager))
+                .BuildServiceProvider();
         }
     }
 }

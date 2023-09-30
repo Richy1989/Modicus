@@ -6,6 +6,7 @@ namespace Modicus.Settings
     internal class GlobalSettings
     {
         //Indicated if this is a new initialized instance to set default values
+        public DateTime StartupTime { get; set; }
         public bool IsFreshInstall { get; set; }
 
         //Default Measurement Interval
@@ -18,5 +19,6 @@ namespace Modicus.Settings
 
         public WifiSettings WifiSettings { get; set; } = new WifiSettings();
         public MqttSettings MqttSettings { get; set; } = new MqttSettings();
+        public CommandSettings CommandSettings { get; set; } = new CommandSettings();
     }
 }

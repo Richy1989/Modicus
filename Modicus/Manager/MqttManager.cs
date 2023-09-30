@@ -11,14 +11,15 @@ using nanoFramework.Json;
 using nanoFramework.M2Mqtt;
 using nanoFramework.M2Mqtt.Messages;
 using Modicus.EventArgs;
+using Modicus.Commands.Interfaces;
+using Modicus.MQTT.Interfaces;
 
 namespace Modicus.Manager
 {
-    internal class MqttManager : IPublishMqtt, ICommandCapable
+    internal class MqttManager : IMqttManager, IPublishMqtt
     {
         private MqttClient mqtt;
         private readonly CancellationToken token;
-        private readonly ModicusStartupManager modicusStartupManager;
         private readonly GlobalSettings globalSettings;
         private bool resubscribeAll = false;
         private bool stopService = false;
@@ -26,6 +27,7 @@ namespace Modicus.Manager
 
         //Make sure only one thread at the time can work with the mqtt service
         private readonly ManualResetEvent mreMQTT = new(true);
+        private readonly ISettingsManager settingsManager;
         private Thread mqttThread;
 
         public MainMqttMessage MainMqttMessage { get; set; }
@@ -37,11 +39,11 @@ namespace Modicus.Manager
         /// </summary>
         /// <param name="modicusStartupManager"></param>
         /// <param name="token"></param>
-        public MqttManager(ModicusStartupManager modicusStartupManager, CancellationToken token)
+        public MqttManager(ISettingsManager settingsManager, ITokenManager tokenManager)
         {
-            this.globalSettings = modicusStartupManager.GlobalSettings;
-            this.modicusStartupManager = modicusStartupManager;
-            this.token = token;
+            this.globalSettings = settingsManager.GlobalSettings;
+            this.token = tokenManager.Token;
+            this.settingsManager = settingsManager;
             SubscribeTopics = new Hashtable();
             MainMqttMessage = new MainMqttMessage();
             State = new StateMessage();
@@ -144,7 +146,7 @@ namespace Modicus.Manager
                     mreMQTT.WaitOne();
                     //Set current time
                     MainMqttMessage.Time = DateTime.UtcNow;
-                    State.Uptime = DateTime.UtcNow - modicusStartupManager.startupTime;
+                    State.Uptime = DateTime.UtcNow - settingsManager.GlobalSettings.StartupTime;
                     State.UptimeSec = State.Uptime.TotalSeconds;
 
                     Publish("STATE", JsonConvert.SerializeObject(State));

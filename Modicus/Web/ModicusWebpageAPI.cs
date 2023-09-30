@@ -1,27 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Diagnostics;
-using System.Net;
-using System.Text;
 using GardenLightHyperionConnector.Manager;
 using nanoFramework.WebServer;
 
 namespace Modicus.Web
 {
-    [Authentication("Basic:user p@ssw0rd")]
+    //[Authentication("Basic:user p@ssw0rd")]
     internal class ModicusWebpageAPI
     {
-        /// <summary>
-        /// Stop motor
-        /// </summary>
-        /// <param name="e">Web server context</param>
-        [Route("save")]
-        public void SaveSettings(WebServerEventArgs e)
-        {
-            Debug.WriteLine(e.Context.Request.RawUrl);
-        }
-
         [Route("wifi_settings")]
         public void WifiSettings(WebServerEventArgs e)
         {
@@ -64,13 +50,12 @@ namespace Modicus.Web
         {
             Debug.WriteLine(e.Context.Request.RawUrl);
 
-
             Hashtable hashPars = WebManager.ParseParamsFromStream(e.Context.Request.InputStream);
             var ip_address = (string)hashPars["ip_address"];
             var mqtt_settings = (string)hashPars["mqtt_settings"];
             var bwifi_settings = (string)hashPars["wifi_settings"];
 
-            if(ip_address != null)
+            if (ip_address != null)
                 WebManager.OutPutResponse(e.Context.Response, Resources.Resources.GetString(Resources.Resources.StringResources.ip_settings));
 
             if (mqtt_settings != null)

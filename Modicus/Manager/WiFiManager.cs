@@ -3,26 +3,26 @@ using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Threading;
 using nanoFramework.Networking;
-using Modicus.Interfaces;
+using Modicus.MQTT.Interfaces;
 
 namespace Modicus.Manager
 {
-    public class WiFiManager
+    internal class WiFiManager
     {
         private CancellationToken token;
         private readonly IPublishMqtt publishMqtt;
         private TimeSpan downTime;
         public bool IsConnected { get; private set; }
 
-        public WiFiManager(IPublishMqtt publishMqtt, CancellationToken token)
+        public WiFiManager(IMqttManager publishMqtt, CancellationToken token)
         {
-            this.publishMqtt = publishMqtt;
+            this.publishMqtt = (IPublishMqtt)publishMqtt;
             this.token = token;
             var ni = NetworkInterface.GetAllNetworkInterfaces();
             if (ni.Length > 0)
             {
                 var physicalAddress = ni[0].PhysicalAddress;
-                publishMqtt.State.WiFi.BSSId = BitConverter.ToString(physicalAddress);
+                this.publishMqtt.State.WiFi.BSSId = BitConverter.ToString(physicalAddress);
             }
         }
 

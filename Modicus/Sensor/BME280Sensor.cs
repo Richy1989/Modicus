@@ -7,8 +7,8 @@ using Iot.Device.Bmxx80;
 using Iot.Device.Common;
 using nanoFramework.Hardware.Esp32;
 using nanoFramework.Json;
-using Modicus.Interfaces;
 using UnitsNet;
+using Modicus.MQTT.Interfaces;
 
 namespace Modicus.Sensor
 {
@@ -28,10 +28,10 @@ namespace Modicus.Sensor
         /// <param name="mqttPublisher"></param>
         /// <param name="settings"></param>
         /// <param name="token"></param>
-        public BME280Sensor(IPublishMqtt mqttPublisher, GlobalSettings settings, CancellationToken token)
+        public BME280Sensor(IMqttManager mqttPublisher, GlobalSettings settings, CancellationToken token)
         {
             this.token = token;
-            this.mqttPublisher = mqttPublisher;
+            this.mqttPublisher = (IPublishMqtt)mqttPublisher;
             this.globalSettings = settings;
         }
 

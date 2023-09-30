@@ -1,4 +1,4 @@
-﻿using Modicus.Interfaces;
+﻿using Modicus.Commands.Interfaces;
 
 namespace Modicus.EventArgs
 {

@@ -25,7 +25,7 @@ Download the newest release, open with Visual Studio 2022 and deploy code. Use t
 ###
 Access Point: With the first startup an Software Access Point will be startet on the controller to reach the WebUI. 
 Connect to the access point:
- - SSID: Modicus_<MAC Address>
+ - SSID: Modicus_&#60;MAC Address&#62;
  - Passwort: -
  - IP Adress: 192.168.4.1
 ## MQTT Commands

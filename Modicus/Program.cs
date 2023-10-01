@@ -7,6 +7,7 @@ using Modicus.Interfaces;
 using Modicus.Manager;
 using Modicus.MQTT.Interfaces;
 using Modicus.Web;
+using Modicus.Web.Interfaces;
 using nanoFramework.DependencyInjection;
 
 namespace Modicus

@@ -1,8 +1,12 @@
-﻿using nanoFramework.WebServer;
+﻿using GardenLightHyperionConnector.Manager;
+using System.Collections;
+using System.Diagnostics;
+using nanoFramework.WebServer;
+using Modicus.Web.Interfaces;
 
 namespace Modicus.Web
 {
-    public class ModicusWebpages
+    public class ModicusWebpages : IModicusWebpages
     {
         /// <summary>
         /// Serves the favicon
@@ -29,6 +33,38 @@ namespace Modicus.Web
         public void Image(WebServerEventArgs e)
         {
             //  WebServer.SendFileOverHTTP(e.Context.Response, "image.svg", Resources.GetBytes(Resources.BinaryResources.image), "image/svg+xml");
+        }
+
+        [Route("select_section")]
+        public void SelectSettings(WebServerEventArgs e)
+        {
+            Debug.WriteLine(e.Context.Request.RawUrl);
+
+            Hashtable hashPars = WebManager.ParseParamsFromStream(e.Context.Request.InputStream);
+            var ip_address = (string)hashPars["ip_address"];
+            var mqtt_settings = (string)hashPars["mqtt_settings"];
+            var wifi_settings = (string)hashPars["wifi_settings"];
+
+            if (ip_address != null)
+            {
+                WebManager.OutPutResponse(e.Context.Response, Resources.Resources.GetString(Resources.Resources.StringResources.ip_settings));
+                return;
+            }
+
+            if (mqtt_settings != null)
+            {
+                var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.mqtt_settings), "");
+                WebManager.OutPutResponse(e.Context.Response, page);
+                return;
+            }
+
+            if (wifi_settings != null)
+            {
+                WebManager.OutPutResponse(e.Context.Response, Resources.Resources.GetString(Resources.Resources.StringResources.wifi_settings));
+                return;
+            }
+
+            Default(e);
         }
 
         /// <summary>

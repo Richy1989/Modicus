@@ -60,6 +60,7 @@
     <Compile Include="Settings\CommandSettings.cs" />
     <Compile Include="Settings\WifiSettings.cs" />
     <Compile Include="Manager\WiFiManager.cs" />
+    <Compile Include="Web\Interfaces\IModicusWebpages.cs" />
     <Compile Include="Web\ModicusWebpageAPI.cs" />
     <Compile Include="Web\ModicusWebpages.cs" />
   </ItemGroup>

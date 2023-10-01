@@ -36,7 +36,6 @@ namespace Modicus.Resources
             ip_settings = -11416,
             style = -5605,
             index = -2501,
-            wifi_settings = 12993,
         }
     }
 }

@@ -9,6 +9,7 @@ using Modicus.MQTT.Interfaces;
 using Modicus.Sensor;
 using Modicus.Services;
 using Modicus.Settings;
+using Modicus.Wifi.Interfaces;
 using nanoFramework.Hardware.Esp32;
 
 namespace Modicus.Manager
@@ -22,11 +23,17 @@ namespace Modicus.Manager
         public string AsseblyName { get; }
 
         private IServiceProvider serviceProvider;
-
+        private IWiFiManager wifiManager;
         private readonly GpioController controller;
         private IMqttManager mqttManager = null;
 
-        public ModicusStartupManager(IServiceProvider serviceProvider, ITokenManager tokenManager, ISettingsManager settingsManager, IWebManager webManager, IMqttManager mqttManager, ICommandManager commandManager)
+        public ModicusStartupManager(IServiceProvider serviceProvider,
+            ITokenManager tokenManager,
+            ISettingsManager settingsManager,
+            IWiFiManager wifiManager,
+            IWebManager webManager,
+            IMqttManager mqttManager,
+            ICommandManager commandManager)
         {
             //Close Startup LED to make sure we see the successfull startup at the end
             controller = new GpioController();
@@ -52,26 +59,28 @@ namespace Modicus.Manager
             Thread bme280Thread = new(new ThreadStart(bME280Sensor.DoMeasurement));
             bme280Thread.Start();
 
-            WiFiManager wifi = null;
             if (GlobalSettings.WifiSettings.ConnectToWifi)
             {
-                wifi = new(mqttManager, token);
-                wifi.Connect(GlobalSettings.WifiSettings.Ssid, GlobalSettings.WifiSettings.Password);
-                Thread wifiThread = new(new ThreadStart(wifi.KeepConnected));
-                wifiThread.Start();
+                //wifi.Connect(GlobalSettings.WifiSettings.Ssid, GlobalSettings.WifiSettings.Password);
+                //Thread wifiThread = new(new ThreadStart(wifi.KeepConnected));
+                //wifiThread.Start();
+                wifiManager.Start();
             }
 
-            //Starts the NTP Service .. wait 500ms to be sure we have the time
-            NTPService ntp = new();
-            Thread.Sleep(1000);
+            if (!wifiManager.ISoftAP)
+            {
+                //Starts the NTP Service .. wait 500ms to be sure we have the time
+                NTPService ntp = new();
+                Thread.Sleep(1000);
+            }
 
             //Set all Commands for command capable managers
-            CommandManager = commandManager;// new CommandManager(settingsManager, mqttManager);
+            CommandManager = commandManager;
             CommandManager.AddCommandCapableManager(typeof(MqttManager), mqttManager);
             CommandManager.SetMqttCommands();
 
             ///Start MQTT Service if needed
-            if (GlobalSettings.MqttSettings.ConnectToMqtt)
+            if (GlobalSettings.MqttSettings.ConnectToMqtt && !wifiManager.ISoftAP)
             {
                 Thread mqttStartTask = new(new ThreadStart(() =>
                 {
@@ -81,11 +90,14 @@ namespace Modicus.Manager
                 mqttStartTask.Start();
             }
 
+            //Start the web manager
             WebManager = webManager;
             Thread webTask = new(new ThreadStart(WebManager.StartWebManager));
             webTask.Start();
 
+            //Set startup time
             settingsManager.GlobalSettings.StartupTime = DateTime.UtcNow;
+
             //Set LED on GPIO Pin 2 ON to show successful startup
             pin.Write(PinValue.High);
         }

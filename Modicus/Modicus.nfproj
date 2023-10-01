@@ -63,6 +63,9 @@
     <Compile Include="Web\Interfaces\IModicusWebpages.cs" />
     <Compile Include="Web\ModicusWebpageAPI.cs" />
     <Compile Include="Web\ModicusWebpages.cs" />
+    <Compile Include="Wifi\Interfaces\IWiFiManager.cs" />
+    <Compile Include="Wifi\Wireless80211.cs" />
+    <Compile Include="Wifi\WirelessAP.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Iot.Device.Bmxx80">
@@ -70,6 +73,9 @@
     </Reference>
     <Reference Include="Iot.Device.Common.WeatherHelper">
       <HintPath>..\packages\nanoFramework.Iot.Device.Common.WeatherHelper.1.2.394\lib\Iot.Device.Common.WeatherHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="Iot.Device.DhcpServer">
+      <HintPath>..\packages\nanoFramework.Iot.Device.DhcpServer.1.2.300\lib\Iot.Device.DhcpServer.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>..\packages\nanoFramework.CoreLibrary.1.14.2\lib\mscorlib.dll</HintPath>
@@ -186,7 +192,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\index.html" />
-    <Content Include="Resources\wifi_settings.html" />
     <Content Include="Resources\mqtt_settings.html" />
     <Content Include="Resources\ip_settings.html" />
   </ItemGroup>

@@ -33,27 +33,27 @@ Payload JSON: {"On"= "true|false"}
 
 ### Set MQTT Client ID
 Sets the client id for the MQTT service.
-```json
+```sh
 Topic: {ClientID}/cmd/MqttClientId
 Payload JSON: {"ClientID"= "<clientID>"}
 ```
 ### Set MQTT Sent Interval 
 Set the send interval for the MQTT service in seconds.
-```json
+```sh
 Topic: {ClientID}/cmd/MqttSendInterval
 Payload JSON: {"Interval"= <inverval>}
 ```
 
 ### Reboot system
 Reboots the system after the given delay in seconds.
-```json
+```sh
 Topic: {ClientID}/cmd/Reboot
 Payload JSON: {"Interval"= <delay>}
 ```
 
 ### Set Measurement Interval for sensors
 Set the measurement interval for the sensors in seconds.
-```json
+```sh
 Topic: {ClientID}/cmd/MeasurementInterval
 Payload JSON: {"Interval"= <inverval>}
 ```

@@ -90,6 +90,7 @@ namespace Modicus.Web
                 {
                     settingsManager.UpdateSettings();
                     Wireless80211.Configure(wifiSettings);
+                    WirelessAP.Disable();
                 });
                 wifiSetupTask.Start();
 

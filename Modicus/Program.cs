@@ -1,13 +1,11 @@
 using System.Diagnostics;
 using System.Threading;
 using GardenLightHyperionConnector.Manager;
-using Modicus.Commands;
 using Modicus.Commands.Interfaces;
 using Modicus.Interfaces;
 using Modicus.Manager;
 using Modicus.MQTT.Interfaces;
 using Modicus.Web;
-using Modicus.Web.Interfaces;
 using Modicus.Wifi.Interfaces;
 using nanoFramework.DependencyInjection;
 

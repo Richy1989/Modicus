@@ -22,6 +22,12 @@ Welcome to the official GitHub page for our Modicus C# application designed to g
 First of all follow [Getting Started Guide for managed code (C#)](https://docs.nanoframework.net/content/getting-started-guides/getting-started-managed.html).
 Download the newest release, open with Visual Studio 2022 and deploy code. Use the Release Build for optimal perfomance.
 
+###
+Access Point: With the first startup an Software Access Point will be startet on the controller to reach the WebUI. 
+Connect to the access point:
+ - SSID: Modicus_{MAC Address}
+ - Passwort: -
+ - IP Adress: 192.168.4.1
 ## MQTT Commands
 
 ### Turn MQTT Service ON / OFF

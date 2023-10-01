@@ -2,7 +2,8 @@
 {
     public class WifiSettings
     {
-        public bool ConnectToWifi { get; set; }
+        //Enable Wifi Settings by default
+        public bool ConnectToWifi { get; set; } = true;
         public string Ssid { get; set; }
         public string Password { get; set; }
         public string IP { get; set; }

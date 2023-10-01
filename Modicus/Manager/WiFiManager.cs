@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Threading;
-using nanoFramework.Networking;
-using Modicus.MQTT.Interfaces;
-using Modicus.WiFi;
-using nanoFramework.Runtime.Native;
-using System.Device.Gpio;
-using System.Net;
 using Iot.Device.DhcpServer;
 using Modicus.Interfaces;
+using Modicus.MQTT.Interfaces;
+using Modicus.Services;
 using Modicus.Wifi.Interfaces;
-using Modicus.Settings;
+using Modicus.WiFi;
+using nanoFramework.Networking;
+using nanoFramework.Runtime.Native;
 
 namespace Modicus.Manager
 {
@@ -35,32 +34,6 @@ namespace Modicus.Manager
                 this.publishMqtt.State.WiFi.BSSId = BitConverter.ToString(physicalAddress);
             }
         }
-
-        //public void Connect(string ssid, string password)
-        //{
-        //    // Give 60 seconds to the wifi join to happen
-        //    CancellationTokenSource cs = new(60000);
-
-        //    var success = WifiNetworkHelper.ScanAndConnectDhcp(ssid, password, token: cs.Token);
-
-        //    IsConnected = false;
-        //    if (!success)
-        //    {
-        //        // Something went wrong, you can get details with the ConnectionError property:
-        //        Debug.WriteLine($"Can't connect to the network, error: {WifiNetworkHelper.Status}");
-        //        if (WifiNetworkHelper.HelperException != null)
-        //        {
-        //            Debug.WriteLine($"ex: {WifiNetworkHelper.HelperException}");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        IsConnected = true;
-        //        publishMqtt.State.WiFi.SSId = ssid;
-        //    }
-
-        //    Debug.WriteLine($"Successfully Connected to WiFi: {WifiNetworkHelper.Status}");
-        //}
 
         public void Start()
         {
@@ -88,6 +61,7 @@ namespace Modicus.Manager
                 if (!dhcpInitResult)
                 {
                     Debug.WriteLine($"Error initializing DHCP server.");
+                    SignalService.SignalError(1000);
                 }
 
                 Debug.WriteLine($"Running Soft AP, waiting for client to connect");
@@ -97,18 +71,15 @@ namespace Modicus.Manager
             {
                 ISoftAP = false;
                 Debug.WriteLine($"Running in normal mode, connecting to Access point");
-                var conf = Wireless80211.GetConfiguration();
-
                 bool success;
 
                 if (wifiSettings.UseDHCP)
-                    success = WifiNetworkHelper.ConnectDhcp(wifiSettings.Ssid, wifiSettings.Password, token: new CancellationTokenSource(10000).Token);
+                    success = WifiNetworkHelper.ScanAndConnectDhcp(wifiSettings.Ssid, wifiSettings.Password);
                 else
                 {
                     IPConfiguration iPConfiguration = new IPConfiguration(wifiSettings.IP, wifiSettings.NetworkMask, wifiSettings.DefaultGateway);
                     success = WifiNetworkHelper.ConnectFixAddress(wifiSettings.Ssid, wifiSettings.Password, iPConfiguration, System.Device.Wifi.WifiReconnectionKind.Automatic, false, 0, token: new CancellationTokenSource(10000).Token);
                 }
-
 
                 if (success)
                 {
@@ -118,6 +89,7 @@ namespace Modicus.Manager
                 else
                 {
                     Debug.WriteLine($"Something wrong happened, can't connect at all");
+                    SignalService.SignalError(500);
                 }
             }
         }

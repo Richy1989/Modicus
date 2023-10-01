@@ -54,7 +54,9 @@
     </Compile>
     <Compile Include="Sensor\BME280Sensor.cs" />
     <Compile Include="Sensor\Bmp280Measurement.cs" />
+    <Compile Include="Services\ISignalService.cs" />
     <Compile Include="Services\NTPService.cs" />
+    <Compile Include="Services\SignalService.cs" />
     <Compile Include="Settings\MqttSettings.cs" />
     <Compile Include="Settings\GlobalSettings.cs" />
     <Compile Include="Manager\SettingsManager.cs" />

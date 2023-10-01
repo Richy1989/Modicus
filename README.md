@@ -18,5 +18,45 @@ Welcome to the official GitHub page for our Modicus C# application designed to g
 - This software is in active development and will grow
 - Contribution is happily Welcome
 
+## Getting Started 
+First of all follow [Getting Started Guide for managed code (C#)](https://docs.nanoframework.net/content/getting-started-guides/getting-started-managed.html) v10+ to run.
+Download the newest release, open with Visual Studio 2022 and deploy code. Use the Release Build for optimal perfomance.
+
+## MQTT Commands
+
+### Turn MQTT Service ON / OFF
+Turns the MQTT service on or off.
+```json
+Topic: {ClientID}/cmd/MqttOnOff
+Payload JSON: {"On"= "true|false"}
+```
+
+### Set MQTT Client ID
+Sets the client id for the MQTT service.
+```json
+Topic: {ClientID}/cmd/MqttClientId
+Payload JSON: {"ClientID"= "<clientID>"}
+```
+### Set MQTT Sent Interval 
+Set the send interval for the MQTT service in seconds.
+```json
+Topic: {ClientID}/cmd/MqttSendInterval
+Payload JSON: {"Interval"= <inverval>}
+```
+
+### Reboot system
+Reboots the system after the given delay in seconds.
+```json
+Topic: {ClientID}/cmd/Reboot
+Payload JSON: {"Interval"= <delay>}
+```
+
+### Set Measurement Interval for sensors
+Set the measurement interval for the sensors in seconds.
+```json
+Topic: {ClientID}/cmd/MeasurementInterval
+Payload JSON: {"Interval"= <inverval>}
+```
+
 ## License
 This program is licensed under GPL-3.0-only

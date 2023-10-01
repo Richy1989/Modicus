@@ -4,6 +4,7 @@
 //
 
 using System.Net.NetworkInformation;
+using Modicus.Manager;
 
 namespace Modicus.WiFi
 {
@@ -51,7 +52,7 @@ namespace Modicus.WiFi
                             WirelessAPConfiguration.ConfigurationOptions.Enable;
 
             // Set the SSID for Access Point. If not set will use default  "nano_xxxxxx"
-            //wapconf.Ssid = "MySsid";
+            wapconf.Ssid = $"Modicus_{ModicusStartupManager.GetUniqueIDPlainString()}";
 
             // Maximum number of simultaneous connections, reserves memory for connections
             wapconf.MaxConnections = 1;

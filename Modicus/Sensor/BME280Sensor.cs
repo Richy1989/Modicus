@@ -86,24 +86,24 @@ namespace Modicus.Sensor
 
                 if (readResult.TemperatureIsValid)
                 {
-                    Debug.WriteLine($"Temperature: {readResult.Temperature.DegreesCelsius}\u00B0C");
+                    //Debug.WriteLine($"Temperature: {readResult.Temperature.DegreesCelsius}\u00B0C");
                     measurement.Temperature = readResult.Temperature.DegreesCelsius;
                 }
                 if (readResult.PressureIsValid)
                 {
-                    Debug.WriteLine($"Pressure: {readResult.Pressure.Hectopascals}hPa");
+                    //Debug.WriteLine($"Pressure: {readResult.Pressure.Hectopascals}hPa");
                     measurement.Pressure = readResult.Pressure.Hectopascals;
                 }
 
                 if (readResult.TemperatureIsValid && readResult.PressureIsValid)
                 {
-                    Debug.WriteLine($"Altitude: {altValue.Meters}m");
+                    //Debug.WriteLine($"Altitude: {altValue.Meters}m");
                     measurement.Altitude = altValue.Meters;
                 }
 
                 if (readResult.HumidityIsValid)
                 {
-                    Debug.WriteLine($"Relative humidity: {readResult.Humidity.Percent}%");
+                    //Debug.WriteLine($"Relative humidity: {readResult.Humidity.Percent}%");
                     measurement.Humidity = readResult.Humidity.Percent;
                 }
 
@@ -117,7 +117,7 @@ namespace Modicus.Sensor
                 if (readResult.TemperatureIsValid || readResult.PressureIsValid)
                 {
                     var message = JsonConvert.SerializeObject(measurement);
-                    Debug.WriteLine($"BME208 Measurement Value: {message}");
+                    //Debug.WriteLine($"BME208 Measurement Value: {message}");
                     //mqttPublisher.Publish("SENSOR/modicus_sensorrange_livingroom", message);
                     mqttPublisher.MainMqttMessage.Environment = measurement;
                 }

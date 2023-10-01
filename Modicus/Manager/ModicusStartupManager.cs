@@ -22,6 +22,8 @@ namespace Modicus.Manager
         public GlobalSettings GlobalSettings { get; set; }
         public string AsseblyName { get; }
 
+        public static GpioPin pin;
+
         private readonly GpioController controller;
         private IMqttManager mqttManager = null;
 
@@ -35,7 +37,7 @@ namespace Modicus.Manager
         {
             //Close Startup LED to make sure we see the successfull startup at the end
             controller = new GpioController();
-            GpioPin pin = controller.OpenPin(Gpio.IO02, PinMode.Output);
+            pin = controller.OpenPin(Gpio.IO02, PinMode.Output);
             pin.Write(PinValue.Low);
 
             AsseblyName = "modicus";
@@ -105,14 +107,14 @@ namespace Modicus.Manager
             this.GlobalSettings.MqttSettings.MqttClientID = string.Format("{0}/{1}", AsseblyName, $"modicus_sensorrange_{GetUniqueID()}");
             //Load the default values only valid for the build environment. Do not make these values Public
 #if DEBUG
-            Debug.WriteLine("+++++ Write Build Variables to Settings: +++++");
-            SettingsManager.GlobalSettings.WifiSettings.ConnectToWifi = true;
-            SettingsManager.GlobalSettings.WifiSettings.Ssid = NotPushable.NotPushable.WifiSsid;
-            SettingsManager.GlobalSettings.WifiSettings.Password = NotPushable.NotPushable.WifiPassword;
-            SettingsManager.GlobalSettings.MqttSettings.ConnectToMqtt = true;
-            SettingsManager.GlobalSettings.MqttSettings.MqttUserName = NotPushable.NotPushable.MQTTUserName;
-            SettingsManager.GlobalSettings.MqttSettings.MqttPassword = NotPushable.NotPushable.MQTTPassword;
-            SettingsManager.GlobalSettings.MqttSettings.MqttHostName = NotPushable.NotPushable.MQTTHostName;
+            ////Debug.WriteLine("+++++ Write Build Variables to Settings: +++++");
+            ////SettingsManager.GlobalSettings.WifiSettings.ConnectToWifi = true;
+            ////SettingsManager.GlobalSettings.WifiSettings.Ssid = NotPushable.NotPushable.WifiSsid;
+            ////SettingsManager.GlobalSettings.WifiSettings.Password = NotPushable.NotPushable.WifiPassword;
+            ////SettingsManager.GlobalSettings.MqttSettings.ConnectToMqtt = true;
+            ////SettingsManager.GlobalSettings.MqttSettings.MqttUserName = NotPushable.NotPushable.MQTTUserName;
+            ////SettingsManager.GlobalSettings.MqttSettings.MqttPassword = NotPushable.NotPushable.MQTTPassword;
+            ////SettingsManager.GlobalSettings.MqttSettings.MqttHostName = NotPushable.NotPushable.MQTTHostName;
 #endif
         }
 
@@ -133,6 +135,20 @@ namespace Modicus.Manager
                 Debug.WriteLine($"+++++ Returning GUID: {uniqueID} +++++");
                 return uniqueID;
             }
+        }
+
+        //Create a Unique ID based on the MAC address of the controller
+        public static string GetUniqueIDPlainString()
+        {
+            var ni = NetworkInterface.GetAllNetworkInterfaces();
+            if (ni.Length > 0)
+            {
+                var physicalAddress = ni[0].PhysicalAddress;
+                var physicalAddressString = string.Format("{0:X}{1:X}{2:X}{3:X}{4:X}{5:X}", physicalAddress[0], physicalAddress[1], physicalAddress[2], physicalAddress[3], physicalAddress[4], physicalAddress[5]);
+                Debug.WriteLine($"+++++ Returning uniq string: {physicalAddressString} +++++");
+                return physicalAddressString;
+            }
+            throw new Exception("Cannot create unique string id.");
         }
     }
 }

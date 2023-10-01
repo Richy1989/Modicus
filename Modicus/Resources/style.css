@@ -11,6 +11,12 @@ h1 {
     color: #fff; /* White text color */
 }
 
+h2 {
+    font-size: 30px; /* Adjust the font size as needed */
+    /*margin-top: 40px;  Add some top margin for spacing */
+    color: #fff; /* White text color */
+}
+
 form {
     margin: 20px;
     padding: 20px;

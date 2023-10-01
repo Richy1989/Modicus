@@ -9,6 +9,8 @@ namespace Modicus.Settings
         public DateTime StartupTime { get; set; }
         public bool IsFreshInstall { get; set; }
 
+        public string InstanceName { get; set; }
+
         //Default Measurement Interval
         public TimeSpan MeasurementInterval { get; set; } = TimeSpan.FromSeconds(1);
 

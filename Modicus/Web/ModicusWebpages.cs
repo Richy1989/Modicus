@@ -88,7 +88,7 @@ namespace Modicus.Web
             e.Context.Response.ContentType = "text/html";
 
             var status_message = "Welcome to Modicus ... Have fun!";
-            var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.index), status_message);
+            var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.index), status_message, settingsManager.GlobalSettings.InstanceName);
             WebServer.OutPutStream(e.Context.Response, page);
         }
 

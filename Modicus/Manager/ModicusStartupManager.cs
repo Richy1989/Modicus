@@ -25,10 +25,8 @@ namespace Modicus.Manager
         public static GpioPin pin;
 
         private readonly GpioController controller;
-        private IMqttManager mqttManager = null;
 
-        public ModicusStartupManager(IServiceProvider serviceProvider,
-            ITokenManager tokenManager,
+        public ModicusStartupManager(ITokenManager tokenManager,
             ISettingsManager settingsManager,
             IWiFiManager wifiManager,
             IWebManager webManager,
@@ -50,8 +48,6 @@ namespace Modicus.Manager
                 InitializeFrehInstall();
                 SettingsManager.UpdateSettings();
             }
-
-            this.mqttManager = mqttManager;
 
             BME280Sensor bME280Sensor = new(mqttManager, GlobalSettings, token);
             bME280Sensor.Init();
@@ -90,9 +86,7 @@ namespace Modicus.Manager
             }
 
             //Start the web manager
-            WebManager = webManager;
-            Thread webTask = new(new ThreadStart(WebManager.StartWebManager));
-            webTask.Start();
+            webManager.StartWebManager();
 
             //Set startup time
             settingsManager.GlobalSettings.StartupTime = DateTime.UtcNow;

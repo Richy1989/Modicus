@@ -149,6 +149,7 @@ namespace Modicus.Manager
                     MainMqttMessage.Time = DateTime.UtcNow;
                     State.Uptime = DateTime.UtcNow - settingsManager.GlobalSettings.StartupTime;
                     State.UptimeSec = State.Uptime.TotalSeconds;
+                    State.WiFi.SSId = settingsManager.GlobalSettings.WifiSettings.Ssid;
 
                     Publish("STATE", JsonConvert.SerializeObject(State));
                     Publish("SENSOR", JsonConvert.SerializeObject(MainMqttMessage));

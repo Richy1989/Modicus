@@ -191,9 +191,6 @@
     <None Include="Resources\style.css" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Enumerations\" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Resources\index.html" />
     <Content Include="Resources\system_settings.html" />
     <Content Include="Resources\mqtt_settings.html" />

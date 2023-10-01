@@ -16,7 +16,12 @@ namespace GardenLightHyperionConnector.Manager
     internal class WebManager : IWebManager
     {
         private IServiceProvider ServiceProvider { get; set; }
+        private WebServer server;
 
+        /// <summary>
+        /// Creates a new instance of the WebManager
+        /// </summary>
+        /// <param name="serviceProvider"></param>
         public WebManager(IServiceProvider serviceProvider)
         {
             this.ServiceProvider = serviceProvider;
@@ -27,11 +32,10 @@ namespace GardenLightHyperionConnector.Manager
         /// </summary>
         public void StartWebManager()
         {
-            using WebServer server = new WebServerDI(80, HttpProtocol.Http, new Type[] { typeof(ModicusWebpageAPI), typeof(ModicusWebpages) }, ServiceProvider);
+            server = new WebServerDI(80, HttpProtocol.Http, new Type[] { typeof(ModicusWebpageAPI), typeof(ModicusWebpages) }, ServiceProvider);
             // Start the server.
             server.Start();
             Debug.WriteLine("++++ WebServer started! ++++");
-            Thread.Sleep(Timeout.Infinite);
         }
 
         public static Hashtable ParseParamsFromStream(Stream inputStream)

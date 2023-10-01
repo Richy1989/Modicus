@@ -25,7 +25,7 @@ Download the newest release, open with Visual Studio 2022 and deploy code. Use t
 ###
 Access Point: With the first startup an Software Access Point will be startet on the controller to reach the WebUI. 
 Connect to the access point:
- - SSID: Modicus_{MAC Address}
+ - SSID: Modicus_<MAC Address>
  - Passwort: -
  - IP Adress: 192.168.4.1
 ## MQTT Commands
@@ -33,34 +33,34 @@ Connect to the access point:
 ### Turn MQTT Service ON / OFF
 Turns the MQTT service on or off.
 ```sh
-Topic: {ClientID}/cmd/MqttOnOff
+Topic: <ClientID>/cmd/MqttOnOff
 Payload JSON: {"On"= "true|false"}
 ```
 
 ### Set MQTT Client ID
 Sets the client id for the MQTT service.
 ```sh
-Topic: {ClientID}/cmd/MqttClientId
+Topic: <ClientID>/cmd/MqttClientId
 Payload JSON: {"ClientID"= "<clientID>"}
 ```
 ### Set MQTT Sent Interval 
 Set the send interval for the MQTT service in seconds.
 ```sh
-Topic: {ClientID}/cmd/MqttSendInterval
+Topic: <ClientID>/cmd/MqttSendInterval
 Payload JSON: {"Interval"= <inverval>}
 ```
 
 ### Reboot system
 Reboots the system after the given delay in seconds.
 ```sh
-Topic: {ClientID}/cmd/Reboot
+Topic: <ClientID>/cmd/Reboot
 Payload JSON: {"Interval"= <delay>}
 ```
 
 ### Set Measurement Interval for sensors
 Set the measurement interval for the sensors in seconds.
 ```sh
-Topic: {ClientID}/cmd/MeasurementInterval
+Topic: <ClientID>/cmd/MeasurementInterval
 Payload JSON: {"Interval"= <inverval>}
 ```
 

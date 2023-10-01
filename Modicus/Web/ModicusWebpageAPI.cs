@@ -61,6 +61,8 @@ namespace Modicus.Web
             Hashtable hashPars = WebManager.ParseParamsFromStream(e.Context.Request.InputStream);
             var clientID = (string)hashPars["mqtt-clientid"];
             var sendInterval = (string)hashPars["mqtt-send-interval"];
+            var ip = (string)hashPars["mqtt-server-ip"];
+            var port = (string)hashPars["mqtt-server-port"];
             var save = (string)hashPars["save"];
             var back = (string)hashPars["back"];
 
@@ -83,8 +85,7 @@ namespace Modicus.Web
                 modicusWebpages.Default(e);
             }
 
-            var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.mqtt_settings), message);
-            WebManager.OutPutResponse(e.Context.Response, page);
+            WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateMQTTSettingsPage(message));
         }
     }
 }

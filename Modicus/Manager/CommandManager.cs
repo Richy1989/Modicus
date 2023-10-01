@@ -14,6 +14,7 @@ namespace Modicus.Manager
         public CmdMqttClientID CmdMQTTClientID { get; }
         public CmdMqttSendInterval CmdMqttSendInterval { get; }
         public CmdMqttOnOff CmdMqttOnOff { get; }
+        public CmdSystemReboot CmdSystemReboot { get; }
         private IDictionary CommandCapableManagers { get; }
 
         /// <summary>
@@ -30,6 +31,7 @@ namespace Modicus.Manager
             CmdMQTTClientID = new CmdMqttClientID(settingsManager);
             CmdMqttSendInterval = new CmdMqttSendInterval(settingsManager);
             CmdMqttOnOff = new CmdMqttOnOff(settingsManager, mqttManager);
+            CmdSystemReboot = new CmdSystemReboot(settingsManager);
         }
 
         public void AddCommandCapableManager(Type type, ICommandCapable commandCapable)
@@ -45,6 +47,7 @@ namespace Modicus.Manager
                 ((ICommandCapable)CommandCapableManagers[item]).RegisterCommand(CmdMQTTClientID);
                 ((ICommandCapable)CommandCapableManagers[item]).RegisterCommand(CmdMqttSendInterval);
                 ((ICommandCapable)CommandCapableManagers[item]).RegisterCommand(CmdMqttOnOff);
+                ((ICommandCapable)CommandCapableManagers[item]).RegisterCommand(CmdSystemReboot);
             }
         }
     }

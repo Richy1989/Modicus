@@ -9,5 +9,6 @@
         public string MqttClientIdTopic { get; } = "MqttClientId";
         public string MqttSendIntervalTopic { get; } = "MqttSendInterval";
         public string MqttOnOffTopic { get; } = "MqttOnOff";
+        public string RebootControllerTopic { get; } = "Reboot";
     }
 }

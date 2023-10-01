@@ -8,6 +8,7 @@ namespace Modicus.Commands.Interfaces
         CmdMqttClientID CmdMQTTClientID { get; }
         CmdMqttSendInterval CmdMqttSendInterval { get; }
         CmdMqttOnOff CmdMqttOnOff { get; }
+        CmdSystemReboot CmdSystemReboot { get; }
 
         void AddCommandCapableManager(Type type, ICommandCapable commandCapable);
 

@@ -6,7 +6,7 @@ Welcome to the official GitHub page for our Modicus C# application designed to g
 
 ## Features
 
-- Read all kinds of sensors with the help of the powerful nanoframework
+- Read all kind of sensors with the help of the powerful nanoframework
 - Webserver for easy configuration
 - Wifi AP for setup
 - Get all data via MQTT

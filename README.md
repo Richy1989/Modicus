@@ -26,7 +26,7 @@ Download the newest release, open with Visual Studio 2022 and deploy code. Use t
 
 ### Turn MQTT Service ON / OFF
 Turns the MQTT service on or off.
-```json
+```sh
 Topic: {ClientID}/cmd/MqttOnOff
 Payload JSON: {"On"= "true|false"}
 ```

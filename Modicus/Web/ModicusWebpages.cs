@@ -3,11 +3,25 @@ using System.Collections;
 using System.Diagnostics;
 using nanoFramework.WebServer;
 using Modicus.Web.Interfaces;
+using Modicus.Commands.Interfaces;
+using Modicus.Interfaces;
 
 namespace Modicus.Web
 {
-    public class ModicusWebpages : IModicusWebpages
+    internal class ModicusWebpages
     {
+        private readonly ISettingsManager settingsManager;
+        private readonly ICommandManager commandManager;
+
+        /// <summary>
+        /// Creates a new ModicusWebpages instance.
+        /// </summary>
+        public ModicusWebpages(ISettingsManager settingsManager, ICommandManager commandManager)
+        {
+            this.settingsManager = settingsManager;
+            this.commandManager = commandManager;
+        }
+
         /// <summary>
         /// Serves the favicon
         /// </summary>
@@ -53,8 +67,7 @@ namespace Modicus.Web
 
             if (mqtt_settings != null)
             {
-                var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.mqtt_settings), "");
-                WebManager.OutPutResponse(e.Context.Response, page);
+                WebManager.OutPutResponse(e.Context.Response, CreateMQTTSettingsPage(""));
                 return;
             }
 
@@ -81,6 +94,17 @@ namespace Modicus.Web
             var status_message = "Welcome to Modicus ... Have fun!";
             var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.index), status_message);
             WebServer.OutPutStream(e.Context.Response, page);
+        }
+
+        public string CreateMQTTSettingsPage(string message)
+        {
+            var mqttSettings = settingsManager.GlobalSettings.MqttSettings;
+            var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.mqtt_settings), message, 
+                mqttSettings.MqttHostName,
+                mqttSettings.MqttPort, 
+                mqttSettings.MqttClientID,
+                mqttSettings.SendInterval);
+            return page;
         }
     }
 }

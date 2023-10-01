@@ -103,7 +103,7 @@ namespace Modicus.Web
                 mqttSettings.MqttHostName,
                 mqttSettings.MqttPort, 
                 mqttSettings.MqttClientID,
-                mqttSettings.SendInterval);
+                mqttSettings.SendInterval.TotalSeconds);
             return page;
         }
     }

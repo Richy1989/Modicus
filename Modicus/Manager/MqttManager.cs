@@ -130,6 +130,7 @@ namespace Modicus.Manager
 
             mqtt?.Disconnect();
             mqtt?.Close();
+            mqtt?.Dispose();
 
             mreMQTT.Set();
         }
@@ -169,7 +170,7 @@ namespace Modicus.Manager
         /// </summary>
         private bool EstablishConnection()
         {
-            mqtt = new MqttClient(globalSettings.MqttSettings.MqttHostName);
+            mqtt = new MqttClient(globalSettings.MqttSettings.MqttHostName, globalSettings.MqttSettings.MqttPort, secure: false, null, null, MqttSslProtocols.None);
             var ret = mqtt.Connect(globalSettings.MqttSettings.MqttClientID, globalSettings.MqttSettings.MqttUserName, globalSettings.MqttSettings.MqttPassword);
 
             if (ret != MqttReasonCode.Success)

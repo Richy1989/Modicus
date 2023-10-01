@@ -2,14 +2,11 @@
 using System.Collections;
 using System.Diagnostics;
 using System.Net;
-using System.Text;
 using System.Threading;
-using System.Web;
 using GardenLightHyperionConnector.Manager;
 using Modicus.Commands.Interfaces;
 using Modicus.Interfaces;
-using Modicus.Web.Interfaces;
-using nanoFramework.M2Mqtt;
+using Modicus.WiFi;
 using nanoFramework.WebServer;
 
 namespace Modicus.Web
@@ -31,32 +28,68 @@ namespace Modicus.Web
             this.modicusWebpages = modicusWebpages;
         }
 
-        [Route("wifi_settings")]
-        public void WifiSettings(WebServerEventArgs e)
-        {
-            Debug.WriteLine(e.Context.Request.RawUrl);
-
-            Hashtable hashPars = WebManager.ParseParamsFromStream(e.Context.Request.InputStream);
-            var ssid = (string)hashPars["ssid"];
-            var password = (string)hashPars["password"];
-
-            Debug.WriteLine($"Wireless parameters SSID:{ssid} PASSWORD:{password}");
-        }
+        private Thread wifiSetupTask;
 
         [Route("ip_settings")]
         public void IPSettings(WebServerEventArgs e)
         {
-            Debug.WriteLine(e.Context.Request.RawUrl);
-
             Hashtable hashPars = WebManager.ParseParamsFromStream(e.Context.Request.InputStream);
+            var ssid = (string)hashPars["ssid"];
+            var password = (string)hashPars["password"];
             var ip = (string)hashPars["ip-address"];
             var subnet = (string)hashPars["subnetmask"];
             var gateway = (string)hashPars["default-gateway"];
+            var useDhcp = (string)hashPars["use-dhcp"];
 
             Debug.WriteLine($"IP parameters IP:{ip} Subnetmask:{subnet} Default Gateway {gateway}");
+
+            var wifiSettings = settingsManager.GlobalSettings.WifiSettings;
+
+            wifiSettings.UseDHCP = useDhcp != null && useDhcp == "on";
+
+            string message = "";
+            if (!wifiSettings.UseDHCP)
+            {
+                string errorMessage = "IP";
+                try
+                {
+                    IPAddress.Parse(ip);
+                    wifiSettings.IP = ip;
+
+                    errorMessage = "Default Gateway";
+                    IPAddress.Parse(gateway);
+                    wifiSettings.DefaultGateway = gateway;
+
+                    errorMessage = "Subnetmask";
+                    IPAddress.Parse(subnet);
+                    wifiSettings.NetworkMask = subnet;
+                }
+                catch
+                {
+                    message = $"{errorMessage} not Valid!\n{message}";
+                    message = $"DHCP use not activated!\n{message}";
+                    wifiSettings.UseDHCP = false;
+                }
+            }
+
+            wifiSettings.Ssid = ssid;
+            wifiSettings.Password = password;
+            wifiSettings.StartInAPMode = false;
+
+            wifiSetupTask = new Thread(() =>
+            {
+                settingsManager.UpdateSettings();
+                Wireless80211.Configure(wifiSettings);
+            });
+            wifiSetupTask.Start();
+
+            message = $"Reboot Controller!\n{message}";
+
+            WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateIPSettingsPage(message));
         }
 
         private Thread mqttRestart;
+
         [Route("mqtt_settings")]
         public void MqttSettings(WebServerEventArgs e)
         {
@@ -73,9 +106,6 @@ namespace Modicus.Web
             string message = "";
             if (save != null)
             {
-                //commandManager.CmdMQTTClientID.Execute(new Commands.CmdMqttClientIdData { ClientID = clientID });
-
-                
                 settingsManager.GlobalSettings.MqttSettings.MqttPort = int.TryParse(port, out var resultPort) ? resultPort : settingsManager.GlobalSettings.MqttSettings.MqttPort;
                 settingsManager.GlobalSettings.MqttSettings.MqttClientID = clientID;
 
@@ -86,7 +116,7 @@ namespace Modicus.Web
                 }
                 else
                     message = $"Send Interval not Valid!\n{message}";
-               
+
                 try
                 {
                     IPAddress.Parse(ip);

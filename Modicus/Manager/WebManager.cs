@@ -30,6 +30,7 @@ namespace GardenLightHyperionConnector.Manager
             using WebServer server = new WebServerDI(80, HttpProtocol.Http, new Type[] { typeof(ModicusWebpageAPI), typeof(ModicusWebpages) }, ServiceProvider);
             // Start the server.
             server.Start();
+            Debug.WriteLine("++++ WebServer started! ++++");
             Thread.Sleep(Timeout.Infinite);
         }
 

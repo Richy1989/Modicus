@@ -4,20 +4,30 @@ using System.Net.NetworkInformation;
 using System.Threading;
 using nanoFramework.Networking;
 using Modicus.MQTT.Interfaces;
+using Modicus.WiFi;
+using nanoFramework.Runtime.Native;
+using System.Device.Gpio;
+using System.Net;
+using Iot.Device.DhcpServer;
+using Modicus.Interfaces;
+using Modicus.Wifi.Interfaces;
+using Modicus.Settings;
 
 namespace Modicus.Manager
 {
-    internal class WiFiManager
+    internal class WiFiManager : IWiFiManager
     {
         private CancellationToken token;
         private readonly IPublishMqtt publishMqtt;
         private TimeSpan downTime;
+        private ISettingsManager settingsManager;
         public bool IsConnected { get; private set; }
+        public bool ISoftAP { get; private set; }
 
-        public WiFiManager(IMqttManager publishMqtt, CancellationToken token)
+        public WiFiManager(IMqttManager publishMqtt, ISettingsManager settingsManager)
         {
             this.publishMqtt = (IPublishMqtt)publishMqtt;
-            this.token = token;
+            this.settingsManager = settingsManager;
             var ni = NetworkInterface.GetAllNetworkInterfaces();
             if (ni.Length > 0)
             {
@@ -50,6 +60,66 @@ namespace Modicus.Manager
             }
 
             Debug.WriteLine($"Successfully Connected to WiFi: {WifiNetworkHelper.Status}");
+        }
+
+        public void Start()
+        {
+            var wifiSettings = settingsManager.GlobalSettings.WifiSettings;
+            // If Wireless station is not enabled then start Soft AP to allow Wireless configuration
+            // or Button pressed
+            if (!Wireless80211.IsEnabled() || wifiSettings.StartInAPMode)
+            {
+                ISoftAP = true;
+                Wireless80211.Disable();
+                if (WirelessAP.Setup() == false)
+                {
+                    // Reboot device to Activate Access Point on restart
+                    Debug.WriteLine($"Setup Soft AP, Rebooting device");
+                    Power.RebootDevice();
+                }
+
+                var dhcpserver = new DhcpServer
+                {
+                    CaptivePortalUrl = $"http://{WirelessAP.SoftApIP}"
+                };
+
+                var dhcpInitResult = dhcpserver.Start(IPAddress.Parse(WirelessAP.SoftApIP), new IPAddress(new byte[] { 255, 255, 255, 0 }));
+
+                if (!dhcpInitResult)
+                {
+                    Debug.WriteLine($"Error initializing DHCP server.");
+                }
+
+                Debug.WriteLine($"Running Soft AP, waiting for client to connect");
+                Debug.WriteLine($"Soft AP IP address :{WirelessAP.GetIP()}");
+            }
+            else
+            {
+                ISoftAP = false;
+                Debug.WriteLine($"Running in normal mode, connecting to Access point");
+                var conf = Wireless80211.GetConfiguration();
+
+                bool success;
+
+                if (wifiSettings.UseDHCP)
+                    success = WifiNetworkHelper.ConnectDhcp(wifiSettings.Ssid, wifiSettings.Password, token: new CancellationTokenSource(10000).Token);
+                else
+                {
+                    IPConfiguration iPConfiguration = new IPConfiguration(wifiSettings.IP, wifiSettings.NetworkMask, wifiSettings.DefaultGateway);
+                    success = WifiNetworkHelper.ConnectFixAddress(wifiSettings.Ssid, wifiSettings.Password, iPConfiguration, System.Device.Wifi.WifiReconnectionKind.Automatic, false, 0, token: new CancellationTokenSource(10000).Token);
+                }
+
+
+                if (success)
+                {
+                    Debug.WriteLine($"Connection is {success}");
+                    Debug.WriteLine($"We have a valid date: {DateTime.UtcNow}");
+                }
+                else
+                {
+                    Debug.WriteLine($"Something wrong happened, can't connect at all");
+                }
+            }
         }
 
         public void KeepConnected()

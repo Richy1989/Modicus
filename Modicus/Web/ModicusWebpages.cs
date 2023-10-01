@@ -1,25 +1,21 @@
-﻿using GardenLightHyperionConnector.Manager;
-using System.Collections;
+﻿using System.Collections;
 using System.Diagnostics;
-using nanoFramework.WebServer;
-using Modicus.Web.Interfaces;
-using Modicus.Commands.Interfaces;
+using GardenLightHyperionConnector.Manager;
 using Modicus.Interfaces;
+using nanoFramework.WebServer;
 
 namespace Modicus.Web
 {
     internal class ModicusWebpages
     {
         private readonly ISettingsManager settingsManager;
-        private readonly ICommandManager commandManager;
 
         /// <summary>
         /// Creates a new ModicusWebpages instance.
         /// </summary>
-        public ModicusWebpages(ISettingsManager settingsManager, ICommandManager commandManager)
+        public ModicusWebpages(ISettingsManager settingsManager)
         {
             this.settingsManager = settingsManager;
-            this.commandManager = commandManager;
         }
 
         /// <summary>
@@ -99,12 +95,12 @@ namespace Modicus.Web
         public string CreateMQTTSettingsPage(string message)
         {
             var mqttSettings = settingsManager.GlobalSettings.MqttSettings;
-            var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.mqtt_settings), message, 
+            var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.mqtt_settings), message,
                 mqttSettings.ConnectToMqtt ? "checked" : "unchecked",
                 mqttSettings.MqttHostName,
-                mqttSettings.MqttPort, 
-                mqttSettings.MqttUserName, 
-                mqttSettings.MqttPassword, 
+                mqttSettings.MqttPort,
+                mqttSettings.MqttUserName,
+                mqttSettings.MqttPassword,
                 mqttSettings.MqttClientID,
                 mqttSettings.SendInterval.TotalSeconds);
             return page;

@@ -2,11 +2,11 @@
 {
     public class NotPushable
     {
-        public static string WifiSsid = "Space-Elephants Satellites";
-        public static string WifiPassword = "Beware-of-the-tiger-7#7";
+        public static string WifiSsid = "ChangeME";
+        public static string WifiPassword = "ChangeME";
 
-        public static string MQTTUserName = "richy";
-        public static string MQTTPassword = "RiSg-AcB-99";
-        public static string MQTTHostName = "192.168.0.246";
+        public static string MQTTUserName = "ChangeME";
+        public static string MQTTPassword = "ChangeME";
+        public static string MQTTHostName = "ChangeME";
     }
 }

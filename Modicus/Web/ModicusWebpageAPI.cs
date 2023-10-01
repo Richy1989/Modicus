@@ -6,6 +6,7 @@ using System.Web;
 using GardenLightHyperionConnector.Manager;
 using Modicus.Commands.Interfaces;
 using Modicus.Interfaces;
+using Modicus.Web.Interfaces;
 using nanoFramework.WebServer;
 
 namespace Modicus.Web
@@ -15,14 +16,16 @@ namespace Modicus.Web
     {
         private readonly ISettingsManager settingsManager;
         private readonly ICommandManager commandManager;
+        private readonly ModicusWebpages modicusWebpages;
 
         /// <summary>
         /// Creates a new ModicusWebpageAPI instance.
         /// </summary>
-        public ModicusWebpageAPI(ISettingsManager settingsManager, ICommandManager commandManager)
+        public ModicusWebpageAPI(ISettingsManager settingsManager, ICommandManager commandManager, ModicusWebpages modicusWebpages)
         {
             this.settingsManager = settingsManager;
             this.commandManager = commandManager;
+            this.modicusWebpages = modicusWebpages;
         }
 
         [Route("wifi_settings")]
@@ -77,34 +80,11 @@ namespace Modicus.Web
             }
             if (back != null)
             {
-                e.Context.Response.RedirectLocation = HttpUtility.UrlDecode("index.html");
+                modicusWebpages.Default(e);
             }
 
             var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.mqtt_settings), message);
             WebManager.OutPutResponse(e.Context.Response, page);
-        }
-
-        [Route("select_section")]
-        public void SelectSettings(WebServerEventArgs e)
-        {
-            Debug.WriteLine(e.Context.Request.RawUrl);
-
-            Hashtable hashPars = WebManager.ParseParamsFromStream(e.Context.Request.InputStream);
-            var ip_address = (string)hashPars["ip_address"];
-            var mqtt_settings = (string)hashPars["mqtt_settings"];
-            var bwifi_settings = (string)hashPars["wifi_settings"];
-
-            if (ip_address != null)
-                WebManager.OutPutResponse(e.Context.Response, Resources.Resources.GetString(Resources.Resources.StringResources.ip_settings));
-
-            if (mqtt_settings != null)
-            {
-                var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.mqtt_settings), "");
-                WebManager.OutPutResponse(e.Context.Response, page);
-            }
-
-            if (bwifi_settings != null)
-                WebManager.OutPutResponse(e.Context.Response, Resources.Resources.GetString(Resources.Resources.StringResources.wifi_settings));
         }
     }
 }

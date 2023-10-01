@@ -8,6 +8,7 @@ using System.Web;
 using Modicus.Interfaces;
 using Modicus.Manager;
 using Modicus.Web;
+using Modicus.Web.Interfaces;
 using nanoFramework.WebServer;
 
 namespace GardenLightHyperionConnector.Manager

@@ -22,8 +22,6 @@ namespace Modicus.Manager
         public GlobalSettings GlobalSettings { get; set; }
         public string AsseblyName { get; }
 
-        private IServiceProvider serviceProvider;
-        private IWiFiManager wifiManager;
         private readonly GpioController controller;
         private IMqttManager mqttManager = null;
 
@@ -51,7 +49,6 @@ namespace Modicus.Manager
                 SettingsManager.UpdateSettings();
             }
 
-            this.serviceProvider = serviceProvider;
             this.mqttManager = mqttManager;
 
             BME280Sensor bME280Sensor = new(mqttManager, GlobalSettings, token);

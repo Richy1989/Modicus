@@ -6,6 +6,7 @@ using System.Threading;
 using GardenLightHyperionConnector.Manager;
 using Modicus.Commands.Interfaces;
 using Modicus.Interfaces;
+using Modicus.Settings;
 using Modicus.WiFi;
 using nanoFramework.WebServer;
 
@@ -17,6 +18,9 @@ namespace Modicus.Web
         private readonly ISettingsManager settingsManager;
         private readonly ICommandManager commandManager;
         private readonly ModicusWebpages modicusWebpages;
+        private Thread mqttRestart;
+        private Thread wifiSetupTask;
+        private Thread systemSettingsTask;
 
         /// <summary>
         /// Creates a new ModicusWebpageAPI instance.
@@ -28,7 +32,10 @@ namespace Modicus.Web
             this.modicusWebpages = modicusWebpages;
         }
 
-        private Thread wifiSetupTask;
+        /// <summary>
+        /// Route for IP Settings. Handels the request to set the new IP Settings and saves everything
+        /// </summary>
+        /// <param name="e"></param>
 
         [Route("ip_settings")]
         public void IPSettings(WebServerEventArgs e)
@@ -40,62 +47,74 @@ namespace Modicus.Web
             var subnet = (string)hashPars["subnetmask"];
             var gateway = (string)hashPars["default-gateway"];
             var useDhcp = (string)hashPars["use-dhcp"];
+            var save = (string)hashPars["save"];
+            var back = (string)hashPars["back"];
 
             Debug.WriteLine($"IP parameters IP:{ip} Subnetmask:{subnet} Default Gateway {gateway}");
 
-            var wifiSettings = settingsManager.GlobalSettings.WifiSettings;
-
-            wifiSettings.UseDHCP = useDhcp != null && useDhcp == "on";
-
             string message = "";
-            if (!wifiSettings.UseDHCP)
+            if (save != null)
             {
-                string errorMessage = "IP";
-                try
-                {
-                    IPAddress.Parse(ip);
-                    wifiSettings.IP = ip;
+                var wifiSettings = settingsManager.GlobalSettings.WifiSettings;
+                wifiSettings.UseDHCP = useDhcp != null && useDhcp == "on";
 
-                    errorMessage = "Default Gateway";
-                    IPAddress.Parse(gateway);
-                    wifiSettings.DefaultGateway = gateway;
-
-                    errorMessage = "Subnetmask";
-                    IPAddress.Parse(subnet);
-                    wifiSettings.NetworkMask = subnet;
-                }
-                catch
+                if (!wifiSettings.UseDHCP)
                 {
-                    message = $"{errorMessage} not Valid!\n{message}";
-                    message = $"DHCP use not activated!\n{message}";
-                    wifiSettings.UseDHCP = false;
+                    string errorMessage = "IP";
+                    try
+                    {
+                        IPAddress.Parse(ip);
+                        wifiSettings.IP = ip;
+
+                        errorMessage = "Default Gateway";
+                        IPAddress.Parse(gateway);
+                        wifiSettings.DefaultGateway = gateway;
+
+                        errorMessage = "Subnetmask";
+                        IPAddress.Parse(subnet);
+                        wifiSettings.NetworkMask = subnet;
+                    }
+                    catch
+                    {
+                        message = $"{errorMessage} not Valid!\n{message}";
+                        message = $"DHCP use not activated!\n{message}";
+                        wifiSettings.UseDHCP = false;
+                    }
                 }
+
+                wifiSettings.Ssid = ssid;
+                wifiSettings.Password = password;
+                wifiSettings.StartInAPMode = false;
+
+                wifiSetupTask = new Thread(() =>
+                {
+                    settingsManager.UpdateSettings();
+                    Wireless80211.Configure(wifiSettings);
+                });
+                wifiSetupTask.Start();
+
+                message = $"Reboot Controller!\n{message}";
             }
-
-            wifiSettings.Ssid = ssid;
-            wifiSettings.Password = password;
-            wifiSettings.StartInAPMode = false;
-
-            wifiSetupTask = new Thread(() =>
+            if (back != null)
             {
-                settingsManager.UpdateSettings();
-                Wireless80211.Configure(wifiSettings);
-            });
-            wifiSetupTask.Start();
-
-            message = $"Reboot Controller!\n{message}";
+                modicusWebpages.Default(e);
+                return;
+            }
 
             WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateIPSettingsPage(message));
         }
 
-        private Thread mqttRestart;
-
+        /// <summary>
+        /// Route fot MQTT Settings. Handles all the config, saves and restarted the MQTT server
+        /// </summary>
+        /// <param name="e"></param>
         [Route("mqtt_settings")]
         public void MqttSettings(WebServerEventArgs e)
         {
-            Debug.WriteLine(e.Context.Request.RawUrl);
-
+            var mqttSettings = settingsManager.GlobalSettings.MqttSettings;
             Hashtable hashPars = WebManager.ParseParamsFromStream(e.Context.Request.InputStream);
+
+            var enableMqtt = (string)hashPars["enable-mqtt"];
             var clientID = (string)hashPars["mqtt-clientid"];
             var sendInterval = (string)hashPars["mqtt-send-interval"];
             var ip = (string)hashPars["mqtt-server-ip"];
@@ -106,13 +125,15 @@ namespace Modicus.Web
             string message = "";
             if (save != null)
             {
-                settingsManager.GlobalSettings.MqttSettings.MqttPort = int.TryParse(port, out var resultPort) ? resultPort : settingsManager.GlobalSettings.MqttSettings.MqttPort;
-                settingsManager.GlobalSettings.MqttSettings.MqttClientID = clientID;
+                mqttSettings.ConnectToMqtt = enableMqtt != null && enableMqtt == "on";
+
+                mqttSettings.MqttPort = int.TryParse(port, out var resultPort) ? resultPort : mqttSettings.MqttPort;
+                mqttSettings.MqttClientID = clientID;
 
                 if (int.TryParse(sendInterval, out var result))
                 {
                     if (result >= 1)
-                        settingsManager.GlobalSettings.MqttSettings.SendInterval = TimeSpan.FromSeconds(result);
+                        mqttSettings.SendInterval = TimeSpan.FromSeconds(result);
                 }
                 else
                     message = $"Send Interval not Valid!\n{message}";
@@ -120,28 +141,63 @@ namespace Modicus.Web
                 try
                 {
                     IPAddress.Parse(ip);
-                    settingsManager.GlobalSettings.MqttSettings.MqttHostName = ip;
+                    mqttSettings.MqttHostName = ip;
                 }
                 catch
                 {
                     message = $"IP not Valid!\n{message}";
                 }
                 message = $"MQTT Service will be restarted!\n{message}";
+
+                mqttRestart = new Thread(() =>
+                {
+                    settingsManager.UpdateSettings();
+                    commandManager.CmdMqttOnOff.Execute(new Commands.CmdMqttOnOffData { On = false });
+
+                    if (mqttSettings.ConnectToMqtt)
+                        commandManager.CmdMqttOnOff.Execute(new Commands.CmdMqttOnOffData { On = true });
+                });
+                mqttRestart.Start();
             }
             if (back != null)
             {
                 modicusWebpages.Default(e);
+                return;
             }
 
-            mqttRestart = new Thread(() =>
-            {
-                settingsManager.UpdateSettings();
-                commandManager.CmdMqttOnOff.Execute(new Commands.CmdMqttOnOffData { On = false });
-                commandManager.CmdMqttOnOff.Execute(new Commands.CmdMqttOnOffData { On = true });
-            });
-            mqttRestart.Start();
-
             WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateMQTTSettingsPage(message));
+        }
+
+        /// <summary>
+        /// Route for System Settings. Handels the request to set the new system settings
+        /// </summary>
+        /// <param name="e"></param>
+
+        [Route("system_settings")]
+        public void SystemSettings(WebServerEventArgs e)
+        {
+            Hashtable hashPars = WebManager.ParseParamsFromStream(e.Context.Request.InputStream);
+            var reboot = (string)hashPars["reboot"];
+            var back = (string)hashPars["back"];
+
+            string message = "";
+            if (reboot != null)
+            {
+                systemSettingsTask = new Thread(() =>
+                {
+                    commandManager.CmdSystemReboot.Execute(new Commands.CmdRebootControllerData { Delay = 2 });
+                });
+                systemSettingsTask.Start();
+
+                message = $"Controller is rebooting now!\n{message}";
+            }
+            if (back != null)
+            {
+                modicusWebpages.Default(e);
+                return;
+            }
+
+            WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateSystemSettingsPage(message));
         }
     }
 }

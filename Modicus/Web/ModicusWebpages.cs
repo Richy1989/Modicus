@@ -57,6 +57,7 @@ namespace Modicus.Web
             Hashtable hashPars = WebManager.ParseParamsFromStream(e.Context.Request.InputStream);
             var ip_address = (string)hashPars["ip_address"];
             var mqtt_settings = (string)hashPars["mqtt_settings"];
+            var system_settings = (string)hashPars["system_settings"];
 
             if (ip_address != null)
             {
@@ -67,6 +68,12 @@ namespace Modicus.Web
             if (mqtt_settings != null)
             {
                 WebManager.OutPutResponse(e.Context.Response, CreateMQTTSettingsPage(""));
+                return;
+            }
+
+            if (system_settings != null)
+            {
+                WebManager.OutPutResponse(e.Context.Response, CreateSystemSettingsPage(""));
                 return;
             }
 
@@ -93,6 +100,7 @@ namespace Modicus.Web
         {
             var mqttSettings = settingsManager.GlobalSettings.MqttSettings;
             var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.mqtt_settings), message, 
+                mqttSettings.ConnectToMqtt ? "checked" : "unchecked",
                 mqttSettings.MqttHostName,
                 mqttSettings.MqttPort, 
                 mqttSettings.MqttClientID,
@@ -110,6 +118,12 @@ namespace Modicus.Web
                 wifiSettings.IP,
                 wifiSettings.NetworkMask,
                 wifiSettings.DefaultGateway);
+            return page;
+        }
+
+        public string CreateSystemSettingsPage(string message)
+        {
+            var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.system_settings), message);
             return page;
         }
     }

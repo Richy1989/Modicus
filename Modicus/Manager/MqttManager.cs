@@ -280,13 +280,5 @@ namespace Modicus.Manager
                 AddSubcriber(command);
             }
         }
-
-        private void TryPeriodicStartMQTT()
-        {
-            while (!token.IsCancellationRequested && enableAutoRestart)
-            {
-
-            }
-        }
     }
 }

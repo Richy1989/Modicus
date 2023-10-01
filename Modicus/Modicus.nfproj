@@ -19,6 +19,7 @@
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
     <Compile Include="Commands\BaseCommand.cs" />
+    <Compile Include="Commands\CmdSystemReboot.cs" />
     <Compile Include="Commands\CmdMqttOnOff.cs" />
     <Compile Include="Commands\CmdMqttSendInterval.cs" />
     <Compile Include="Commands\CmdMqttClientID.cs" />
@@ -192,6 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\index.html" />
+    <Content Include="Resources\system_settings.html" />
     <Content Include="Resources\mqtt_settings.html" />
     <Content Include="Resources\ip_settings.html" />
   </ItemGroup>

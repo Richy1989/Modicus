@@ -103,6 +103,8 @@ namespace Modicus.Web
                 mqttSettings.ConnectToMqtt ? "checked" : "unchecked",
                 mqttSettings.MqttHostName,
                 mqttSettings.MqttPort, 
+                mqttSettings.MqttUserName, 
+                mqttSettings.MqttPassword, 
                 mqttSettings.MqttClientID,
                 mqttSettings.SendInterval.TotalSeconds);
             return page;

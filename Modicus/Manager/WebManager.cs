@@ -67,7 +67,6 @@ namespace GardenLightHyperionConnector.Manager
         {
             response.ContentLength64 = responseBytes.Length;
             response.OutputStream.Write(responseBytes, 0, responseBytes.Length);
-
         }
     }
 }

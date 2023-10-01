@@ -13,13 +13,13 @@ Welcome to the official GitHub page for our Modicus C# application designed to g
 - Control the application via MQTT
 
 ## Note
-- Not even an alpha version yet
+- This project is in alpha!
 - This is a very new application, it can only read one sensor as of now (BME280). 
-- This software is in active development and will grow
+- The software is in active development and will grow
 - Contribution is happily Welcome
 
 ## Getting Started 
-First of all follow [Getting Started Guide for managed code (C#)](https://docs.nanoframework.net/content/getting-started-guides/getting-started-managed.html) v10+ to run.
+First of all follow [Getting Started Guide for managed code (C#)](https://docs.nanoframework.net/content/getting-started-guides/getting-started-managed.html).
 Download the newest release, open with Visual Studio 2022 and deploy code. Use the Release Build for optimal perfomance.
 
 ## MQTT Commands

@@ -2,7 +2,7 @@
 ## A nanoframework Sensor Data Collector for MQTT written in C# (nanoframework)
 ### Built for the ESP32 Hardware
 
-Welcome to the official GitHub page for our Tasmota-inspired C# application designed to gather sensor data and seamlessly transmit it to an MQTT broker. This project empowers you to easily monitor and manage various sensors while ensuring smooth integration with MQTT-based systems.
+Welcome to the official GitHub page for our Modicus C# application designed to gather sensor data and seamlessly transmit it to an MQTT broker. This project empowers you to easily monitor and manage various sensors while ensuring smooth integration with MQTT-based systems.
 
 ## Features
 

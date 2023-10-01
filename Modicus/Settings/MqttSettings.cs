@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 
 namespace Modicus.Settings
 {
@@ -12,6 +13,6 @@ namespace Modicus.Settings
         public string MqttPassword { get; set; }
         public string MqttClientID { get; set; }
         public string MqttHostName { get; set; }
-        public int MqttPort { get; set; }
+        public int MqttPort { get; set; } = 1883;
     }
 }

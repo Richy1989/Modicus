@@ -118,6 +118,8 @@ namespace Modicus.Web
             var enableMqtt = (string)hashPars["enable-mqtt"];
             var clientID = (string)hashPars["mqtt-clientid"];
             var sendInterval = (string)hashPars["mqtt-send-interval"];
+            var user = (string)hashPars["mqtt-user"];
+            var password = (string)hashPars["mqtt-password"];
             var ip = (string)hashPars["mqtt-server-ip"];
             var port = (string)hashPars["mqtt-server-port"];
             var save = (string)hashPars["save"];
@@ -130,6 +132,8 @@ namespace Modicus.Web
 
                 mqttSettings.MqttPort = int.TryParse(port, out var resultPort) ? resultPort : mqttSettings.MqttPort;
                 mqttSettings.MqttClientID = clientID;
+                mqttSettings.MqttUserName = user;
+                mqttSettings.MqttPassword = password;
 
                 if (int.TryParse(sendInterval, out var result))
                 {

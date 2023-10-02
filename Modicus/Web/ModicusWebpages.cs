@@ -18,15 +18,15 @@ namespace Modicus.Web
             this.settingsManager = settingsManager;
         }
 
-        /// <summary>
-        /// Serves the favicon
-        /// </summary>
-        /// <param name="e">Web server context</param>
-        [Route("favicon.ico")]
-        public void Favico(WebServerEventArgs e)
-        {
-            // WebServer.SendFileOverHTTP(e.Context.Response, "favico.ico", Resources.GetBytes(Resources.BinaryResources.favico), "image/ico");
-        }
+        ///// <summary>
+        ///// Serves the favicon
+        ///// </summary>
+        ///// <param name="e">Web server context</param>
+        //[Route("favicon.ico")]
+        //public void Favico(WebServerEventArgs e)
+        //{
+        //    // WebServer.SendFileOverHTTP(e.Context.Response, "favico.ico", Resources.GetBytes(Resources.BinaryResources.favico), "image/ico");
+        //}
 
         [Route("style.css")]
         public void Style(WebServerEventArgs e)
@@ -35,15 +35,15 @@ namespace Modicus.Web
             WebServer.OutPutStream(e.Context.Response, Resources.Resources.GetString(Resources.Resources.StringResources.style));
         }
 
-        /// <summary>
-        /// Serves the SVG image
-        /// </summary>
-        /// <param name="e">Web server context</param>
-        [Route("image.svg")]
-        public void Image(WebServerEventArgs e)
-        {
-            //  WebServer.SendFileOverHTTP(e.Context.Response, "image.svg", Resources.GetBytes(Resources.BinaryResources.image), "image/svg+xml");
-        }
+        ///// <summary>
+        ///// Serves the SVG image
+        ///// </summary>
+        ///// <param name="e">Web server context</param>
+        //[Route("image.svg")]
+        //public void Image(WebServerEventArgs e)
+        //{
+        //    //  WebServer.SendFileOverHTTP(e.Context.Response, "image.svg", Resources.GetBytes(Resources.BinaryResources.image), "image/svg+xml");
+        //}
 
         [Route("select_section")]
         public void SelectSettings(WebServerEventArgs e)
@@ -87,15 +87,18 @@ namespace Modicus.Web
         {
             e.Context.Response.ContentType = "text/html";
 
-            var status_message = "Welcome to Modicus ... Have fun!";
-            var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.index), status_message, settingsManager.GlobalSettings.InstanceName);
+            var message = "Welcome to Modicus ... Have fun!";
+            var body = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.index), settingsManager.GlobalSettings.InstanceName);
+
+            var page = CreateHTMLHead("Modicus", body, message);
+
             WebServer.OutPutStream(e.Context.Response, page);
         }
 
         public string CreateMQTTSettingsPage(string message)
         {
             var mqttSettings = settingsManager.GlobalSettings.MqttSettings;
-            var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.mqtt_settings), message,
+            var body = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.mqtt_settings),
                 mqttSettings.ConnectToMqtt ? "checked" : "unchecked",
                 mqttSettings.MqttHostName,
                 mqttSettings.MqttPort,
@@ -103,25 +106,33 @@ namespace Modicus.Web
                 mqttSettings.MqttPassword,
                 mqttSettings.MqttClientID,
                 mqttSettings.SendInterval.TotalSeconds);
-            return page;
+            return CreateHTMLHead("MQTT Settings", body, message);
         }
 
         public string CreateIPSettingsPage(string message)
         {
             var wifiSettings = settingsManager.GlobalSettings.WifiSettings;
-            var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.ip_settings), message,
+            var body = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.ip_settings),
                 wifiSettings.Ssid,
                 wifiSettings.Password,
                 wifiSettings.UseDHCP ? "checked" : "unchecked",
                 wifiSettings.IP,
                 wifiSettings.NetworkMask,
                 wifiSettings.DefaultGateway);
-            return page;
+
+            return CreateHTMLHead("IP Settings", body, message);
         }
 
         public string CreateSystemSettingsPage(string message)
         {
-            var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.system_settings), message);
+            var body = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.system_settings),
+                settingsManager.GlobalSettings.InstanceName);
+            return CreateHTMLHead("System Settings", body, message);
+        }
+
+        public string CreateHTMLHead(string headmessage, string body, string message)
+        {
+            var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.head), headmessage, body, message);
             return page;
         }
     }

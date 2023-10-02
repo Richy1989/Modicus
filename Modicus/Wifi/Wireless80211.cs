@@ -80,5 +80,15 @@ namespace Modicus.WiFi
             }
             return null;
         }
+
+        /// <summary>
+        /// Returns the IP address
+        /// </summary>
+        /// <returns>IP address</returns>
+        public static string GetIP()
+        {
+            NetworkInterface ni = GetInterface();
+            return ni.IPv4Address;
+        }
     }
 }

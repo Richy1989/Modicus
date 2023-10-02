@@ -183,8 +183,23 @@ namespace Modicus.Web
             Hashtable hashPars = WebManager.ParseParamsFromStream(e.Context.Request.InputStream);
             var reboot = (string)hashPars["reboot"];
             var back = (string)hashPars["back"];
+            var save = (string)hashPars["save"];
+            var name = (string)hashPars["device-name"];
 
             string message = "";
+
+            if (save != null)
+            {
+                systemSettingsTask = new Thread(() =>
+                {
+                    settingsManager.GlobalSettings.InstanceName = name;
+                    settingsManager.UpdateSettings();
+                });
+                systemSettingsTask.Start();
+                message = $"New Device Name: {name}\n{message}";
+
+            }
+
             if (reboot != null)
             {
                 systemSettingsTask = new Thread(() =>

@@ -1,41 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MQTT Settings</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <form method='POST' action="mqtt_settings">
-        <h2>MQTT Settings</h2>
+<form method='POST' action="mqtt_settings">
+    <h2>MQTT Settings</h2>
 
-        <input type="checkbox" id="enable-mqtt" name="enable-mqtt" {1}>
-        <label for="enable-mqtt">Enable MQTT</label><br><br>
+    <input type="checkbox" id="enable-mqtt" name="enable-mqtt" {0}>
+    <label for="enable-mqtt">Enable MQTT</label><br><br>
 
-        <label for="mqtt-ipaddress">MQTT Server IP</label>
-        <input type="text" id="mqtt-ip" name="mqtt-server-ip" value="{2}"><br>
+    <label for="mqtt-ipaddress">MQTT Server IP</label>
+    <input type="text" id="mqtt-ip" name="mqtt-server-ip" value="{1}"><br>
 
-        <label for="mqtt-mqttport">MQTT Server Port ID</label>
-        <input type="text" id="mqtt-port" name="mqtt-server-port" value="{3}"><br>
+    <label for="mqtt-mqttport">MQTT Server Port ID</label>
+    <input type="text" id="mqtt-port" name="mqtt-server-port" value="{2}"><br>
 
-        <label for="mqtt-user">MQTT Username</label>
-        <input type="text" id="mqtt-user" name="mqtt-user" value="{4}"><br>
+    <label for="mqtt-user">MQTT Username</label>
+    <input type="text" id="mqtt-user" name="mqtt-user" value="{3}"><br>
 
-        <label for="mqtt-password">MQTT Password</label>
-        <input type="password" id="mqtt-password" name="mqtt-password" value="{5}"><br>
+    <label for="mqtt-password">MQTT Password</label>
+    <input type="password" id="mqtt-password" name="mqtt-password" value="{4}"><br>
 
-        <label for="mqtt-clientid">MQTT Client ID</label>
-        <input type="text" id="mqtt-clientid" name="mqtt-clientid" value="{6}"><br>
+    <label for="mqtt-clientid">MQTT Client ID</label>
+    <input type="text" id="mqtt-clientid" name="mqtt-clientid" value="{5}"><br>
 
-        <label for="mqtt-send-interval">MQTT Send Interval [s]</label>
-        <input type="text" id="mqtt-send-interval" name="mqtt-send-interval" value="{7}"><br>
+    <label for="mqtt-send-interval">MQTT Send Interval [s]</label>
+    <input type="text" id="mqtt-send-interval" name="mqtt-send-interval" value="{6}"><br>
 
-        <input type="submit" value="Save" name="save">
-        <input type="submit" value="Back" name="back">
-    </form>
-    <div id="status-message">
-        <p>{0}</p>
-    </div>
-</body>
-</html>
+    <input type="submit" value="Save" name="save">
+    <input type="submit" value="Back" name="back">
+</form>

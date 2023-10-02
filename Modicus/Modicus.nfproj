@@ -28,6 +28,7 @@
     <Compile Include="Commands\Interfaces\ICommand.cs" />
     <Compile Include="Commands\Interfaces\ICommandCapable.cs" />
     <Compile Include="Commands\Interfaces\ICommandManager.cs" />
+    <Compile Include="Helpers\Diagnostic.cs" />
     <Compile Include="MQTT\Interfaces\IMqttManager.cs" />
     <Compile Include="MQTT\Interfaces\IPublishMqtt.cs" />
     <Compile Include="Interfaces\ISettingsManager.cs" />
@@ -191,6 +192,7 @@
     <None Include="Resources\style.css" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\head.html" />
     <Content Include="Resources\index.html" />
     <Content Include="Resources\system_settings.html" />
     <Content Include="Resources\mqtt_settings.html" />

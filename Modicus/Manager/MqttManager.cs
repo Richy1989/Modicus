@@ -13,6 +13,7 @@ using nanoFramework.M2Mqtt.Messages;
 using Modicus.EventArgs;
 using Modicus.Commands.Interfaces;
 using Modicus.MQTT.Interfaces;
+using Modicus.WiFi;
 
 namespace Modicus.Manager
 {
@@ -150,6 +151,7 @@ namespace Modicus.Manager
                     State.Uptime = DateTime.UtcNow - settingsManager.GlobalSettings.StartupTime;
                     State.UptimeSec = State.Uptime.TotalSeconds;
                     State.WiFi.SSId = settingsManager.GlobalSettings.WifiSettings.Ssid;
+                    State.WiFi.IPAddress = Wireless80211.GetIP();
 
                     Publish("STATE", JsonConvert.SerializeObject(State));
                     Publish("SENSOR", JsonConvert.SerializeObject(MainMqttMessage));

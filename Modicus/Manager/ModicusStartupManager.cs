@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Threading;
 using Modicus.Commands.Interfaces;
+using Modicus.Helpers;
 using Modicus.Interfaces;
 using Modicus.MQTT.Interfaces;
 using Modicus.Sensor;
@@ -11,6 +12,8 @@ using Modicus.Services;
 using Modicus.Settings;
 using Modicus.Wifi.Interfaces;
 using nanoFramework.Hardware.Esp32;
+using nanoFramework.Runtime.Native;
+using GC = nanoFramework.Runtime.Native.GC;
 
 namespace Modicus.Manager
 {
@@ -62,12 +65,12 @@ namespace Modicus.Manager
                 wifiManager.Start();
             }
 
-            if (!wifiManager.ISoftAP)
-            {
-                //Starts the NTP Service .. wait 500ms to be sure we have the time
-                NTPService ntp = new();
-                Thread.Sleep(1000);
-            }
+            ////if (!wifiManager.ISoftAP)
+            ////{
+            ////    //Starts the NTP Service .. wait 500ms to be sure we have the time
+            ////    NTPService ntp = new();
+            ////    Thread.Sleep(1000);
+            ////}
 
             //Set all Commands for command capable managers
             CommandManager = commandManager;
@@ -90,6 +93,19 @@ namespace Modicus.Manager
 
             //Set startup time
             settingsManager.GlobalSettings.StartupTime = DateTime.UtcNow;
+            
+            GC.Run(true);
+
+            Thread diagTask = new(new ThreadStart(() =>
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    Diagnostics.PrintMemory("Modicus:");
+                    Thread.Sleep(10000);
+                }
+            }));
+
+            diagTask.Start();
 
             //Set LED on GPIO Pin 2 ON to show successful startup
             pin.Write(PinValue.High);

@@ -4,9 +4,10 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Threading;
 using Iot.Device.DhcpServer;
+using Modicus.Helpers;
+using Modicus.Helpers.Interfaces;
 using Modicus.Interfaces;
 using Modicus.MQTT.Interfaces;
-using Modicus.Services;
 using Modicus.Wifi.Interfaces;
 using Modicus.WiFi;
 using nanoFramework.Networking;
@@ -20,11 +21,13 @@ namespace Modicus.Manager
         private readonly IPublishMqtt publishMqtt;
         private TimeSpan downTime;
         private ISettingsManager settingsManager;
+        private ISignalService signalService;
         public bool IsConnected { get; private set; }
         public bool ISoftAP { get; private set; }
 
-        public WiFiManager(IMqttManager publishMqtt, ISettingsManager settingsManager)
+        public WiFiManager(IMqttManager publishMqtt, ISettingsManager settingsManager, ISignalService signalService)
         {
+            this.signalService = signalService;
             this.publishMqtt = (IPublishMqtt)publishMqtt;
             this.settingsManager = settingsManager;
             var ni = NetworkInterface.GetAllNetworkInterfaces();
@@ -61,7 +64,7 @@ namespace Modicus.Manager
                 if (!dhcpInitResult)
                 {
                     Debug.WriteLine($"Error initializing DHCP server.");
-                    SignalService.SignalError(1000);
+                    signalService.Signal(1000);
                 }
 
                 Debug.WriteLine($"Running Soft AP, waiting for client to connect");
@@ -89,7 +92,7 @@ namespace Modicus.Manager
                 else
                 {
                     Debug.WriteLine($"Something wrong happened, can't connect at all");
-                    SignalService.SignalError(500);
+                    signalService.Signal(500);
                 }
             }
         }

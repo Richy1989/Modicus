@@ -1,15 +1,16 @@
 ﻿using System.Device.Gpio;
 using System.Threading;
+using Modicus.Helpers.Interfaces;
 using Modicus.Manager;
 
-namespace Modicus.Services
+namespace Modicus.Helpers
 {
-    internal class SignalService
+    internal class SignalService : ISignalService
     {
-        public static Thread errorsignal;
-        private static bool Running;
+        public Thread errorsignal;
+        private bool Running;
 
-        public static void SignalError(int millisecondsDelay)
+        public void Signal(int millisecondsDelay)
         {
             if (Running) return;
             var pin = ModicusStartupManager.pin;

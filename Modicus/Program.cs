@@ -2,6 +2,8 @@ using System.Diagnostics;
 using System.Threading;
 using GardenLightHyperionConnector.Manager;
 using Modicus.Commands.Interfaces;
+using Modicus.Helpers;
+using Modicus.Helpers.Interfaces;
 using Modicus.Interfaces;
 using Modicus.Manager;
 using Modicus.MQTT.Interfaces;
@@ -33,6 +35,7 @@ namespace Modicus
             return new ServiceCollection()
                 .AddSingleton(typeof(ModicusStartupManager))
                 .AddSingleton(typeof(IWebManager), typeof(WebManager))
+                .AddSingleton(typeof(ISignalService), typeof(SignalService))
                 .AddSingleton(typeof(ISettingsManager), typeof(SettingsManager))
                 .AddSingleton(typeof(IWiFiManager), typeof(WiFiManager))
                 .AddSingleton(typeof(ITokenManager), typeof(TokenManager))

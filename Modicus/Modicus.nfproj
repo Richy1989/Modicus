@@ -29,6 +29,7 @@
     <Compile Include="Commands\Interfaces\ICommandCapable.cs" />
     <Compile Include="Commands\Interfaces\ICommandManager.cs" />
     <Compile Include="Helpers\Diagnostic.cs" />
+    <Compile Include="Helpers\Interfaces\ISignalService.cs" />
     <Compile Include="MQTT\Interfaces\IMqttManager.cs" />
     <Compile Include="MQTT\Interfaces\IPublishMqtt.cs" />
     <Compile Include="Interfaces\ISettingsManager.cs" />
@@ -57,7 +58,7 @@
     <Compile Include="Sensor\Bmp280Measurement.cs" />
     <Compile Include="Services\ISignalService.cs" />
     <Compile Include="Services\NTPService.cs" />
-    <Compile Include="Services\SignalService.cs" />
+    <Compile Include="Helpers\SignalService.cs" />
     <Compile Include="Settings\MqttSettings.cs" />
     <Compile Include="Settings\GlobalSettings.cs" />
     <Compile Include="Manager\SettingsManager.cs" />

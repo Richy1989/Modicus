@@ -8,11 +8,9 @@ using Modicus.Helpers;
 using Modicus.Interfaces;
 using Modicus.MQTT.Interfaces;
 using Modicus.Sensor;
-using Modicus.Services;
 using Modicus.Settings;
 using Modicus.Wifi.Interfaces;
 using nanoFramework.Hardware.Esp32;
-using nanoFramework.Runtime.Native;
 using GC = nanoFramework.Runtime.Native.GC;
 
 namespace Modicus.Manager
@@ -93,9 +91,11 @@ namespace Modicus.Manager
 
             //Set startup time
             settingsManager.GlobalSettings.StartupTime = DateTime.UtcNow;
-            
-            GC.Run(true);
 
+            //Run GC once when everything is set up
+            // ToDo: check if we need that.
+            GC.Run(true);
+#if DEBUG
             Thread diagTask = new(new ThreadStart(() =>
             {
                 while (!token.IsCancellationRequested)
@@ -104,7 +104,7 @@ namespace Modicus.Manager
                     Thread.Sleep(10000);
                 }
             }));
-
+#endif
             diagTask.Start();
 
             //Set LED on GPIO Pin 2 ON to show successful startup

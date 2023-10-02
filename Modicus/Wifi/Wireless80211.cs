@@ -6,7 +6,6 @@
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Threading;
-using Modicus.Interfaces;
 using Modicus.Settings;
 using nanoFramework.Networking;
 
@@ -30,9 +29,8 @@ namespace Modicus.WiFi
             wconf.SaveConfiguration();
         }
 
-
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="wifiSettings"></param>
         /// <param name="token"></param>
@@ -48,7 +46,7 @@ namespace Modicus.WiFi
                 IPConfiguration iPConfiguration = new IPConfiguration(wifiSettings.IP, wifiSettings.NetworkMask, wifiSettings.DefaultGateway);
                 success = WifiNetworkHelper.ConnectFixAddress(wifiSettings.Ssid, wifiSettings.Password, iPConfiguration, System.Device.Wifi.WifiReconnectionKind.Automatic, false, 0, token: new CancellationTokenSource(10000).Token);
             }
-            
+
             Debug.WriteLine($"Connection is {success}");
             Wireless80211Configuration wconf = GetConfiguration();
             wconf.Options = Wireless80211Configuration.ConfigurationOptions.AutoConnect | Wireless80211Configuration.ConfigurationOptions.Enable;

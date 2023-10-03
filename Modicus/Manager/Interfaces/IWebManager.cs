@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Modicus.Interfaces
+namespace Modicus.Manager.Interfaces
 {
     internal interface IWebManager
     {

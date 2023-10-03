@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Diagnostics;
 using GardenLightHyperionConnector.Manager;
-using Modicus.Interfaces;
+using Modicus.Manager.Interfaces;
 using nanoFramework.WebServer;
 
 namespace Modicus.Web

@@ -6,7 +6,7 @@ using System.Threading;
 using Iot.Device.DhcpServer;
 using Modicus.Helpers;
 using Modicus.Helpers.Interfaces;
-using Modicus.Interfaces;
+using Modicus.Manager.Interfaces;
 using Modicus.MQTT.Interfaces;
 using Modicus.Wifi.Interfaces;
 using Modicus.WiFi;

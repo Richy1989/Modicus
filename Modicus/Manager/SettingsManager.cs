@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 using System.Threading;
-using Modicus.Interfaces;
+using Modicus.Manager.Interfaces;
 using Modicus.Settings;
 using nanoFramework.Json;
 

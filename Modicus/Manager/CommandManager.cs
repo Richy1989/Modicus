@@ -2,7 +2,7 @@
 using System.Collections;
 using Modicus.Commands;
 using Modicus.Commands.Interfaces;
-using Modicus.Interfaces;
+using Modicus.Manager.Interfaces;
 using Modicus.MQTT.Interfaces;
 
 namespace Modicus.Manager

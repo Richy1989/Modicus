@@ -5,7 +5,7 @@ using System.Net;
 using System.Threading;
 using GardenLightHyperionConnector.Manager;
 using Modicus.Commands.Interfaces;
-using Modicus.Interfaces;
+using Modicus.Manager.Interfaces;
 using Modicus.WiFi;
 using nanoFramework.WebServer;
 

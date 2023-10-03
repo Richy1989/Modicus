@@ -30,11 +30,13 @@
     <Compile Include="Commands\Interfaces\ICommandManager.cs" />
     <Compile Include="Helpers\Diagnostic.cs" />
     <Compile Include="Helpers\Interfaces\ISignalService.cs" />
+    <Compile Include="Manager\BusDeviceManager.cs" />
+    <Compile Include="Manager\Interfaces\IBusDeviceManager.cs" />
     <Compile Include="MQTT\Interfaces\IMqttManager.cs" />
     <Compile Include="MQTT\Interfaces\IPublishMqtt.cs" />
-    <Compile Include="Interfaces\ISettingsManager.cs" />
-    <Compile Include="Interfaces\ITokenManager.cs" />
-    <Compile Include="Interfaces\IWebManager.cs" />
+    <Compile Include="Manager\Interfaces\ISettingsManager.cs" />
+    <Compile Include="Manager\Interfaces\ITokenManager.cs" />
+    <Compile Include="Manager\Interfaces\IWebManager.cs" />
     <Compile Include="Manager\CommandManager.cs" />
     <Compile Include="Manager\ModicusStartupManager.cs" />
     <Compile Include="Commands\CmdMeasurementInterval.cs" />
@@ -54,8 +56,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Sensor\BaseI2cSensor.cs" />
+    <Compile Include="Sensor\BaseSensor.cs" />
     <Compile Include="Sensor\BME280Sensor.cs" />
     <Compile Include="Sensor\Bmp280Measurement.cs" />
+    <Compile Include="Sensor\Interfaces\II2cSensor.cs" />
+    <Compile Include="Sensor\Interfaces\ISensor.cs" />
     <Compile Include="Services\ISignalService.cs" />
     <Compile Include="Services\NTPService.cs" />
     <Compile Include="Helpers\SignalService.cs" />
@@ -63,6 +69,7 @@
     <Compile Include="Settings\GlobalSettings.cs" />
     <Compile Include="Manager\SettingsManager.cs" />
     <Compile Include="Settings\CommandSettings.cs" />
+    <Compile Include="Settings\SensorSettings.cs" />
     <Compile Include="Settings\WifiSettings.cs" />
     <Compile Include="Manager\WiFiManager.cs" />
     <Compile Include="Web\Interfaces\IModicusWebpages.cs" />

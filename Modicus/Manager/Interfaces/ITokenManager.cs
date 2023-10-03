@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace Modicus.Interfaces
+namespace Modicus.Manager.Interfaces
 {
     internal interface ITokenManager
     {

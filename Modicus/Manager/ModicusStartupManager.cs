@@ -5,7 +5,7 @@ using System.Net.NetworkInformation;
 using System.Threading;
 using Modicus.Commands.Interfaces;
 using Modicus.Helpers;
-using Modicus.Interfaces;
+using Modicus.Manager.Interfaces;
 using Modicus.MQTT.Interfaces;
 using Modicus.Sensor;
 using Modicus.Settings;
@@ -50,10 +50,10 @@ namespace Modicus.Manager
                 SettingsManager.UpdateSettings();
             }
 
-            BME280Sensor bME280Sensor = new(mqttManager, GlobalSettings, token);
-            bME280Sensor.Init();
-            Thread bme280Thread = new(new ThreadStart(bME280Sensor.DoMeasurement));
-            bme280Thread.Start();
+            //BME280Sensor bME280Sensor = new(mqttManager, GlobalSettings, token);
+            //bME280Sensor.Init();
+            //Thread bme280Thread = new(new ThreadStart(bME280Sensor.DoMeasurement));
+            //bme280Thread.Start();
 
             if (GlobalSettings.WifiSettings.ConnectToWifi)
             {
@@ -104,10 +104,10 @@ namespace Modicus.Manager
                     Thread.Sleep(10000);
                 }
             }));
-#endif
-            diagTask.Start();
 
-            //Set LED on GPIO Pin 2 ON to show successful startup
+            diagTask.Start();
+#endif
+            //Set LED on GPIO Pin 2 ON, to show successful startup
             pin.Write(PinValue.High);
         }
 

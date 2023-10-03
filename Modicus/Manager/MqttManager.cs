@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using Modicus.Commands;
-using Modicus.Interfaces;
 using Modicus.MQTT;
 using Modicus.Settings;
 using nanoFramework.Json;
@@ -14,6 +13,7 @@ using Modicus.EventArgs;
 using Modicus.Commands.Interfaces;
 using Modicus.MQTT.Interfaces;
 using Modicus.WiFi;
+using Modicus.Manager.Interfaces;
 
 namespace Modicus.Manager
 {

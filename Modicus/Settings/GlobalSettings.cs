@@ -22,5 +22,6 @@ namespace Modicus.Settings
         public WifiSettings WifiSettings { get; set; } = new WifiSettings();
         public MqttSettings MqttSettings { get; set; } = new MqttSettings();
         public CommandSettings CommandSettings { get; set; } = new CommandSettings();
+        public SensorSettings SensorSettings { get; set; } = new SensorSettings();
     }
 }

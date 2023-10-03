@@ -1,6 +1,6 @@
 ﻿using Modicus.Settings;
 
-namespace Modicus.Interfaces
+namespace Modicus.Manager.Interfaces
 {
     internal interface ISettingsManager
     {

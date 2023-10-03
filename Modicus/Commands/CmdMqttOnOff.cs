@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using Modicus.Interfaces;
+using Modicus.Manager.Interfaces;
 using Modicus.MQTT.Interfaces;
 using nanoFramework.Json;
 

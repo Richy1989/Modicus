@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 using Modicus.Commands.Interfaces;
-using Modicus.Interfaces;
+using Modicus.Manager.Interfaces;
 using nanoFramework.Json;
 
 namespace Modicus.Commands

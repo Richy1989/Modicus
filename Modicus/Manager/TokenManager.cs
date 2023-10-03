@@ -1,5 +1,5 @@
 ﻿using System.Threading;
-using Modicus.Interfaces;
+using Modicus.Manager.Interfaces;
 
 namespace Modicus.Manager
 {

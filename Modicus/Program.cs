@@ -4,8 +4,8 @@ using GardenLightHyperionConnector.Manager;
 using Modicus.Commands.Interfaces;
 using Modicus.Helpers;
 using Modicus.Helpers.Interfaces;
-using Modicus.Interfaces;
 using Modicus.Manager;
+using Modicus.Manager.Interfaces;
 using Modicus.MQTT.Interfaces;
 using Modicus.Web;
 using Modicus.Wifi.Interfaces;
@@ -38,6 +38,7 @@ namespace Modicus
                 .AddSingleton(typeof(ISignalService), typeof(SignalService))
                 .AddSingleton(typeof(ISettingsManager), typeof(SettingsManager))
                 .AddSingleton(typeof(IWiFiManager), typeof(WiFiManager))
+                .AddSingleton(typeof(IBusDeviceManager), typeof(BusDeviceManager))
                 .AddSingleton(typeof(ITokenManager), typeof(TokenManager))
                 .AddSingleton(typeof(IMqttManager), typeof(MqttManager))
                 .AddSingleton(typeof(ICommandManager), typeof(CommandManager))

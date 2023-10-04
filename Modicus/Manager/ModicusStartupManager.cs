@@ -64,17 +64,19 @@ namespace Modicus.Manager
                 SettingsManager.UpdateSettings();
             }
 
-            //ToDo: delete this later, makes dubugging better
+            //ToDo: delete this later, makes debugging easier
             if (busManager.GetSensor("bme280#1") == null)
             {
-                II2cSensor bme280 = new BME280Sensor();
-                bme280.BusID = 1;
-                bme280.MeasurementInterval = 1000;
-                bme280.DeviceAddress = Bme280.SecondaryI2cAddress;
-                bme280.I2cBusSpeed = System.Device.I2c.I2cBusSpeed.StandardMode;
-                bme280.Name = "bme280#1";
-                bme280.SdaPin = Gpio.IO21;
-                bme280.SclPin = Gpio.IO22;
+                II2cSensor bme280 = new BME280Sensor
+                {
+                    BusID = 1,
+                    MeasurementInterval = 1000,
+                    DeviceAddress = Bme280.SecondaryI2cAddress,
+                    I2cBusSpeed = System.Device.I2c.I2cBusSpeed.StandardMode,
+                    Name = "bme280#1",
+                    SdaPin = Gpio.IO21,
+                    SclPin = Gpio.IO22
+                };
 
                 busManager.AddSensor(bme280);
                 busManager.StartSensor(bme280);
@@ -84,6 +86,7 @@ namespace Modicus.Manager
             //////Debug.WriteLine(value);
             //////JsonObject jo = (JsonObject)JsonConvert.DeserializeObject(value, typeof(JsonObject));
             ////Debug.WriteLine(jo.Get("name").Value.ToString());
+
 
             if (GlobalSettings.WifiSettings.ConnectToWifi)
             {

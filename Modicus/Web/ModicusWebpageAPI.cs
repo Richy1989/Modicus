@@ -5,7 +5,9 @@ using System.Net;
 using System.Threading;
 using GardenLightHyperionConnector.Manager;
 using Modicus.Commands.Interfaces;
+using Modicus.Manager;
 using Modicus.Manager.Interfaces;
+using Modicus.Sensor.Interfaces;
 using Modicus.WiFi;
 using nanoFramework.WebServer;
 
@@ -17,6 +19,7 @@ namespace Modicus.Web
         private readonly ISettingsManager settingsManager;
         private readonly ICommandManager commandManager;
         private readonly ModicusWebpages modicusWebpages;
+        private readonly IBusDeviceManager busDeviceManager;
         private Thread mqttRestart;
         private Thread wifiSetupTask;
         private Thread systemSettingsTask;
@@ -24,11 +27,12 @@ namespace Modicus.Web
         /// <summary>
         /// Creates a new ModicusWebpageAPI instance.
         /// </summary>
-        public ModicusWebpageAPI(ISettingsManager settingsManager, ICommandManager commandManager, ModicusWebpages modicusWebpages)
+        public ModicusWebpageAPI(ISettingsManager settingsManager, IBusDeviceManager busDeviceManager, ICommandManager commandManager, ModicusWebpages modicusWebpages)
         {
             this.settingsManager = settingsManager;
             this.commandManager = commandManager;
             this.modicusWebpages = modicusWebpages;
+            this.busDeviceManager = busDeviceManager;
         }
 
         /// <summary>
@@ -217,6 +221,30 @@ namespace Modicus.Web
             }
 
             WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateSystemSettingsPage(message));
+        }
+
+        [Route("configure_sensor")]
+        public void ConfigureSensor(WebServerEventArgs e)
+        {
+            Hashtable hashPars = WebManager.ParseParamsFromStream(e.Context.Request.InputStream);
+            var item = (string)hashPars["item"];
+            var interfaces = ((Type)busDeviceManager.SupportedSensors[item]).GetInterfaces();
+
+            foreach (Type inter in interfaces)
+            {
+                switch (inter)
+                {
+                    case II2cSensor:
+                        
+                        return;
+                    default:
+                        break;
+
+                }
+            }
+
+            string message = "Select your desired sensor ...";
+            WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateSensorSelectionSite(message));
         }
     }
 }

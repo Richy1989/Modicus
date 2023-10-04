@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using GardenLightHyperionConnector.Manager;
 using Modicus.Manager.Interfaces;
+using Modicus.Sensor.Interfaces;
 using nanoFramework.WebServer;
 
 namespace Modicus.Web
@@ -9,13 +11,15 @@ namespace Modicus.Web
     internal class ModicusWebpages
     {
         private readonly ISettingsManager settingsManager;
+        private readonly IBusDeviceManager busDeviceManager;
 
         /// <summary>
         /// Creates a new ModicusWebpages instance.
         /// </summary>
-        public ModicusWebpages(ISettingsManager settingsManager)
+        public ModicusWebpages(ISettingsManager settingsManager, IBusDeviceManager busDeviceManager)
         {
             this.settingsManager = settingsManager;
+            this.busDeviceManager = busDeviceManager;
         }
 
         ///// <summary>
@@ -54,6 +58,7 @@ namespace Modicus.Web
             var ip_address = (string)hashPars["ip_address"];
             var mqtt_settings = (string)hashPars["mqtt_settings"];
             var system_settings = (string)hashPars["system_settings"];
+            var sensor_settings = (string)hashPars["sensor_settings"];
 
             if (ip_address != null)
             {
@@ -70,6 +75,12 @@ namespace Modicus.Web
             if (system_settings != null)
             {
                 WebManager.OutPutResponse(e.Context.Response, CreateSystemSettingsPage(""));
+                return;
+            }
+
+            if (sensor_settings != null)
+            {
+                WebManager.OutPutResponse(e.Context.Response, CreateSensorSelectionSite(""));
                 return;
             }
 
@@ -90,7 +101,7 @@ namespace Modicus.Web
             var message = "Welcome to Modicus ... Have fun!";
             var body = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.index), settingsManager.GlobalSettings.InstanceName);
 
-            var page = CreateHTMLHead("Modicus", body, message);
+            var page = CreateSite("Modicus", body, message);
 
             WebServer.OutPutStream(e.Context.Response, page);
         }
@@ -106,7 +117,7 @@ namespace Modicus.Web
                 mqttSettings.MqttPassword,
                 mqttSettings.MqttClientID,
                 mqttSettings.SendInterval.TotalSeconds);
-            return CreateHTMLHead("MQTT Settings", body, message);
+            return CreateSite("MQTT Settings", body, message);
         }
 
         public string CreateIPSettingsPage(string message)
@@ -120,17 +131,30 @@ namespace Modicus.Web
                 wifiSettings.NetworkMask,
                 wifiSettings.DefaultGateway);
 
-            return CreateHTMLHead("IP Settings", body, message);
+            return CreateSite("IP Settings", body, message);
         }
 
         public string CreateSystemSettingsPage(string message)
         {
             var body = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.system_settings),
                 settingsManager.GlobalSettings.InstanceName);
-            return CreateHTMLHead("System Settings", body, message);
+            return CreateSite("System Settings", body, message);
         }
 
-        public string CreateHTMLHead(string headmessage, string body, string message)
+        public string CreateSensorSelectionSite(string message)
+        {
+            var body = "<form method='POST' action=\"configure_sensor\"> <div class=\"dropdown\"> <button class=\"dropbtn\">Select Sensor</button> <div class=\"dropdown-content\">{0}</div>\r\n</div>\r\n</form>";
+
+            foreach (string item in busDeviceManager.SupportedSensors.Keys)
+            {
+                string itemString = string.Format("<input type=\"submit\" name=\"item\" value=\"{0}\">", item);
+                body = string.Format(body, itemString);
+            }
+
+            return CreateSite("System Settings", body, message);
+        }
+
+        public string CreateSite(string headmessage, string body, string message)
         {
             var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.head), headmessage, body, message);
             return page;

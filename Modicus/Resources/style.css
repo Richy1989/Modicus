@@ -39,7 +39,6 @@ input[type="text"] {
 
 input[type="submit"] {
     margin: 10px;
-    padding: 10px 20px;
     background-color: #007BFF; /* Keep the original blue color for contrast */
     color: #fff; /* White text for the button */
     border: none;
@@ -82,4 +81,47 @@ input[type="password"] {
     color: #fff; /* White text */
     padding: 10px;
     margin-top: 10px; /* Add margin to separate from the buttons */
+}
+
+.dropbtn {
+    background-color: #04AA6D;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content input {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    border: none;
+    width: 90%;
+}
+
+.dropdown-content input:hover {
+    background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
 }

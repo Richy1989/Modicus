@@ -14,17 +14,17 @@ namespace Modicus.Manager
         private readonly IMqttManager mqttManager;
         private readonly ITokenManager tokenManager;
         private readonly IDictionary ConfiguredSensors;
-        public IList SupportedSensors { get; }
+        public IDictionary SupportedSensors { get; }
 
         /// <summary>
         /// Creates a new instance of bus device manager.
-        /// This instance can handle all sensors connected to a bus o the device.
+        /// This instance can handle all sensors connected to a bus of the device.
         /// </summary>
         public BusDeviceManager(ISettingsManager settingsManager, IMqttManager mqttManager, ITokenManager tokenManager)
         {
-            this.SupportedSensors = new ArrayList
+            SupportedSensors = new Hashtable
             {
-               typeof(BME280Sensor)
+                { "BME280 Sensor", typeof(BME280Sensor) }
             };
 
             this.ConfiguredSensors = new Hashtable();

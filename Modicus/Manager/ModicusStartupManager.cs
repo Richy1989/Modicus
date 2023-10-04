@@ -80,13 +80,10 @@ namespace Modicus.Manager
                 busManager.StartSensor(bme280);
             }
 
-            //string value = JsonConvert.SerializeObject(busManager.GetSensor("bme280#1"));
-            //Debug.WriteLine(value);
-            //JsonObject jo = (JsonObject)JsonConvert.DeserializeObject(value, typeof(JsonObject));
-            
-            
-
-            Debug.WriteLine(jo.Get("name").Value.ToString());
+            //////string value = JsonConvert.SerializeObject(busManager.GetSensor("bme280#1"));
+            //////Debug.WriteLine(value);
+            //////JsonObject jo = (JsonObject)JsonConvert.DeserializeObject(value, typeof(JsonObject));
+            ////Debug.WriteLine(jo.Get("name").Value.ToString());
 
             if (GlobalSettings.WifiSettings.ConnectToWifi)
             {

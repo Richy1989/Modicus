@@ -93,7 +93,7 @@
       <HintPath>..\packages\nanoFramework.CoreLibrary.1.14.2\lib\mscorlib.dll</HintPath>
     </Reference>
     <Reference Include="nanoFramework.DependencyInjection">
-      <HintPath>..\packages\nanoFramework.DependencyInjection.1.0.22\lib\nanoFramework.DependencyInjection.dll</HintPath>
+      <HintPath>..\packages\nanoFramework.DependencyInjection.1.0.35\lib\nanoFramework.DependencyInjection.dll</HintPath>
     </Reference>
     <Reference Include="nanoFramework.Hardware.Esp32">
       <HintPath>..\packages\nanoFramework.Hardware.Esp32.1.6.8\lib\nanoFramework.Hardware.Esp32.dll</HintPath>

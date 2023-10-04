@@ -13,15 +13,21 @@ namespace Modicus.Manager
         private readonly ISettingsManager settingsManager;
         private readonly IMqttManager mqttManager;
         private readonly ITokenManager tokenManager;
-        private readonly IDictionary Sensors;
+        private readonly IDictionary ConfiguredSensors;
+        public IList SupportedSensors { get; }
 
         /// <summary>
-        /// Creates a new instance of bus device manager
-        /// This instance can handle all sensors connected to a bus o the device
+        /// Creates a new instance of bus device manager.
+        /// This instance can handle all sensors connected to a bus o the device.
         /// </summary>
         public BusDeviceManager(ISettingsManager settingsManager, IMqttManager mqttManager, ITokenManager tokenManager)
         {
-            this.Sensors = new Hashtable();
+            this.SupportedSensors = new ArrayList
+            {
+               typeof(BME280Sensor)
+            };
+
+            this.ConfiguredSensors = new Hashtable();
             this.settingsManager = settingsManager;
             this.mqttManager = mqttManager;
             this.tokenManager = tokenManager;
@@ -29,7 +35,7 @@ namespace Modicus.Manager
         }
 
         /// <summary>
-        /// Adds a new sensor
+        /// Adds a new sensor.
         /// </summary>
         /// <param name="sensor"></param>
         public void AddSensor(ISensor sensor)
@@ -39,23 +45,23 @@ namespace Modicus.Manager
         }
 
         /// <summary>
-        /// Starts the measurement of the sernsor
+        /// Starts the measurement of the sernsor.
         /// </summary>
         /// <param name="sensor"></param>
         public void StartSensor(ISensor sensor)=> sensor.StartMeasurement(tokenManager.Token);
 
         /// <summary>
-        /// Returns a sensor
+        /// Returns a sensor.
         /// </summary>
         /// <param name="name"></param>
-        public ISensor GetSensor(string name)=> (ISensor)Sensors[name];
+        public ISensor GetSensor(string name)=> (ISensor)ConfiguredSensors[name];
 
         /// <summary>
-        /// Creates and starts all saved sensors
+        /// Creates and starts all saved sensors.
         /// </summary>
         private void CreateStartAllSensors()
         {
-            Sensors.Clear();
+            ConfiguredSensors.Clear();
 
             var sensorString = settingsManager.SensorSettings.SensorsStringList;
 
@@ -63,7 +69,7 @@ namespace Modicus.Manager
             {
                 ISensor baseSensor = (ISensor)JsonConvert.DeserializeObject((string)item, typeof(BaseSensor));
                 baseSensor = (ISensor)JsonConvert.DeserializeObject((string)item, Type.GetType(baseSensor.Type));
-                Sensors.Add(baseSensor.Name, baseSensor);
+                ConfiguredSensors.Add(baseSensor.Name, baseSensor);
 
                 baseSensor.Configure((IPublishMqtt)mqttManager);
                 baseSensor.StartMeasurement(tokenManager.Token);

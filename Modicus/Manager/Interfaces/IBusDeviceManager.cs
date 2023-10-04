@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Modicus.MQTT.Interfaces;
+﻿using System.Collections;
 using Modicus.Sensor.Interfaces;
 
 namespace Modicus.Manager.Interfaces
 {
     internal interface IBusDeviceManager
     {
+        IList SupportedSensors { get; }
+
         void AddSensor(ISensor sensor);
 
         void StartSensor(ISensor sensor);

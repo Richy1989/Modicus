@@ -5,18 +5,22 @@ using nanoFramework.Json;
 
 namespace Modicus.Settings
 {
+    /// <summary>
+    /// Class for sensor data configuration. 
+    /// This class saves its own file since there is problem with deserializing classes which contains lists
+    /// </summary>
     internal class SensorSettings
     {
         private const string filepath = "I:\\sensor_settings.json";
         private readonly SaveLoadFileManager saveLoadFileManager;
 
         /// <summary>
-        /// The sensor list serialized
+        /// The sensor list serialized.
         /// </summary>
         public IList SensorsStringList { get; set; } = new ArrayList();
 
         /// <summary>
-        /// Creates a new instance of the settings for the Sensors.
+        /// Creates a new instance of the settings for the ConfiguredSensors.
         /// This class keeps all the sensor saved and handels the read an write to a file.
         /// </summary>
         public SensorSettings()

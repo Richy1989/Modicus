@@ -5,6 +5,7 @@ using System.Net.NetworkInformation;
 using System.Threading;
 using Iot.Device.Bmxx80;
 using Modicus.Commands.Interfaces;
+using Modicus.Helpers;
 using Modicus.Manager.Interfaces;
 using Modicus.MQTT.Interfaces;
 using Modicus.Sensor;
@@ -12,6 +13,7 @@ using Modicus.Sensor.Interfaces;
 using Modicus.Settings;
 using Modicus.Wifi.Interfaces;
 using nanoFramework.Hardware.Esp32;
+using nanoFramework.Json;
 using GC = nanoFramework.Runtime.Native.GC;
 
 namespace Modicus.Manager
@@ -28,6 +30,16 @@ namespace Modicus.Manager
 
         private readonly GpioController controller;
 
+        /// <summary>
+        /// Creates the Modicus Startup Manager, handles the whole application
+        /// </summary>
+        /// <param name="tokenManager"></param>
+        /// <param name="settingsManager"></param>
+        /// <param name="wifiManager"></param>
+        /// <param name="webManager"></param>
+        /// <param name="mqttManager"></param>
+        /// <param name="busManager"></param>
+        /// <param name="commandManager"></param>
         public ModicusStartupManager(ITokenManager tokenManager,
             ISettingsManager settingsManager,
             IWiFiManager wifiManager,
@@ -67,6 +79,14 @@ namespace Modicus.Manager
                 busManager.AddSensor(bme280);
                 busManager.StartSensor(bme280);
             }
+
+            //string value = JsonConvert.SerializeObject(busManager.GetSensor("bme280#1"));
+            //Debug.WriteLine(value);
+            //JsonObject jo = (JsonObject)JsonConvert.DeserializeObject(value, typeof(JsonObject));
+            
+            
+
+            Debug.WriteLine(jo.Get("name").Value.ToString());
 
             if (GlobalSettings.WifiSettings.ConnectToWifi)
             {

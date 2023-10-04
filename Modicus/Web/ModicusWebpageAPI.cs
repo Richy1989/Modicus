@@ -232,17 +232,12 @@ namespace Modicus.Web
 
             foreach (Type inter in interfaces)
             {
-                switch (inter)
+                if (inter.FullName == typeof(II2cSensor).FullName)
                 {
-                    case II2cSensor:
-                        
-                        return;
-                    default:
-                        break;
-
+                    WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateI2CSettingsSite("Configure Away!", item));
+                    return;
                 }
             }
-
             string message = "Select your desired sensor ...";
             WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateSensorSelectionSite(message));
         }

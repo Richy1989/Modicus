@@ -154,6 +154,13 @@ namespace Modicus.Web
             return CreateSite("System Settings", body, message);
         }
 
+        public string CreateI2CSettingsSite(string message, string sensortype)
+        {
+            var body = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.i2csettings), sensortype, sensortype);
+
+            return CreateSite("I2C Settings", body, message);
+        }
+
         public string CreateSite(string headmessage, string body, string message)
         {
             var page = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.head), headmessage, body, message);

@@ -37,6 +37,7 @@ namespace Modicus.Resources
             style = -5605,
             index = -2501,
             system_settings = 19842,
+            i2csettings = 26358,
             head = 31175,
         }
     }

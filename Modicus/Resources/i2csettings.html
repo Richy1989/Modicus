@@ -1,4 +1,12 @@
 <form method='POST' action="ip_settings">
+
+    <h2>I2C Settings</h2>
+    <h2>{0}</h2>
+
+    <label for="name">Sensor Type</label>
+    <input type="text" id="sensor-type" name="sensor-type" value="{1}">
+    <br>
+
     <label for="name">Name</label>
     <input type="text" id="name" name="name">
     <br>
@@ -27,6 +35,6 @@
     <input type="text" id="device-address" name="device-address">
     <br>
 
-    <button type="submit" name="save">Save</button>
-    <button type="submit" name="back">Back</button>
+    <input type="submit" value="Save" name="save">
+    <input type="submit" value="Back" name="back">
 </form>

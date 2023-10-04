@@ -2,7 +2,6 @@
 using System.IO;
 using System.Text;
 using System.Threading;
-using nanoFramework.Json;
 
 namespace Modicus.Manager
 {
@@ -11,10 +10,11 @@ namespace Modicus.Manager
         //Make sure only one thread at the time can modify the settings file
         private ManualResetEvent mreSettings = new(true);
 
-        public SaveLoadFileManager()
-        {
-        }
-
+        /// <summary>
+        /// Reads the given settings file as string from a file
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="resetSettings"></param>
         public string LoadSettings(string filePath, bool resetSettings = false)
         {
             mreSettings.WaitOne();
@@ -54,7 +54,7 @@ namespace Modicus.Manager
         {
             File.Create(filePath);
             FileStream fileStream = new(filePath, FileMode.Open, FileAccess.ReadWrite);
-           // var newSettingsText = JsonConvert.SerializeObject(settings);
+            // var newSettingsText = JsonConvert.SerializeObject(settings);
 
             Debug.WriteLine($"++++ Settings File to create: {settings}");
 

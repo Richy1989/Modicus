@@ -6,6 +6,7 @@ namespace Modicus.Helpers.Interfaces
 {
     internal interface ISignalService
     {
-        void Signal(int delay);
+        public void SignalError();
+        public void SignalReboot();
     }
 }

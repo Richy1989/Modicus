@@ -42,19 +42,13 @@ namespace Modicus.Manager
         /// Starts the measurement of the sernsor
         /// </summary>
         /// <param name="sensor"></param>
-        public void StartSensor(ISensor sensor)
-        {
-            sensor.StartMeasurement(tokenManager.Token);
-        }
+        public void StartSensor(ISensor sensor)=> sensor.StartMeasurement(tokenManager.Token);
 
         /// <summary>
         /// Returns a sensor
         /// </summary>
         /// <param name="name"></param>
-        public ISensor GetSensor(string name)
-        {
-            return (ISensor)Sensors[name];
-        }
+        public ISensor GetSensor(string name)=> (ISensor)Sensors[name];
 
         /// <summary>
         /// Creates and starts all saved sensors

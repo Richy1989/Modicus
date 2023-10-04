@@ -9,23 +9,50 @@ namespace Modicus.Helpers
     {
         public Thread errorsignal;
         private bool Running;
+        private CancellationTokenSource source;
+        private CancellationToken token;
 
-        public void Signal(int millisecondsDelay)
+        public SignalService() 
         {
-            if (Running) return;
+            
+        }
+
+        private void Signal(int millisecondsDelay)
+        {
+            if(errorsignal != null)
+            {
+                errorsignal.Abort();
+                source?.Cancel();
+            }
+
+            source = new CancellationTokenSource();
+            token = source.Token;
+
             var pin = ModicusStartupManager.pin;
             errorsignal = new Thread(() =>
             {
-                while (true)
+                while (!token.IsCancellationRequested)
                 {
-                    Running = true;
                     pin.Write(PinValue.Low);
                     Thread.Sleep(millisecondsDelay);
                     pin.Write(PinValue.High);
                     Thread.Sleep(millisecondsDelay);
                 }
             });
+
             errorsignal.Start();
+        }
+
+        public void SignalError()
+        {
+            if (Running) return;
+            Running = true;
+            Signal(200);
+        }
+
+        public void SignalReboot()
+        {
+            Signal(1000);
         }
     }
 }

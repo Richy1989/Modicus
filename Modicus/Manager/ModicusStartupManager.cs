@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Device.Gpio;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Threading;
 using Iot.Device.Bmxx80;
 using Modicus.Commands.Interfaces;
-using Modicus.Helpers;
 using Modicus.Manager.Interfaces;
 using Modicus.MQTT.Interfaces;
 using Modicus.Sensor;
@@ -14,7 +12,6 @@ using Modicus.Sensor.Interfaces;
 using Modicus.Settings;
 using Modicus.Wifi.Interfaces;
 using nanoFramework.Hardware.Esp32;
-using nanoFramework.Json;
 using GC = nanoFramework.Runtime.Native.GC;
 
 namespace Modicus.Manager

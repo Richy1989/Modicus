@@ -66,7 +66,7 @@ namespace Modicus.Manager
                 if (!dhcpInitResult)
                 {
                     Debug.WriteLine($"Error initializing DHCP server.");
-                    signalService.Signal(1000);
+                    signalService.SignalError();
                 }
 
                 IsConnected = true;
@@ -96,7 +96,7 @@ namespace Modicus.Manager
                 else
                 {
                     Debug.WriteLine($"Something wrong happened, can't connect at all");
-                    signalService.Signal(500);
+                    signalService.SignalError();
                 }
             }
         }

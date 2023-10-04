@@ -63,7 +63,6 @@
     <Compile Include="Sensor\Bmp280Measurement.cs" />
     <Compile Include="Sensor\Interfaces\II2cSensor.cs" />
     <Compile Include="Sensor\Interfaces\ISensor.cs" />
-    <Compile Include="Services\ISignalService.cs" />
     <Compile Include="Services\NTPService.cs" />
     <Compile Include="Helpers\SignalService.cs" />
     <Compile Include="Settings\MqttSettings.cs" />

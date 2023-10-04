@@ -43,7 +43,7 @@ namespace Modicus.WiFi
                 success = WifiNetworkHelper.ConnectDhcp(wifiSettings.Ssid, wifiSettings.Password, token: new CancellationTokenSource(10000).Token);
             else
             {
-                IPConfiguration iPConfiguration = new IPConfiguration(wifiSettings.IP, wifiSettings.NetworkMask, wifiSettings.DefaultGateway);
+                IPConfiguration iPConfiguration = new(wifiSettings.IP, wifiSettings.NetworkMask, wifiSettings.DefaultGateway);
                 success = WifiNetworkHelper.ConnectFixAddress(wifiSettings.Ssid, wifiSettings.Password, iPConfiguration, System.Device.Wifi.WifiReconnectionKind.Automatic, false, 0, token: new CancellationTokenSource(10000).Token);
             }
 

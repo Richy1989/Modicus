@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Device.Wifi;
 using System.Diagnostics;
 using System.Net;
 using System.Net.NetworkInformation;

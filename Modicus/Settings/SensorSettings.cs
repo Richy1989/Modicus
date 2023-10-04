@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections;
-using Modicus.Sensor;
+﻿using System.Collections;
+using Modicus.Manager;
 using Modicus.Sensor.Interfaces;
 using nanoFramework.Json;
 
@@ -8,57 +7,66 @@ namespace Modicus.Settings
 {
     internal class SensorSettings
     {
-        /// <summary>
-        /// The actual sensor, private so we do not serialize them
-        /// </summary>
-        private IDictionary Sensors { get; set; } = new Hashtable();
+        private const string filepath = "I:\\sensor_settings.json";
+        private readonly SaveLoadFileManager saveLoadFileManager;
 
         /// <summary>
-        /// The Sensors as string for serialization
+        /// The sensor list serialized
         /// </summary>
-        public IList SensorsString
+        public IList SensorsStringList { get; set; } = new ArrayList();
+
+        /// <summary>
+        /// Creates a new instance of the settings for the Sensors.
+        /// This class keeps all the sensor saved and handels the read an write to a file.
+        /// </summary>
+        public SensorSettings()
         {
-            get
+            saveLoadFileManager = new SaveLoadFileManager();
+        }
+
+        /// <summary>
+        /// Saves the settings to a file
+        /// </summary>
+        public void SaveSettings()
+        {
+            string sensorSettingString = JsonConvert.SerializeObject(SensorsStringList);
+            saveLoadFileManager.CreateSettingFile(filepath, sensorSettingString);
+        }
+
+        /// <summary>
+        /// Reads the settings from a file
+        /// </summary>
+        public void LoadSettings()
+        {
+            string sensorSettingString = saveLoadFileManager.LoadSettings(filepath);
+            try
             {
-                IList values = new ArrayList();
-
-                foreach (var item in Sensors)
-                {
-                    ((ISensor)item).Type = item.GetType().FullName;
-                    values.Add(JsonSerializer.SerializeObject(item));
-                }
-
-                return values;
+                SensorsStringList = (ArrayList)JsonConvert.DeserializeObject(sensorSettingString, typeof(ArrayList));
             }
-            set
+            catch
             {
-                Sensors.Clear();
-                foreach (var item in value)
-                {
-                    ISensor baseSensor = (ISensor)JsonConvert.DeserializeObject((string)item, typeof(BaseSensor));
-                    baseSensor = (ISensor)JsonConvert.DeserializeObject((string)item, Type.GetType(baseSensor.Type));
-                    Sensors.Add(baseSensor.Name, baseSensor);
-                }
+                SensorsStringList = new ArrayList();
             }
         }
 
+        /// <summary>
+        /// Adds a new sensor to the collection of sensors
+        /// </summary>
+        /// <param name="sensor"></param>
         public void AddSensor(ISensor sensor)
         {
-            Sensors.Add(sensor.Name, sensor);
+            sensor.Type = sensor.GetType().FullName;
+            SensorsStringList.Add(JsonSerializer.SerializeObject(sensor));
+            SaveSettings();
         }
 
-        public void RemoveSensor()
+        /// <summary>
+        /// Removes a sensor from the sensor collection
+        /// </summary>
+        /// <param name="sensor"></param>
+        public void RemoveSensor(ISensor sensor)
         {
-        }
-
-        public ISensor GetSensor(string name)
-        {
-            return (ISensor)Sensors[name];
-        }
-
-        public IDictionary GetAllConfiguredSensors()
-        {
-            return Sensors;
+            SensorsStringList.Remove(sensor);
         }
     }
 }

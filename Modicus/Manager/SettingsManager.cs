@@ -17,6 +17,7 @@ namespace Modicus.Manager
         private ManualResetEvent mreSettings = new(true);
 
         public GlobalSettings GlobalSettings { get; private set; }
+        public SensorSettings SensorSettings { get; private set; }
 
         public SettingsManager() 
         {
@@ -25,7 +26,7 @@ namespace Modicus.Manager
 
         public void LoadSettings(bool resetSettings = false)
         {
-          //  mreSettings.WaitOne();
+            mreSettings.WaitOne();
 
             //Delete Settings File
             if (resetSettings)
@@ -41,6 +42,9 @@ namespace Modicus.Manager
                 //Read settings from settings file
                 Debug.WriteLine("+++++ Read settings from file +++++");
                 FileStream fs2 = new(FilePath, FileMode.Open, FileAccess.ReadWrite);
+
+                //  GlobalSettings = (GlobalSettings)JsonConvert.DeserializeObject(fs2, typeof(GlobalSettings));
+
                 byte[] fileContent = new byte[fs2.Length];
                 fs2.Read(fileContent, 0, (int)fs2.Length);
 
@@ -51,16 +55,21 @@ namespace Modicus.Manager
                 else
                 {
                     var settingsText = Encoding.UTF8.GetString(fileContent, 0, (int)fs2.Length);
+                    fs2.Close();
                     fs2.Dispose();
 
                     Debug.WriteLine("+++++ Settings Text: +++++");
                     Debug.WriteLine(settingsText);
 
                     GlobalSettings = (GlobalSettings)JsonConvert.DeserializeObject(settingsText, typeof(GlobalSettings));
+
+                    SensorSettings = new SensorSettings();
+                    SensorSettings.LoadSettings();
+
                     GlobalSettings.IsFreshInstall = false;
                 }
             }
-        //    mreSettings.Set();
+            mreSettings.Set();
         }
 
         private void CreateNewSettingsFile()
@@ -70,7 +79,11 @@ namespace Modicus.Manager
             {
                 IsFreshInstall = true
             };
+
+            this.SensorSettings = new SensorSettings();
+
             CreateSettingFile(newSettings);
+
             GlobalSettings = newSettings;
         }
 
@@ -101,6 +114,7 @@ namespace Modicus.Manager
 
             var settingsBuffer = Encoding.UTF8.GetBytes(newSettingsText);
             fileStream.Write(settingsBuffer, 0, settingsBuffer.Length);
+            fileStream.Close();
             fileStream.Dispose();
         }
 

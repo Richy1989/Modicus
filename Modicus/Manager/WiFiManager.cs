@@ -51,7 +51,9 @@ namespace Modicus.Manager
                 {
                     // Reboot device to Activate Access Point on restart
                     Debug.WriteLine($"Setup Soft AP, Rebooting device");
-                    Power.RebootDevice();
+                    IsConnected = false;
+                    return;
+                    //Power.RebootDevice();
                 }
 
                 var dhcpserver = new DhcpServer
@@ -67,6 +69,7 @@ namespace Modicus.Manager
                     signalService.Signal(1000);
                 }
 
+                IsConnected = true;
                 Debug.WriteLine($"Running Soft AP, waiting for client to connect");
                 Debug.WriteLine($"Soft AP IP address :{WirelessAP.GetIP()}");
             }
@@ -84,6 +87,7 @@ namespace Modicus.Manager
                     success = WifiNetworkHelper.ConnectFixAddress(wifiSettings.Ssid, wifiSettings.Password, iPConfiguration, System.Device.Wifi.WifiReconnectionKind.Automatic, false, 0, token: new CancellationTokenSource(10000).Token);
                 }
 
+                IsConnected = success;
                 if (success)
                 {
                     Debug.WriteLine($"Connection is {success}");

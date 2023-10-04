@@ -32,6 +32,7 @@
     <Compile Include="Helpers\Interfaces\ISignalService.cs" />
     <Compile Include="Manager\BusDeviceManager.cs" />
     <Compile Include="Manager\Interfaces\IBusDeviceManager.cs" />
+    <Compile Include="Manager\SaveLoadFileManager.cs" />
     <Compile Include="MQTT\Interfaces\IMqttManager.cs" />
     <Compile Include="MQTT\Interfaces\IPublishMqtt.cs" />
     <Compile Include="Manager\Interfaces\ISettingsManager.cs" />

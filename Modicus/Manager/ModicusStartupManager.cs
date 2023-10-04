@@ -1,16 +1,20 @@
 ﻿using System;
+using System.Collections;
 using System.Device.Gpio;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Threading;
+using Iot.Device.Bmxx80;
 using Modicus.Commands.Interfaces;
 using Modicus.Helpers;
 using Modicus.Manager.Interfaces;
 using Modicus.MQTT.Interfaces;
 using Modicus.Sensor;
+using Modicus.Sensor.Interfaces;
 using Modicus.Settings;
 using Modicus.Wifi.Interfaces;
 using nanoFramework.Hardware.Esp32;
+using nanoFramework.Json;
 using GC = nanoFramework.Runtime.Native.GC;
 
 namespace Modicus.Manager
@@ -32,6 +36,7 @@ namespace Modicus.Manager
             IWiFiManager wifiManager,
             IWebManager webManager,
             IMqttManager mqttManager,
+            IBusDeviceManager busManager,
             ICommandManager commandManager)
         {
             //Close Startup LED to make sure we see the successfull startup at the end
@@ -50,16 +55,24 @@ namespace Modicus.Manager
                 SettingsManager.UpdateSettings();
             }
 
-            //BME280Sensor bME280Sensor = new(mqttManager, GlobalSettings, token);
-            //bME280Sensor.Init();
-            //Thread bme280Thread = new(new ThreadStart(bME280Sensor.DoMeasurement));
-            //bme280Thread.Start();
+            //ToDo: delete this later, makes dubugging better
+            if (busManager.GetSensor("bme280#1") == null)
+            {
+                II2cSensor bme280 = new BME280Sensor();
+                bme280.BusID = 1;
+                bme280.MeasurementInterval = 1000;
+                bme280.DeviceAddress = Bme280.SecondaryI2cAddress;
+                bme280.I2cBusSpeed = System.Device.I2c.I2cBusSpeed.StandardMode;
+                bme280.Name = "bme280#1";
+                bme280.SdaPin = Gpio.IO21;
+                bme280.SclPin = Gpio.IO22;
+
+                busManager.AddSensor(bme280);
+                busManager.StartSensor(bme280);
+            }
 
             if (GlobalSettings.WifiSettings.ConnectToWifi)
             {
-                //wifi.Connect(GlobalSettings.WifiSettings.Ssid, GlobalSettings.WifiSettings.Password);
-                //Thread wifiThread = new(new ThreadStart(wifi.KeepConnected));
-                //wifiThread.Start();
                 wifiManager.Start();
             }
 
@@ -86,8 +99,11 @@ namespace Modicus.Manager
                 mqttStartTask.Start();
             }
 
-            //Start the web manager
-            webManager.StartWebManager();
+            if (wifiManager.IsConnected)
+            {
+                //Start the web manager
+                webManager.StartWebManager();
+            }
 
             //Set startup time
             settingsManager.GlobalSettings.StartupTime = DateTime.UtcNow;

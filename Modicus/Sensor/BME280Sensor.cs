@@ -18,7 +18,6 @@ namespace Modicus.Sensor
         private Bme280 i2CBme280;
         private Pressure defaultSeaLevelPressure;
         private IPublishMqtt mqttPublisher;
-        private readonly GlobalSettings globalSettings;
 
         /// <summary>
         /// Initializes a new BME280 sensor instance
@@ -43,14 +42,16 @@ namespace Modicus.Sensor
             //Configuration.SetPinFunction(globalSettings.I2C_SDA, DeviceFunction.I2C1_DATA);
             //Configuration.SetPinFunction(globalSettings.I2C_SCL, DeviceFunction.I2C1_CLOCK);
 
-            //// set this to the current sea level pressure in the area for correct altitude readings
-            //defaultSeaLevelPressure = WeatherHelper.MeanSeaLevel;
+
 
             //// bus id on the MCU
             //const int busId = 1;
 
             //i2cSettings = new I2cConnectionSettings(busId, Bme280.SecondaryI2cAddress, I2cBusSpeed.StandardMode);
             //i2cDevice = I2cDevice.Create(i2cSettings);
+
+            //set this to the current sea level pressure in the area for correct altitude readings
+            defaultSeaLevelPressure = WeatherHelper.MeanSeaLevel;
 
             try
             {
@@ -123,14 +124,14 @@ namespace Modicus.Sensor
                         mqttPublisher.MainMqttMessage.Environment = measurement;
                     }
 
-                    Thread.Sleep(globalSettings.MeasurementInterval);
+                    Thread.Sleep(MeasurementInterval);
                 }
 
             });
             sensorThread.Start();
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             i2CBme280.Dispose();
         }

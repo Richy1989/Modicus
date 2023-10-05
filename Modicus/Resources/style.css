@@ -39,14 +39,25 @@ input[type="text"] {
 
 input[type="submit"] {
     margin: 10px;
-    background-color: #007BFF; /* Keep the original blue color for contrast */
-    color: #fff; /* White text for the button */
+    padding: 15px 30px; /* Adjust padding to make the button larger */
+    background-color: #007BFF;
+    color: #fff;
     border: none;
     border-radius: 3px;
     cursor: pointer;
 }
 
 input[type="password"] {
+    width: 90%;
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #444; /* Darker border */
+    border-radius: 3px;
+    background-color: #111; /* Even darker background */
+    color: #ccc; /* Light gray text */
+}
+
+select {
     width: 90%;
     padding: 10px;
     margin: 5px;

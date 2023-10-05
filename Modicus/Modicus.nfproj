@@ -19,6 +19,7 @@
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
     <Compile Include="Commands\BaseCommand.cs" />
+    <Compile Include="Commands\CmdCreateI2CSensor.cs" />
     <Compile Include="Commands\CmdSystemReboot.cs" />
     <Compile Include="Commands\CmdMqttOnOff.cs" />
     <Compile Include="Commands\CmdMqttSendInterval.cs" />
@@ -126,7 +127,7 @@
       <HintPath>..\packages\nanoFramework.System.Text.1.2.37\lib\nanoFramework.System.Text.dll</HintPath>
     </Reference>
     <Reference Include="nanoFramework.WebServer">
-      <HintPath>..\packages\nanoFramework.WebServer.1.1.75\lib\nanoFramework.WebServer.dll</HintPath>
+      <HintPath>..\packages\nanoFramework.WebServer.1.1.77\lib\nanoFramework.WebServer.dll</HintPath>
     </Reference>
     <Reference Include="System.Buffers.Binary.BinaryPrimitives">
       <HintPath>..\packages\nanoFramework.System.Buffers.Binary.BinaryPrimitives.1.2.325\lib\System.Buffers.Binary.BinaryPrimitives.dll</HintPath>
@@ -165,7 +166,7 @@
       <HintPath>..\packages\nanoFramework.System.Net.1.10.52\lib\System.Net.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http">
-      <HintPath>..\packages\nanoFramework.System.Net.Http.Server.1.5.99\lib\System.Net.Http.dll</HintPath>
+      <HintPath>..\packages\nanoFramework.System.Net.Http.Server.1.5.102\lib\System.Net.Http.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading">
       <HintPath>..\packages\nanoFramework.System.Threading.1.1.19\lib\System.Threading.dll</HintPath>

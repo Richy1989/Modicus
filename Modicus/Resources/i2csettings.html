@@ -1,30 +1,30 @@
-<form method='POST' action="ip_settings">
+<form method='POST' action="create_i2c_sensor">
 
     <h2>I2C Settings</h2>
     <h2>{0}</h2>
 
     <label for="name">Sensor Type</label>
-    <input type="text" id="sensor-type" name="sensor-type" value="{1}">
+    <input type="text" id="sensor-type" name="sensor-type" value="{1}" readonly>
     <br>
 
     <label for="name">Name</label>
     <input type="text" id="name" name="name">
     <br>
 
-    <label for="measurement-interval">Measurement Interval</label>
-    <input type="text" id="measurement-interval" name="measurement-interval">
+    <label for="measurement-interval">Measurement Interval [s]</label>
+    <input type="text" id="measurement-interval" name="measurement-interval" value="10">
     <br>
 
-    <label for="scl">SCL</label>
-    <input type="text" id="scl" name="scl">
+    <label for="scl">SCL Pin</label>
+    <input type="text" id="scl" name="scl" value="22">
     <br>
 
-    <label for="sda">SDA</label>
-    <input type="text" id="sda" name="sda">
+    <label for="sda">SDA Pin</label>
+    <input type="text" id="sda" name="sda" value="21">
     <br>
 
     <label for="bus-id">Bus ID</label>
-    <input type="text" id="bus-id" name="bus-id">
+    <input type="text" id="bus-id" name="bus-id" value="1">
     <br>
 
     <label for="device-address">Device Address</label>
@@ -33,9 +33,9 @@
 
     <label for="i2c-bus-speed">I2C Bus Speed</label>
     <select name="i2c-bus-speed" id="i2c-bus-speed">
-        <option value="StandardMode">Standard Mode</option>
-        <option value="FastMode">Fast Mode</option>
-        <option value="FastModePlus">Fast Mode Plus</option>
+        <option value="0">Standard Mode - 100kHz</option>
+        <option value="1">Fast Mode - 400kHz</option>
+        <option value="2">Fast Mode Plus - 1MHz</option>
     </select>
     <br>
 

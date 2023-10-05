@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Device.I2c;
 using System.Diagnostics;
 using System.Net;
 using System.Threading;
@@ -240,6 +241,26 @@ namespace Modicus.Web
             }
             string message = "Select your desired sensor ...";
             WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateSensorSelectionSite(message));
+        }
+
+        [Route("create_i2c_sensor")]
+        public void CreateI2cSensor(WebServerEventArgs e)
+        {
+            Hashtable hashPars = WebManager.ParseParamsFromStream(e.Context.Request.InputStream);
+
+            string message = "Select your desired sensor ...";
+            var item = (string)hashPars["sensor-type"];
+            var sensor = busDeviceManager.SupportedSensors[item];
+
+            bool isOk = true;
+
+            if (!int.TryParse((string)hashPars["i2c-bus-speed"], out var speed))
+            {
+                message = $"Speed value not valid.\n{message}";
+                isOk = false;
+            }
+
+            WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateI2CSettingsSite("Configure Away!", item));
         }
     }
 }

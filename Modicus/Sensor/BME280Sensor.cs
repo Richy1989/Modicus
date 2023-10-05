@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Device.I2c;
 using System.Diagnostics;
 using System.Threading;
-using Modicus.Settings;
 using Iot.Device.Bmxx80;
 using Iot.Device.Common;
-using nanoFramework.Hardware.Esp32;
+using Modicus.MQTT.Interfaces;
 using nanoFramework.Json;
 using UnitsNet;
-using Modicus.MQTT.Interfaces;
-using Modicus.Sensor.Interfaces;
 
 namespace Modicus.Sensor
 {
@@ -18,16 +14,6 @@ namespace Modicus.Sensor
         private Bme280 i2CBme280;
         private Pressure defaultSeaLevelPressure;
         private IPublishMqtt mqttPublisher;
-
-        /// <summary>
-        /// Initializes a new BME280 sensor instance
-        /// </summary>
-        /// <param name="mqttPublisher"></param>
-        /// <param name="settings"></param>
-        /// <param name="token"></param>
-        public BME280Sensor()
-        {
-        }
 
         public override void Configure(IPublishMqtt publisher)
         {
@@ -41,8 +27,6 @@ namespace Modicus.Sensor
             ////////////////////////////////////////////////////////////////////////
             //Configuration.SetPinFunction(globalSettings.I2C_SDA, DeviceFunction.I2C1_DATA);
             //Configuration.SetPinFunction(globalSettings.I2C_SCL, DeviceFunction.I2C1_CLOCK);
-
-
 
             //// bus id on the MCU
             //const int busId = 1;
@@ -126,7 +110,6 @@ namespace Modicus.Sensor
 
                     Thread.Sleep(MeasurementInterval);
                 }
-
             });
             sensorThread.Start();
         }

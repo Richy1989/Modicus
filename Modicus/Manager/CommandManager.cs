@@ -15,6 +15,7 @@ namespace Modicus.Manager
         public CmdMqttSendInterval CmdMqttSendInterval { get; }
         public CmdMqttOnOff CmdMqttOnOff { get; }
         public CmdSystemReboot CmdSystemReboot { get; }
+        public CmdCreateI2CSensor CmdCreateI2CSensor { get; }
         private IDictionary CommandCapableManagers { get; }
 
         /// <summary>
@@ -22,7 +23,7 @@ namespace Modicus.Manager
         /// </summary>
         /// <param name="settingsManager"></param>
         /// <param name="mqttManager"></param>
-        public CommandManager(ISettingsManager settingsManager, IMqttManager mqttManager)
+        public CommandManager(ISettingsManager settingsManager, IMqttManager mqttManager, IBusDeviceManager busDeviceManager)
         {
             this.mqttManager = mqttManager;
             CommandCapableManagers = new Hashtable();
@@ -32,6 +33,7 @@ namespace Modicus.Manager
             CmdMqttSendInterval = new CmdMqttSendInterval(settingsManager);
             CmdMqttOnOff = new CmdMqttOnOff(settingsManager, mqttManager);
             CmdSystemReboot = new CmdSystemReboot(settingsManager);
+            CmdCreateI2CSensor = new CmdCreateI2CSensor(settingsManager, busDeviceManager);
         }
 
         public void AddCommandCapableManager(Type type, ICommandCapable commandCapable)
@@ -48,6 +50,7 @@ namespace Modicus.Manager
                 ((ICommandCapable)CommandCapableManagers[item]).RegisterCommand(CmdMqttSendInterval);
                 ((ICommandCapable)CommandCapableManagers[item]).RegisterCommand(CmdMqttOnOff);
                 ((ICommandCapable)CommandCapableManagers[item]).RegisterCommand(CmdSystemReboot);
+                ((ICommandCapable)CommandCapableManagers[item]).RegisterCommand(CmdCreateI2CSensor);
             }
         }
     }

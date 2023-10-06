@@ -20,10 +20,6 @@ namespace Modicus.Web
         private readonly ICommandManager commandManager;
         private readonly ModicusWebpages modicusWebpages;
         private readonly IBusDeviceManager busDeviceManager;
-        private Thread mqttRestart;
-        private Thread wifiSetupTask;
-        private Thread systemSettingsTask;
-        private Thread createTask;
 
         /// <summary>
         /// Creates a new ModicusWebpageAPI instance.
@@ -54,6 +50,7 @@ namespace Modicus.Web
             var save = (string)hashPars["save"];
             var back = (string)hashPars["back"];
 
+            Thread wifiSetupTask;
             Debug.WriteLine($"IP parameters IP:{ip} Subnetmask:{subnet} Default Gateway {gateway}");
 
             string message = "";
@@ -129,6 +126,7 @@ namespace Modicus.Web
             var save = (string)hashPars["save"];
             var back = (string)hashPars["back"];
 
+            Thread mqttRestart;
             string message = "";
             if (save != null)
             {
@@ -192,6 +190,7 @@ namespace Modicus.Web
             var name = (string)hashPars["device-name"];
 
             string message = "";
+            Thread systemSettingsTask;
 
             if (save != null)
             {

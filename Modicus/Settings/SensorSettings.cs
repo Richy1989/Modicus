@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Diagnostics;
 using Modicus.Manager;
 using Modicus.Sensor.Interfaces;
@@ -8,7 +7,7 @@ using nanoFramework.Json;
 namespace Modicus.Settings
 {
     /// <summary>
-    /// Class for sensor data configuration. 
+    /// Class for sensor data configuration.
     /// This class saves its own file since there is problem with deserializing classes which contains lists
     /// </summary>
     internal class SensorSettings
@@ -49,7 +48,7 @@ namespace Modicus.Settings
             {
                 SensorsStringList = (ArrayList)JsonConvert.DeserializeObject(sensorSettingString, typeof(ArrayList));
             }
-            catch(Exception  ex)
+            catch
             {
                 Debug.WriteLine($"No sonsors configured, creating new sensor string list");
                 SensorsStringList = new ArrayList();

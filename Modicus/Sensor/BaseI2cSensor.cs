@@ -17,6 +17,10 @@ namespace Modicus.Sensor
 
         private I2cDevice i2cDevice;
 
+        internal BaseI2cSensor() : base()
+        {
+        }
+
         /// <summary>
         /// Configure the sensor, call this function first
         /// </summary>

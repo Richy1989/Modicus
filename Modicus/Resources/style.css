@@ -37,7 +37,7 @@ input[type="text"] {
     color: #ccc; /* Light gray text */
 }
 
-input[type="submit"] {
+input.save_back_submit {
     margin: 10px;
     padding: 15px 30px; /* Adjust padding to make the button larger */
     background-color: #007BFF;
@@ -69,7 +69,7 @@ select {
 
 .big-button {
     display: block;
-    width: 90%;
+    width: 100%;
     padding: 20px; /* Adjust the padding as needed */
     margin: 10px 0; /* Add some vertical margin for spacing */
     background-color: #007BFF; /* Blue background color */
@@ -125,9 +125,9 @@ select {
     width: 90%;
 }
 
-.dropdown-content input:hover {
-    background-color: #ddd;
-}
+    .dropdown-content input:hover {
+        background-color: #007BFF; /*#ddd;*/
+    }
 
 .dropdown:hover .dropdown-content {
     display: block;
@@ -135,4 +135,32 @@ select {
 
 .dropdown:hover .dropbtn {
     background-color: #3e8e41;
+}
+
+table {
+    color: black;
+    font-family: Arial, sans-serif;
+    border-collapse: collapse;
+    width: 80%;
+    margin: 20px auto;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    border: 1px solid #e0e0e0;
+    padding: 12px;
+    text-align: center;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:nth-child(even) {
+    background-color: #f5f5f5;
+}
+
+tr:hover {
+    background-color: #e0e0e0;
 }

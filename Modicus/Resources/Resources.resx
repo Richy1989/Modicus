@@ -133,6 +133,9 @@
   <data name="mqtt_settings" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>mqtt_settings.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="select_sensor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>select_sensor.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
   <data name="style" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>style.css;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>

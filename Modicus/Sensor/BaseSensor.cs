@@ -4,13 +4,25 @@ using Modicus.Sensor.Interfaces;
 
 namespace Modicus.Sensor
 {
+    /// <summary>
+    /// Base sensor class, use this class for all kind of sensors. 
+    /// </summary>
     internal abstract class BaseSensor : ISensor
     {
+        internal CancellationTokenSource sensorTokenSource;
         internal Thread sensorThread;
+        internal CancellationToken sensorToken;
 
         public string Name { get; set; }
         public int MeasurementInterval { get; set; }
         public string Type { get; set; }
+
+        /// <summary>Constructor for Base Sensor class</summary>
+        internal BaseSensor()
+        {
+            sensorTokenSource = new CancellationTokenSource();
+            sensorToken = sensorTokenSource.Token;
+        }
 
         /// <summary>
         /// Function to be called once to configure the sensor
@@ -27,5 +39,10 @@ namespace Modicus.Sensor
         /// Disposes the object safely
         /// </summary>
         public abstract void Dispose();
+
+        /// <summary>
+        /// Stops the sensor.
+        /// </summary>
+        public abstract void StopSensor();
     }
 }

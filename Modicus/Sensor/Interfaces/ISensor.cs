@@ -25,5 +25,8 @@ namespace Modicus.Sensor.Interfaces
         /// Starts the measurement thread
         /// </summary>
         void StartMeasurement(CancellationToken token);
+
+        /// <summary>Stops the sensor</summary>
+        void StopSensor();
     }
 }

@@ -203,6 +203,7 @@
   <ItemGroup>
     <Content Include="Resources\head.html" />
     <Content Include="resources\i2csettings.html" />
+    <Content Include="Resources\select_sensor.html" />
     <Content Include="Resources\index.html" />
     <Content Include="Resources\system_settings.html" />
     <Content Include="Resources\mqtt_settings.html" />

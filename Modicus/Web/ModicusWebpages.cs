@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Diagnostics;
 using GardenLightHyperionConnector.Manager;
 using Modicus.Manager.Interfaces;
-using Modicus.Sensor.Interfaces;
 using nanoFramework.WebServer;
 
 namespace Modicus.Web
@@ -143,10 +141,7 @@ namespace Modicus.Web
 
         public string CreateSensorSelectionSite(string message)
         {
-            string headder = "<header><h1>Sensor Selection</h1><br><h2>Select Sensor to Configure:</h2></header>";
-            string body = "<form method='POST' action=\"configure_sensor\"> <div class=\"dropdown\"> <button class=\"dropbtn\">Select Sensor</button> <div class=\"dropdown-content\">{0}</div>\r\n</div>\r\n</form>";
-            
-            body = string.Format("{0}{1}",headder,body);
+            var body = Resources.Resources.GetString(Resources.Resources.StringResources.select_sensor);
 
             string itemString = string.Empty;
             foreach (string item in busDeviceManager.SupportedSensors.Keys)
@@ -157,7 +152,7 @@ namespace Modicus.Web
                     itemString = string.Format("{0}<br><input type=\"submit\" name=\"item\" value=\"{1}\">", itemString, item);
             }
 
-            body = string.Format(body, itemString);
+            body = string.Format(body, "", itemString);
             return CreateSite("Sensor Selection", body, message);
         }
 

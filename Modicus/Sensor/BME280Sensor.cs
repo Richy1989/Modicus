@@ -15,24 +15,17 @@ namespace Modicus.Sensor
         private Pressure defaultSeaLevelPressure;
         private IPublishMqtt mqttPublisher;
 
+        /// <summary>Creates new instamce of BME280 Sensor</summary>
+        internal BME280Sensor() : base()
+        { }
+
+        /// <summary>Configures the Sensor</summary>
+        /// <param name="publisher"></param>
         public override void Configure(IPublishMqtt publisher)
         {
             base.Configure(publisher);
 
             this.mqttPublisher = publisher;
-
-            ////////////////////////////////////////////////////////////////////////
-            //// when connecting to an ESP32 device, need to configure the I2C GPIOs
-            //// used for the bus
-            ////////////////////////////////////////////////////////////////////////
-            //Configuration.SetPinFunction(globalSettings.I2C_SDA, DeviceFunction.I2C1_DATA);
-            //Configuration.SetPinFunction(globalSettings.I2C_SCL, DeviceFunction.I2C1_CLOCK);
-
-            //// bus id on the MCU
-            //const int busId = 1;
-
-            //i2cSettings = new I2cConnectionSettings(busId, Bme280.SecondaryI2cAddress, I2cBusSpeed.StandardMode);
-            //i2cDevice = I2cDevice.Create(i2cSettings);
 
             //set this to the current sea level pressure in the area for correct altitude readings
             defaultSeaLevelPressure = WeatherHelper.MeanSeaLevel;
@@ -59,7 +52,7 @@ namespace Modicus.Sensor
         {
             sensorThread = new Thread(() =>
             {
-                while (!token.IsCancellationRequested)
+                while (!token.IsCancellationRequested && !sensorTokenSource.IsCancellationRequested)
                 {
                     // Perform a synchronous measurement
                     var readResult = i2CBme280.Read();
@@ -114,9 +107,17 @@ namespace Modicus.Sensor
             sensorThread.Start();
         }
 
+        /// <summary>Disposes the sensor.</summary>
         public override void Dispose()
         {
-            i2CBme280.Dispose();
+            i2CBme280?.Dispose();
+        }
+
+        /// <summary>Stops the sensor.</summary>
+        public override void StopSensor()
+        {
+            sensorTokenSource.Cancel();
+            this.Dispose();
         }
     }
 }

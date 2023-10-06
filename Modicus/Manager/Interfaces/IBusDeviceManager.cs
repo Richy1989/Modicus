@@ -6,6 +6,7 @@ namespace Modicus.Manager.Interfaces
     internal interface IBusDeviceManager
     {
         IDictionary SupportedSensors { get; }
+        IDictionary ConfiguredSensors { get; }
 
         void AddSensor(ISensor sensor);
 

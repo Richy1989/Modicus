@@ -13,7 +13,7 @@ namespace Modicus.Manager
         private readonly ISettingsManager settingsManager;
         private readonly IMqttManager mqttManager;
         private readonly ITokenManager tokenManager;
-        private readonly IDictionary ConfiguredSensors;
+        public IDictionary ConfiguredSensors { get; }
         public IDictionary SupportedSensors { get; }
 
         /// <summary>
@@ -42,6 +42,7 @@ namespace Modicus.Manager
         {
             settingsManager.SensorSettings.AddSensor(sensor);
             sensor.Configure((IPublishMqtt)mqttManager);
+            ConfiguredSensors.Add(sensor.Name, sensor);
         }
 
         /// <summary>

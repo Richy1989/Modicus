@@ -287,6 +287,12 @@ namespace Modicus.Web
                 isOk = false;
             }
 
+            if (string.IsNullOrEmpty((string)hashPars["name"]))
+            {
+                message = $"Name value not valid.\n{message}";
+                isOk = false;
+            }
+
             string name = (string)hashPars["name"];
 
             if (isOk)

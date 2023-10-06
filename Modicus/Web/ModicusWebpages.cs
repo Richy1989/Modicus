@@ -143,6 +143,14 @@ namespace Modicus.Web
         {
             var body = Resources.Resources.GetString(Resources.Resources.StringResources.select_sensor);
 
+
+            string alreadyConfigured = string.Empty;
+            foreach (string item in busDeviceManager.ConfiguredSensors.Keys)
+            {
+                alreadyConfigured = string.Format("{0}<tr><td>{1}</td><td>{2}</td><td>{3}</td><td><input type=\"submit\" class=\"delete-button\" name=\"{4}\" value=\"&#10006;\"></td> </tr>",
+                    alreadyConfigured, item, "Yes", "Stop", item);
+            }
+
             string itemString = string.Empty;
             foreach (string item in busDeviceManager.SupportedSensors.Keys)
             {
@@ -152,7 +160,7 @@ namespace Modicus.Web
                     itemString = string.Format("{0}<br><input type=\"submit\" name=\"item\" value=\"{1}\">", itemString, item);
             }
 
-            body = string.Format(body, "", itemString);
+            body = string.Format(body, alreadyConfigured, itemString);
             return CreateSite("Sensor Selection", body, message);
         }
 

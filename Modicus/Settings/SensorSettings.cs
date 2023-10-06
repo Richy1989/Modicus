@@ -44,6 +44,8 @@ namespace Modicus.Settings
         public void LoadSettings()
         {
             string sensorSettingString = saveLoadFileManager.LoadSettings(filepath);
+            Debug.WriteLine("+++ Read Configured Sensors +++");
+            Debug.WriteLine(sensorSettingString);
             try
             {
                 SensorsStringList = (ArrayList)JsonConvert.DeserializeObject(sensorSettingString, typeof(ArrayList));

@@ -60,13 +60,18 @@ namespace Modicus.Manager
 
                     Debug.WriteLine("+++++ Settings Text: +++++");
                     Debug.WriteLine(settingsText);
-
-                    GlobalSettings = (GlobalSettings)JsonConvert.DeserializeObject(settingsText, typeof(GlobalSettings));
+                    try
+                    {
+                        GlobalSettings = (GlobalSettings)JsonConvert.DeserializeObject(settingsText, typeof(GlobalSettings));
+                        GlobalSettings.IsFreshInstall = false;
+                    }
+                    catch
+                    {
+                        GlobalSettings = new GlobalSettings();
+                    }
 
                     SensorSettings = new SensorSettings();
                     SensorSettings.LoadSettings();
-
-                    GlobalSettings.IsFreshInstall = false;
                 }
             }
             mreSettings.Set();

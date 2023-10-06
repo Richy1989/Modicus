@@ -2,7 +2,6 @@
 using System.Device.I2c;
 using System.Diagnostics;
 using Modicus.Manager.Interfaces;
-using Modicus.MQTT.Interfaces;
 using Modicus.Sensor;
 using nanoFramework.Json;
 
@@ -11,14 +10,12 @@ namespace Modicus.Commands
     //With this command we can create new I2C Sensor devices
     internal class CmdCreateI2CSensor : BaseCommand
     {
-        private readonly ISettingsManager settingsManager;
         private readonly IBusDeviceManager busDeviceManager;
 
         public CmdCreateI2CSensor(ISettingsManager settingsManager, IBusDeviceManager busDeviceManager)
         {
             this.busDeviceManager = busDeviceManager;
-            this.settingsManager = settingsManager;
-            Topic = settingsManager.GlobalSettings.CommandSettings.MqttOnOffTopic;
+            Topic = settingsManager.GlobalSettings.CommandSettings.CreateI2CSensor;
         }
 
         public void Execute(CmdCreateI2CSensorData content)
@@ -29,7 +26,7 @@ namespace Modicus.Commands
 
             try
             {
-                if (sensorType == null)
+                if (sensorType != null)
                 {
                     BaseI2cSensor sensor = (BaseI2cSensor)Activator.CreateInstance(((Type)sensorType));
                     sensor.SclPin = content.SclPin;

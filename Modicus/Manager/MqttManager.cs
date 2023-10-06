@@ -14,6 +14,7 @@ using Modicus.Commands.Interfaces;
 using Modicus.MQTT.Interfaces;
 using Modicus.WiFi;
 using Modicus.Manager.Interfaces;
+using System.Net;
 
 namespace Modicus.Manager
 {
@@ -61,6 +62,7 @@ namespace Modicus.Manager
                 Debug.WriteLine("++++ MQTT is already running. No need to start. ++++");
                 return;
             }
+
 
             stopService = false;
             mqtt?.Close();
@@ -129,7 +131,7 @@ namespace Modicus.Manager
             
             mreMQTT.WaitOne();
 
-            mqtt?.Disconnect();
+            //mqtt?.Disconnect();
             mqtt?.Close();
             mqtt?.Dispose();
 

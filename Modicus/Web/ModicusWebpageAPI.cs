@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections;
-using System.Device.I2c;
 using System.Diagnostics;
 using System.Net;
 using System.Threading;
 using GardenLightHyperionConnector.Manager;
+using Modicus.Commands;
 using Modicus.Commands.Interfaces;
-using Modicus.Manager;
 using Modicus.Manager.Interfaces;
 using Modicus.Sensor.Interfaces;
 using Modicus.WiFi;
@@ -24,6 +23,7 @@ namespace Modicus.Web
         private Thread mqttRestart;
         private Thread wifiSetupTask;
         private Thread systemSettingsTask;
+        private Thread createTask;
 
         /// <summary>
         /// Creates a new ModicusWebpageAPI instance.
@@ -202,7 +202,6 @@ namespace Modicus.Web
                 });
                 systemSettingsTask.Start();
                 message = $"New Device Name: {name}\n{message}";
-
             }
 
             if (reboot != null)
@@ -248,7 +247,7 @@ namespace Modicus.Web
         {
             Hashtable hashPars = WebManager.ParseParamsFromStream(e.Context.Request.InputStream);
 
-            string message = "Select your desired sensor ...";
+            string message = "Error in sensor creation:\n";
             var item = (string)hashPars["sensor-type"];
             var sensor = busDeviceManager.SupportedSensors[item];
 
@@ -259,7 +258,61 @@ namespace Modicus.Web
                 message = $"Speed value not valid.\n{message}";
                 isOk = false;
             }
+            if (!int.TryParse((string)hashPars["measurement-interval"], out var minterval))
+            {
+                message = $"Measurement Interval value not valid.\n{message}";
+                isOk = false;
+            }
 
+            if (!int.TryParse((string)hashPars["scl"], out var scl))
+            {
+                message = $"SCL Pin value not valid.\n{message}";
+                isOk = false;
+            }
+
+            if (!int.TryParse((string)hashPars["sda"], out var sda))
+            {
+                message = $"SDA Pin value not valid.\n{message}";
+                isOk = false;
+            }
+
+            if (!int.TryParse((string)hashPars["device-address"], out var address))
+            {
+                message = $"Device Address value not valid.\n{message}";
+                isOk = false;
+            }
+
+            if (!int.TryParse((string)hashPars["bus-id"], out var busid))
+            {
+                message = $"Bud ID value not valid.\n{message}";
+                isOk = false;
+            }
+
+            string name = (string)hashPars["name"];
+
+            if (isOk)
+            {
+                CmdCreateI2CSensorData data = new()
+                {
+                    I2cBusSpeed = speed,
+                    MeasurementInterval = minterval,
+                    SclPin = scl,
+                    SdaPin = sda,
+                    DeviceAddress = address,
+                    Name = name,
+                    BusID = busid,
+                    SensorType = item
+                };
+
+                Thread createTask = new(() =>
+                {
+                    commandManager.CmdCreateI2CSensor.Execute(data);
+                });
+                createTask.Start();
+
+                WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateI2CSettingsSite($"Sensor: {name} crated!", item));
+                return;
+            }
             WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateI2CSettingsSite("Configure Away!", item));
         }
     }

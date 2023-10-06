@@ -58,7 +58,7 @@ namespace Modicus.Web
             var ip_address = (string)hashPars["ip_address"];
             var mqtt_settings = (string)hashPars["mqtt_settings"];
             var system_settings = (string)hashPars["system_settings"];
-            var sensor_settings = (string)hashPars["sensor_settings"];
+            var sensor_selection = (string)hashPars["sensor_selection"];
 
             if (ip_address != null)
             {
@@ -78,7 +78,7 @@ namespace Modicus.Web
                 return;
             }
 
-            if (sensor_settings != null)
+            if (sensor_selection != null)
             {
                 WebManager.OutPutResponse(e.Context.Response, CreateSensorSelectionSite(""));
                 return;
@@ -143,15 +143,22 @@ namespace Modicus.Web
 
         public string CreateSensorSelectionSite(string message)
         {
-            var body = "<form method='POST' action=\"configure_sensor\"> <div class=\"dropdown\"> <button class=\"dropbtn\">Select Sensor</button> <div class=\"dropdown-content\">{0}</div>\r\n</div>\r\n</form>";
+            string headder = "<header><h1>Sensor Selection</h1><br><h2>Select Sensor to Configure:</h2></header>";
+            string body = "<form method='POST' action=\"configure_sensor\"> <div class=\"dropdown\"> <button class=\"dropbtn\">Select Sensor</button> <div class=\"dropdown-content\">{0}</div>\r\n</div>\r\n</form>";
+            
+            body = string.Format("{0}{1}",headder,body);
 
+            string itemString = string.Empty;
             foreach (string item in busDeviceManager.SupportedSensors.Keys)
             {
-                string itemString = string.Format("<input type=\"submit\" name=\"item\" value=\"{0}\">", item);
-                body = string.Format(body, itemString);
+                if (string.IsNullOrEmpty(itemString))
+                    itemString = string.Format("{0}<input type=\"submit\" name=\"item\" value=\"{1}\">", itemString, item);
+                else
+                    itemString = string.Format("{0}<br><input type=\"submit\" name=\"item\" value=\"{1}\">", itemString, item);
             }
 
-            return CreateSite("System Settings", body, message);
+            body = string.Format(body, itemString);
+            return CreateSite("Sensor Selection", body, message);
         }
 
         public string CreateI2CSettingsSite(string message, string sensortype)

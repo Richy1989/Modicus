@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Diagnostics;
 using Modicus.Manager;
 using Modicus.Sensor.Interfaces;
 using nanoFramework.Json;
@@ -47,8 +49,9 @@ namespace Modicus.Settings
             {
                 SensorsStringList = (ArrayList)JsonConvert.DeserializeObject(sensorSettingString, typeof(ArrayList));
             }
-            catch
+            catch(Exception  ex)
             {
+                Debug.WriteLine($"No sonsors configured, creating new sensor string list");
                 SensorsStringList = new ArrayList();
             }
         }

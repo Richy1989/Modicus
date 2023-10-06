@@ -7,6 +7,8 @@ using Modicus.Commands.Interfaces;
 using Modicus.Helpers;
 using Modicus.Manager.Interfaces;
 using Modicus.MQTT.Interfaces;
+using Modicus.Services;
+using Modicus.Services.Interfaces;
 using Modicus.Settings;
 using Modicus.Wifi.Interfaces;
 using nanoFramework.Hardware.Esp32;
@@ -42,6 +44,7 @@ namespace Modicus.Manager
             IWebManager webManager,
             IMqttManager mqttManager,
             IBusDeviceManager busManager,
+            INtpService ntpManager,
             ICommandManager commandManager)
         {
             //Close Startup LED to make sure we see the successfull startup at the end
@@ -88,12 +91,7 @@ namespace Modicus.Manager
                 wifiManager.Start();
             }
 
-            ////if (!wifiManager.ISoftAP)
-            ////{
-            ////    //Starts the NTP Service .. wait 500ms to be sure we have the time
-            ////    NTPService ntp = new();
-            ////    Thread.Sleep(1000);
-            ////}
+            ntpManager.Start();
 
             //Set all Commands for command capable managers
             CommandManager = commandManager;
@@ -128,6 +126,7 @@ namespace Modicus.Manager
             {
                 while (!token.IsCancellationRequested)
                 {
+                    Debug.WriteLine($"We have a valid date: {DateTime.UtcNow}");
                     Diagnostics.PrintMemory("Modicus:");
                     Thread.Sleep(10000);
                 }

@@ -7,6 +7,8 @@ using Modicus.Helpers.Interfaces;
 using Modicus.Manager;
 using Modicus.Manager.Interfaces;
 using Modicus.MQTT.Interfaces;
+using Modicus.Services;
+using Modicus.Services.Interfaces;
 using Modicus.Web;
 using Modicus.Wifi.Interfaces;
 using nanoFramework.DependencyInjection;
@@ -40,6 +42,7 @@ namespace Modicus
                 .AddSingleton(typeof(IWiFiManager), typeof(WiFiManager))
                 .AddSingleton(typeof(IBusDeviceManager), typeof(BusDeviceManager))
                 .AddSingleton(typeof(ITokenManager), typeof(TokenManager))
+                .AddSingleton(typeof(INtpService), typeof(NTPService))
                 .AddSingleton(typeof(IMqttManager), typeof(MqttManager))
                 .AddSingleton(typeof(ICommandManager), typeof(CommandManager))
                 .AddSingleton(typeof(ModicusWebpageAPI))

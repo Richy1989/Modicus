@@ -68,5 +68,22 @@ Topic: <ClientID>/cmd/MeasurementInterval
 Payload JSON: {"Interval": <inverval>}
 ```
 
+### Create new I2C Connected Sensor
+Creates and starts a new sensor connected to the I2C Bus and start it.
+```sh
+Topic: <ClientID>/cmd/CreateI2CSensor
+Payload JSON:
+{
+	"SensorType": "<Supported Type>",
+	"Name": "<Name>",
+	"MeasurementInterval": <Measurement Interval>,
+	"SclPin": <SCL Pin>,
+	"SdaPin": <SDA Pin>,
+	"BusID": <Bus ID>,
+	"I2cBusSpeed": <0 = StandardMode | 1 = FastMode | 2 = FastModePlus>,
+	"DeviceAddress": <I2C Address>
+}
+```
+
 ## License
 This program is licensed under GPL-3.0-only

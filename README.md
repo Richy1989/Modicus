@@ -1,11 +1,10 @@
 # Modicus
 ## A nanoframework Sensor Data Collector for MQTT written in C# (nanoframework)
-### Built for the ESP32 Hardware
 
+### Built for the ESP32 Hardware
 Welcome to the official GitHub page for our Modicus C# application designed to gather sensor data and seamlessly transmit it to an MQTT broker. This project empowers you to easily monitor and manage various sensors while ensuring smooth integration with MQTT-based systems.
 
 ## Features
-
 - Read all kind of sensors with the help of the powerful nanoframework
 - Webserver for easy configuration
 - Wifi AP for setup
@@ -20,48 +19,53 @@ Welcome to the official GitHub page for our Modicus C# application designed to g
 
 ## Getting Started 
 First of all follow [Getting Started Guide for managed code (C#)](https://docs.nanoframework.net/content/getting-started-guides/getting-started-managed.html).
-Download the newest release, open with Visual Studio 2022 and deploy code. Use the Release Build for optimal perfomance.
+Download the newest source, open with Visual Studio 2022 and deploy code. Use the Release Build for optimal performance.
 
 ###
-Access Point: With the first startup an Software Access Point will be startet on the controller to reach the WebUI. 
+Access Point: With the first startup a software access point will be started on the controller to reach the WebUI. 
 Connect to the access point:
  - SSID: Modicus_&#60;MAC Address&#62;
- - Passwort: -
+ - Password: -
  - IP Adress: 192.168.4.1
+ 
+Connect to the WebUI and configure the WiFi Settings. Then reboot the controller. It may happen that you need to reboot the controller several times. 
+Note that GPIO 2 of the Controller is used as Signaling Service, if GPGIO pulses every 200ms you need to reboot again. 
+Only if GPIP 2 is constant High the boot was successful. 
+
 ## MQTT Commands
 
 ### Turn MQTT Service ON / OFF
 Turns the MQTT service on or off.
 ```sh
 Topic: <ClientID>/cmd/MqttOnOff
-Payload JSON: {"On"= "true|false"}
+Payload JSON: {"On": "true|false"}
 ```
 
 ### Set MQTT Client ID
 Sets the client id for the MQTT service.
 ```sh
 Topic: <ClientID>/cmd/MqttClientId
-Payload JSON: {"ClientID"= "<clientID>"}
+Payload JSON: {"ClientID": "<clientID>"}
 ```
 ### Set MQTT Sent Interval 
 Set the send interval for the MQTT service in seconds.
 ```sh
 Topic: <ClientID>/cmd/MqttSendInterval
-Payload JSON: {"Interval"= <inverval>}
+Payload JSON: {"Interval": <inverval>}
 ```
 
 ### Reboot system
 Reboots the system after the given delay in seconds.
 ```sh
 Topic: <ClientID>/cmd/Reboot
-Payload JSON: {"Interval"= <delay>}
+Payload JSON: {"Delay": <delay>}
 ```
 
 ### Set Measurement Interval for sensors
 Set the measurement interval for the sensors in seconds.
 ```sh
 Topic: <ClientID>/cmd/MeasurementInterval
-Payload JSON: {"Interval"= <inverval>}
+Payload JSON: {"Interval": <inverval>}
 ```
 
 ## License

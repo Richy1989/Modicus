@@ -13,5 +13,10 @@ namespace Modicus.Manager.Interfaces
         void StartSensor(ISensor sensor);
 
         ISensor GetSensor(string name);
+
+        ISensor GetSensorFromName(string name);
+        void StopSensor(ISensor sensor);
+
+        void DeleteSensor(ISensor sensor);
     }
 }

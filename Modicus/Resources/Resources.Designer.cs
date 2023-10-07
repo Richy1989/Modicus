@@ -35,6 +35,7 @@ namespace Modicus.Resources
             select_sensor = -26240,
             mqtt_settings = -21146,
             ip_settings = -11416,
+            edit_sensor = -8290,
             style = -5605,
             index = -2501,
             system_settings = 19842,

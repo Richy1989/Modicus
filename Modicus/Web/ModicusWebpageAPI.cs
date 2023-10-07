@@ -320,5 +320,39 @@ namespace Modicus.Web
             }
             WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateI2CSettingsSite("Configure Away!", item));
         }
+
+        [Route("edit_sensor")]
+        public void EditSensor(WebServerEventArgs e)
+        {
+            Hashtable hashPars = WebManager.ParseParamsFromStream(e.Context.Request.InputStream);
+            var start = (string)hashPars["start"];
+            var stop = (string)hashPars["stop"];
+            var delete = (string)hashPars["delete"];
+            var sensorString = (string)hashPars["selected_sensor"];
+
+            ISensor sensor = busDeviceManager.GetSensorFromName(sensorString);
+
+            string message = string.Empty;
+            if (sensor != null) 
+            {
+                if (start != null)
+                {
+                    busDeviceManager.StartSensor(sensor);
+                    message = $"Sensor: {sensor.Name} Startet!";
+                }
+                if (stop != null)
+                {
+                    busDeviceManager.StopSensor(sensor);
+                    message = $"Sensor: {sensor.Name} Stopped!";
+                }
+                if (delete != null)
+                {
+                    busDeviceManager.DeleteSensor(sensor);
+                    message = $"Sensor: {sensor.Name} Deleted!";
+                }
+            }
+
+            WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateSensorSelectionSite(message));
+        }
     }
 }

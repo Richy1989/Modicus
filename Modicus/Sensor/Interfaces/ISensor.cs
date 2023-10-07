@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using Modicus.MQTT.Interfaces;
 
@@ -11,6 +9,7 @@ namespace Modicus.Sensor.Interfaces
     /// </summary>
     internal interface ISensor : IDisposable
     {
+        bool IsRunning { get; }
         string Type { get; set; }
         string Name { get; set; }
         int MeasurementInterval { get; set; }

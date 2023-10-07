@@ -29,14 +29,14 @@ namespace Modicus.Commands
                 if (sensorType != null)
                 {
                     BaseI2cSensor sensor = (BaseI2cSensor)Activator.CreateInstance(((Type)sensorType));
+                    sensor.Name = content.Name;
                     sensor.SclPin = content.SclPin;
                     sensor.SdaPin = content.SdaPin;
                     sensor.MeasurementInterval = content.MeasurementInterval;
                     sensor.BusID = content.BusID;
                     sensor.I2cBusSpeed = (I2cBusSpeed)content.I2cBusSpeed;
                     sensor.DeviceAddress = content.DeviceAddress;
-
-                    busDeviceManager.AddSensor(sensor);
+                                        busDeviceManager.AddSensor(sensor);
                     busDeviceManager.StartSensor(sensor);
                 }
             }

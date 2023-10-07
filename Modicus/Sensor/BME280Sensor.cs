@@ -50,10 +50,15 @@ namespace Modicus.Sensor
 
         public override void StartMeasurement(CancellationToken token)
         {
+            sensorTokenSource = new CancellationTokenSource();
+            token = sensorTokenSource.Token;
+
             sensorThread = new Thread(() =>
             {
                 while (!token.IsCancellationRequested && !sensorTokenSource.IsCancellationRequested)
                 {
+                    IsRunning = true;
+
                     // Perform a synchronous measurement
                     var readResult = i2CBme280.Read();
 
@@ -103,21 +108,23 @@ namespace Modicus.Sensor
 
                     Thread.Sleep(MeasurementInterval);
                 }
+                IsRunning = false;  
             });
             sensorThread.Start();
         }
 
         /// <summary>Disposes the sensor.</summary>
-        public override void Dispose()
-        {
-            i2CBme280?.Dispose();
-        }
+        public override void Dispose() => i2CBme280?.Dispose();
 
         /// <summary>Stops the sensor.</summary>
         public override void StopSensor()
         {
-            sensorTokenSource.Cancel();
-            this.Dispose();
+            sensorTokenSource?.Cancel();
+
+            if (mqttPublisher != null)
+                mqttPublisher.MainMqttMessage.Environment = null;
+
+            IsRunning = false;
         }
     }
 }

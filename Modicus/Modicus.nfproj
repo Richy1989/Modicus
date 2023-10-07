@@ -202,6 +202,7 @@
     <None Include="Resources\style.css" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="resources\edit_sensor.html" />
     <Content Include="Resources\head.html" />
     <Content Include="resources\i2csettings.html" />
     <Content Include="Resources\select_sensor.html" />

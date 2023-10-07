@@ -14,14 +14,13 @@ namespace Modicus.Sensor
         internal CancellationToken sensorToken;
 
         public string Name { get; set; }
+        public bool IsRunning { get; internal set; }
         public int MeasurementInterval { get; set; }
         public string Type { get; set; }
 
         /// <summary>Constructor for Base Sensor class</summary>
         internal BaseSensor()
         {
-            sensorTokenSource = new CancellationTokenSource();
-            sensorToken = sensorTokenSource.Token;
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using GardenLightHyperionConnector.Manager;
 using Modicus.Manager.Interfaces;
+using Modicus.Sensor.Interfaces;
 using nanoFramework.WebServer;
 
 namespace Modicus.Web
@@ -142,13 +143,18 @@ namespace Modicus.Web
         public string CreateSensorSelectionSite(string message)
         {
             var body = Resources.Resources.GetString(Resources.Resources.StringResources.select_sensor);
+            var edit_sensor = Resources.Resources.GetString(Resources.Resources.StringResources.edit_sensor);
 
 
             string alreadyConfigured = string.Empty;
             foreach (string item in busDeviceManager.ConfiguredSensors.Keys)
             {
-                alreadyConfigured = string.Format("{0}<tr><td>{1}</td><td>{2}</td><td>{3}</td><td><input type=\"submit\" class=\"delete-button\" name=\"{4}\" value=\"&#10006;\"></td> </tr>",
-                    alreadyConfigured, item, "Yes", "Stop", item);
+                ISensor sensor = busDeviceManager.GetSensorFromName(item);
+                alreadyConfigured = string.Format(edit_sensor,
+                    alreadyConfigured,
+                    item,
+                    sensor.IsRunning ? "Yes" : "No",
+                    item);
             }
 
             string itemString = string.Empty;

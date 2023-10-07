@@ -10,11 +10,12 @@ namespace Modicus.Manager
 {
     internal class BusDeviceManager : IBusDeviceManager
     {
+        public IDictionary ConfiguredSensors { get; }
+        public IDictionary SupportedSensors { get; }
+
         private readonly ISettingsManager settingsManager;
         private readonly IMqttManager mqttManager;
         private readonly ITokenManager tokenManager;
-        public IDictionary ConfiguredSensors { get; }
-        public IDictionary SupportedSensors { get; }
 
         /// <summary>
         /// Creates a new instance of bus device manager.
@@ -22,6 +23,7 @@ namespace Modicus.Manager
         /// </summary>
         public BusDeviceManager(ISettingsManager settingsManager, IMqttManager mqttManager, ITokenManager tokenManager)
         {
+            //All supported sensors need to be entered here!
             SupportedSensors = new Hashtable
             {
                 { "BME280 Sensor", typeof(BME280Sensor) }
@@ -34,9 +36,7 @@ namespace Modicus.Manager
             CreateStartAllSensors();
         }
 
-        /// <summary>
-        /// Adds a new sensor.
-        /// </summary>
+        /// <summary>Adds a new sensor.</summary>
         /// <param name="sensor"></param>
         public void AddSensor(ISensor sensor)
         {
@@ -45,21 +45,32 @@ namespace Modicus.Manager
             ConfiguredSensors.Add(sensor.Name, sensor);
         }
 
-        /// <summary>
-        /// Starts the measurement of the sernsor.
-        /// </summary>
+        /// <summary>Starts the measurement of the sernsor.</summary>
         /// <param name="sensor"></param>
-        public void StartSensor(ISensor sensor)=> sensor.StartMeasurement(tokenManager.Token);
+        public void StartSensor(ISensor sensor)
+        {
+            if (!sensor.IsRunning)
+                sensor.StartMeasurement(tokenManager.Token);
+        }
 
-        /// <summary>
-        /// Returns a sensor.
-        /// </summary>
+        /// <summary>Stops the given sensor .</summary>
+        /// <param name="sensor"></param>
+        public void StopSensor(ISensor sensor) => sensor.StopSensor();
+
+        /// <summary>Stops the given sensor.</summary>
+        /// <param name="sensor"></param>
+        public void DeleteSensor(ISensor sensor)
+        {
+            sensor.StopSensor();
+            sensor.Dispose();
+            ConfiguredSensors.Remove(sensor.Name);
+        }
+
+        /// <summary>Returns a sensor.</summary>
         /// <param name="name"></param>
-        public ISensor GetSensor(string name)=> (ISensor)ConfiguredSensors[name];
+        public ISensor GetSensor(string name) => (ISensor)ConfiguredSensors[name];
 
-        /// <summary>
-        /// Creates and starts all saved sensors.
-        /// </summary>
+        /// <summary>Creates and starts all saved sensors.</summary>
         private void CreateStartAllSensors()
         {
             ConfiguredSensors.Clear();
@@ -75,6 +86,13 @@ namespace Modicus.Manager
                 baseSensor.Configure((IPublishMqtt)mqttManager);
                 baseSensor.StartMeasurement(tokenManager.Token);
             }
+        }
+
+        /// <summary>Return the cofigured sensor by its name.</summary>
+        /// <param name="name"></param>
+        public ISensor GetSensorFromName(string name)
+        {
+            return (ISensor)ConfiguredSensors[name];
         }
     }
 }

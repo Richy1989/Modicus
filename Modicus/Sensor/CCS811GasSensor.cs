@@ -50,6 +50,7 @@ namespace Modicus.Sensor
             {
                 while (!token.IsCancellationRequested && !sensorToken.IsCancellationRequested)
                 {
+                    IsRunning = true;
                     while (!sensor.IsDataReady && !token.IsCancellationRequested && !sensorToken.IsCancellationRequested)
                     {
                         Thread.Sleep(100);

@@ -13,9 +13,15 @@ Welcome to the official GitHub page for our Modicus C# application designed to g
 
 ## Note
 - This project is in alpha!
-- This is a very new application, it can only read one sensor as of now (BME280). 
 - The software is in active development and will grow
 - Contribution is happily Welcome
+
+## Supported sensors
+This is a very new project. Supported devices will grow. The strucute of the project makes it very easy to add new sensors. 
+
+Already Supported:
+- BME280 Humidity / Pressure / Temperature Sensor
+- CCS811 Gas Sensor
 
 ## Getting Started 
 First of all follow [Getting Started Guide for managed code (C#)](https://docs.nanoframework.net/content/getting-started-guides/getting-started-managed.html).

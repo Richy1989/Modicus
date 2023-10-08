@@ -248,9 +248,16 @@ namespace Modicus.Web
 
             string message = "Error in sensor creation:\n";
             var item = (string)hashPars["sensor-type"];
+            var back = (string)hashPars["back"];
             var sensor = busDeviceManager.SupportedSensors[item];
 
             bool isOk = true;
+
+            if(back != null)
+            {
+                WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateSensorSelectionSite(""));
+                return;
+            }
 
             if (!int.TryParse((string)hashPars["i2c-bus-speed"], out var speed))
             {
@@ -328,6 +335,7 @@ namespace Modicus.Web
             var start = (string)hashPars["start"];
             var stop = (string)hashPars["stop"];
             var delete = (string)hashPars["delete"];
+            var back = (string)hashPars["back"];
             var sensorString = (string)hashPars["selected_sensor"];
 
             ISensor sensor = busDeviceManager.GetSensorFromName(sensorString);
@@ -338,7 +346,7 @@ namespace Modicus.Web
                 if (start != null)
                 {
                     busDeviceManager.StartSensor(sensor);
-                    message = $"Sensor: {sensor.Name} Startet!";
+                    message = $"Sensor: {sensor.Name} Started!";
                 }
                 if (stop != null)
                 {
@@ -350,6 +358,11 @@ namespace Modicus.Web
                     busDeviceManager.DeleteSensor(sensor);
                     message = $"Sensor: {sensor.Name} Deleted!";
                 }
+            }
+            else if(back != null)
+            {
+                modicusWebpages.Default(e);
+                return;
             }
 
             WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateSensorSelectionSite(message));

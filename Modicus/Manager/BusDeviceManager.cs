@@ -27,7 +27,7 @@ namespace Modicus.Manager
             SupportedSensors = new Hashtable
             {
                 { "BME280 Sensor", typeof(BME280Sensor) },
-                { "CC811 Sensor", typeof(CCS811GasSensor) }
+                { "CCS811 Sensor", typeof(CCS811GasSensor) }
             };
 
             this.ConfiguredSensors = new Hashtable();
@@ -43,6 +43,10 @@ namespace Modicus.Manager
         {
             settingsManager.SensorSettings.AddSensor(sensor);
             sensor.Configure((IPublishMqtt)mqttManager);
+
+            if(ConfiguredSensors.Contains(sensor.Name))
+                return;
+
             ConfiguredSensors.Add(sensor.Name, sensor);
         }
 
@@ -82,7 +86,9 @@ namespace Modicus.Manager
             {
                 ISensor baseSensor = (ISensor)JsonConvert.DeserializeObject((string)item, typeof(BaseSensor));
                 baseSensor = (ISensor)JsonConvert.DeserializeObject((string)item, Type.GetType(baseSensor.Type));
-                ConfiguredSensors.Add(baseSensor.Name, baseSensor);
+                
+                if(!ConfiguredSensors.Contains(baseSensor.Name))
+                    ConfiguredSensors.Add(baseSensor.Name, baseSensor);
 
                 baseSensor.Configure((IPublishMqtt)mqttManager);
                 baseSensor.StartMeasurement(tokenManager.Token);
@@ -93,6 +99,7 @@ namespace Modicus.Manager
         /// <param name="name"></param>
         public ISensor GetSensorFromName(string name)
         {
+            if (name == null) return null;
             return (ISensor)ConfiguredSensors[name];
         }
     }

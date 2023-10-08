@@ -61,7 +61,8 @@
     <Compile Include="Sensor\BaseI2cSensor.cs" />
     <Compile Include="Sensor\BaseSensor.cs" />
     <Compile Include="Sensor\BME280Sensor.cs" />
-    <Compile Include="Sensor\Bmp280Measurement.cs" />
+    <Compile Include="Sensor\EnvironmentData.cs" />
+    <Compile Include="Sensor\CCS811GasSensor.cs" />
     <Compile Include="Sensor\Interfaces\II2cSensor.cs" />
     <Compile Include="Sensor\Interfaces\ISensor.cs" />
     <Compile Include="Services\Interfaces\INtpService.cs" />
@@ -84,6 +85,9 @@
   <ItemGroup>
     <Reference Include="Iot.Device.Bmxx80">
       <HintPath>..\packages\nanoFramework.Iot.Device.Bmxx80.1.2.396\lib\Iot.Device.Bmxx80.dll</HintPath>
+    </Reference>
+    <Reference Include="Iot.Device.Ccs811">
+      <HintPath>..\packages\nanoFramework.Iot.Device.Ccs811.1.2.403\lib\Iot.Device.Ccs811.dll</HintPath>
     </Reference>
     <Reference Include="Iot.Device.Common.WeatherHelper">
       <HintPath>..\packages\nanoFramework.Iot.Device.Common.WeatherHelper.1.2.394\lib\Iot.Device.Common.WeatherHelper.dll</HintPath>
@@ -175,20 +179,26 @@
     <Reference Include="UnitsNet.Duration">
       <HintPath>..\packages\UnitsNet.nanoFramework.Duration.5.34.0\lib\UnitsNet.Duration.dll</HintPath>
     </Reference>
+    <Reference Include="UnitsNet.ElectricCurrent">
+      <HintPath>..\packages\UnitsNet.nanoFramework.ElectricCurrent.5.35.0\lib\UnitsNet.ElectricCurrent.dll</HintPath>
+    </Reference>
     <Reference Include="UnitsNet.ElectricResistance">
       <HintPath>..\packages\UnitsNet.nanoFramework.ElectricResistance.5.34.0\lib\UnitsNet.ElectricResistance.dll</HintPath>
     </Reference>
     <Reference Include="UnitsNet.Length">
-      <HintPath>..\packages\UnitsNet.nanoFramework.Length.5.34.0\lib\UnitsNet.Length.dll</HintPath>
+      <HintPath>..\packages\UnitsNet.nanoFramework.Length.5.35.0\lib\UnitsNet.Length.dll</HintPath>
     </Reference>
     <Reference Include="UnitsNet.Pressure">
       <HintPath>..\packages\UnitsNet.nanoFramework.Pressure.5.34.0\lib\UnitsNet.Pressure.dll</HintPath>
     </Reference>
     <Reference Include="UnitsNet.RelativeHumidity">
-      <HintPath>..\packages\UnitsNet.nanoFramework.RelativeHumidity.5.34.0\lib\UnitsNet.RelativeHumidity.dll</HintPath>
+      <HintPath>..\packages\UnitsNet.nanoFramework.RelativeHumidity.5.35.0\lib\UnitsNet.RelativeHumidity.dll</HintPath>
     </Reference>
     <Reference Include="UnitsNet.Temperature">
-      <HintPath>..\packages\UnitsNet.nanoFramework.Temperature.5.34.0\lib\UnitsNet.Temperature.dll</HintPath>
+      <HintPath>..\packages\UnitsNet.nanoFramework.Temperature.5.35.0\lib\UnitsNet.Temperature.dll</HintPath>
+    </Reference>
+    <Reference Include="UnitsNet.VolumeConcentration">
+      <HintPath>..\packages\UnitsNet.nanoFramework.VolumeConcentration.5.35.0\lib\UnitsNet.VolumeConcentration.dll</HintPath>
     </Reference>
     <Reference Include="Windows.Storage">
       <HintPath>..\packages\nanoFramework.Windows.Storage.1.5.33\lib\Windows.Storage.dll</HintPath>

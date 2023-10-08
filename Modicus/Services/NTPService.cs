@@ -18,30 +18,31 @@ namespace Modicus.Services
             Sntp.Server1 = "at.pool.ntp.org";
             Sntp.Server2 = "ts1.univie.ac.at";
 
-            ntpStarter = new Thread(() =>
-            {
-                while (!tokenManager.Token.IsCancellationRequested)
-                {
-                    while (!wiFiManager.IsConnected && !wiFiManager.ISoftAP && !tokenManager.Token.IsCancellationRequested)
-                    {
-                        Thread.Sleep(5000);
-                    }
+            //ntpStarter = new Thread(() =>
+            //{
+            //    while (!tokenManager.Token.IsCancellationRequested)
+            //    {
+            //        while (!wiFiManager.IsConnected && !wiFiManager.ISoftAP && !tokenManager.Token.IsCancellationRequested)
+            //        {
+            //            Thread.Sleep(5000);
+            //        }
 
-                    Sntp.Start();
+            //        Sntp.Start();
 
-                    while (wiFiManager.IsConnected && !tokenManager.Token.IsCancellationRequested)
-                    {
-                        Thread.Sleep(1000);
-                        Sntp.UpdateNow();
-                    }
-                    Thread.Sleep(1000);
-                }
-            });
+            //        while (wiFiManager.IsConnected && !tokenManager.Token.IsCancellationRequested)
+            //        {
+            //            Thread.Sleep(1000);
+            //            Sntp.UpdateNow();
+            //        }
+            //        Thread.Sleep(1000);
+            //    }
+            //});
         }
 
         public void Start()
         {
-            ntpStarter.Start();
+            // ntpStarter.Start();
+            Sntp.Start();
         }
     }
 }

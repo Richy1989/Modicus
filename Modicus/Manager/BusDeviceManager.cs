@@ -26,7 +26,8 @@ namespace Modicus.Manager
             //All supported sensors need to be entered here!
             SupportedSensors = new Hashtable
             {
-                { "BME280 Sensor", typeof(BME280Sensor) }
+                { "BME280 Sensor", typeof(BME280Sensor) },
+                { "CC811 Sensor", typeof(CCS811GasSensor) }
             };
 
             this.ConfiguredSensors = new Hashtable();

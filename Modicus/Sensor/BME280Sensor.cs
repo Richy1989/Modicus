@@ -51,11 +51,11 @@ namespace Modicus.Sensor
         public override void StartMeasurement(CancellationToken token)
         {
             sensorTokenSource = new CancellationTokenSource();
-            token = sensorTokenSource.Token;
+            sensorToken = sensorTokenSource.Token;
 
             sensorThread = new Thread(() =>
             {
-                while (!token.IsCancellationRequested && !sensorTokenSource.IsCancellationRequested)
+                while (!token.IsCancellationRequested && !sensorToken.IsCancellationRequested)
                 {
                     IsRunning = true;
 
@@ -66,7 +66,7 @@ namespace Modicus.Sensor
                     // var altValue = WeatherHelper.CalculateAltitude(preValue, defaultSeaLevelPressure, tempValue) which would be more performant.
                     i2CBme280.TryReadAltitude(defaultSeaLevelPressure, out var altValue);
 
-                    Bmp280Measurement measurement = new();
+                    EnvironmentData measurement = new();
 
                     if (readResult.TemperatureIsValid)
                     {

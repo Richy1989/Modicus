@@ -48,6 +48,7 @@ namespace Modicus.Sensor
             i2CBme280.SetPowerMode(Iot.Device.Bmxx80.PowerMode.Bmx280PowerMode.Normal);
         }
 
+        /// <summary>Starts the measurement thread.</summary>
         public override void StartMeasurement(CancellationToken token)
         {
             sensorTokenSource = new CancellationTokenSource();
@@ -66,46 +67,33 @@ namespace Modicus.Sensor
                     // var altValue = WeatherHelper.CalculateAltitude(preValue, defaultSeaLevelPressure, tempValue) which would be more performant.
                     i2CBme280.TryReadAltitude(defaultSeaLevelPressure, out var altValue);
 
-                    EnvironmentData measurement = new();
+                    EnvironmentData measurement = mqttPublisher.MainMqttMessage.Environment;
 
-                    if (readResult.TemperatureIsValid)
+                    if (measurement != null)
                     {
-                        //Debug.WriteLine($"Temperature: {readResult.Temperature.DegreesCelsius}\u00B0C");
-                        measurement.Temperature = readResult.Temperature.DegreesCelsius;
-                    }
-                    if (readResult.PressureIsValid)
-                    {
-                        //Debug.WriteLine($"Pressure: {readResult.Pressure.Hectopascals}hPa");
-                        measurement.Pressure = readResult.Pressure.Hectopascals;
-                    }
+                        if (readResult.TemperatureIsValid)
+                        {
+                            //Debug.WriteLine($"Temperature: {readResult.Temperature.DegreesCelsius}\u00B0C");
+                            measurement.Temperature = readResult.Temperature.DegreesCelsius;
+                        }
+                        if (readResult.PressureIsValid)
+                        {
+                            //Debug.WriteLine($"Pressure: {readResult.Pressure.Hectopascals}hPa");
+                            measurement.Pressure = readResult.Pressure.Hectopascals;
+                        }
 
-                    if (readResult.TemperatureIsValid && readResult.PressureIsValid)
-                    {
-                        //Debug.WriteLine($"Altitude: {altValue.Meters}m");
-                        measurement.Altitude = altValue.Meters;
+                        if (readResult.TemperatureIsValid && readResult.PressureIsValid)
+                        {
+                            //Debug.WriteLine($"Altitude: {altValue.Meters}m");
+                            measurement.Altitude = altValue.Meters;
+                        }
+
+                        if (readResult.HumidityIsValid)
+                        {
+                            //Debug.WriteLine($"Relative humidity: {readResult.Humidity.Percent}%");
+                            measurement.Humidity = readResult.Humidity.Percent;
+                        }
                     }
-
-                    if (readResult.HumidityIsValid)
-                    {
-                        //Debug.WriteLine($"Relative humidity: {readResult.Humidity.Percent}%");
-                        measurement.Humidity = readResult.Humidity.Percent;
-                    }
-
-                    //// WeatherHelper supports more calculations, such as saturated vapor pressure, actual vapor pressure and absolute humidity.
-                    //if (readResult.TemperatureIsValid && readResult.HumidityIsValid)
-                    //{
-                    //    Debug.WriteLine($"Heat index: {WeatherHelper.CalculateHeatIndex(readResult.Temperature, readResult.Humidity).DegreesCelsius}\u00B0C");
-                    //    Debug.WriteLine($"Dew point: {WeatherHelper.CalculateDewPoint(readResult.Temperature, readResult.Humidity).DegreesCelsius}\u00B0C");
-                    //}
-
-                    if (readResult.TemperatureIsValid || readResult.PressureIsValid)
-                    {
-                        var message = JsonConvert.SerializeObject(measurement);
-                        //Debug.WriteLine($"BME208 Measurement Value: {message}");
-                        //mqttPublisher.Publish("SENSOR/modicus_sensorrange_livingroom", message);
-                        mqttPublisher.MainMqttMessage.Environment = measurement;
-                    }
-
                     Thread.Sleep(MeasurementInterval);
                 }
                 IsRunning = false;  

@@ -18,10 +18,13 @@ namespace Modicus.Sensor
         public double Current { get; set; }
         public double ADC { get; set; }
 
+        /// <summary>Creates a new instance of the CCS811 Gas Sensor.</summary>
         public CCS811GasSensor()
         {
         }
 
+        /// <summary>Configures the CCS811 Gas Sensor.</summary>
+        /// <param name="publisher"></param>
         public override void Configure(IPublishMqtt publisher)
         {
             base.Configure(publisher);
@@ -34,6 +37,8 @@ namespace Modicus.Sensor
             };
         }
 
+        /// <summary>Starts the Gas Measurement.</summary>
+        /// <param name="token"></param>
         public override void StartMeasurement(CancellationToken token)
         {
             this.token = token;
@@ -54,14 +59,14 @@ namespace Modicus.Sensor
 
                     if (success)
                     {
-                        Debug.WriteLine($"Success: {success}, eCO2: {eCO2.PartsPerMillion} ppm, eTVOC: {eTVOC.PartsPerBillion} ppb, Current: {curr.Microamperes} µA, ADC: {adc} = {adc * 1.65 / 1023} V.");
+                        //Debug.WriteLine($"Success: {success}, eCO2: {eCO2.PartsPerMillion} ppm, eTVOC: {eTVOC.PartsPerBillion} ppb, Current: {curr.Microamperes} µA, ADC: {adc} = {adc * 1.65 / 1023} V.");
 
                         this.eCO2 = eCO2.PartsPerMillion;
                         this.eTVOC = eTVOC.PartsPerBillion;
                         this.Current = curr.Microamperes;
                         this.ADC = adc * 1.65 / 1023;
 
-                        if (publishMqtt != null)
+                        if (publishMqtt != null && publishMqtt.MainMqttMessage.Environment != null)
                         {
                             publishMqtt.MainMqttMessage.Environment.TotalVolatileCompound = this.eCO2;
                             publishMqtt.MainMqttMessage.Environment.TotalVolatileOrganicCompound = this.eTVOC;
@@ -94,11 +99,15 @@ namespace Modicus.Sensor
             IsRunning = false;
         }
 
+        /// <summary>
+        /// Adjusta the temperatre measured by a different sensor in the CCS811 Sensor. 
+        /// Temperature is needed for correct measurement.
+        /// </summary>
         private void AdjustTemperatureHumidity()
         {
             while (!token.IsCancellationRequested && !sensorTokenSource.IsCancellationRequested)
             {
-                Debug.WriteLine("+++++ Updating Temperature and Humidity in CC811 Sensor +++++");
+                Debug.WriteLine("+++++ Updating Temperature and Humidity in CCS811 Sensor +++++");
 
                 if (publishMqtt.MainMqttMessage.Environment != null)
                     sensor.SetEnvironmentData(Temperature.FromDegreesCelsius(publishMqtt.MainMqttMessage.Environment.Temperature), RelativeHumidity.FromPercent(publishMqtt.MainMqttMessage.Environment.Humidity));

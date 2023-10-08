@@ -6,6 +6,6 @@ namespace Modicus.MQTT
     public class MainMqttMessage
     {
         public DateTime Time { get; set; }
-        public EnvironmentData Environment { get; set; }
+        public EnvironmentData Environment { get; set; } = new EnvironmentData();
     }
 }

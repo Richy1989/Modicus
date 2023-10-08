@@ -13,11 +13,6 @@ namespace Modicus.Sensor
         private IPublishMqtt publishMqtt;
         private CancellationToken token;
 
-        public double eCO2 { get; set; }
-        public double eTVOC { get; set; }
-        public double Current { get; set; }
-        public double ADC { get; set; }
-
         /// <summary>Creates a new instance of the CCS811 Gas Sensor.</summary>
         public CCS811GasSensor()
         {
@@ -33,7 +28,7 @@ namespace Modicus.Sensor
 
             sensor = new Ccs811Sensor(GetI2cDevice())
             {
-                OperationMode = OperationMode.ConstantPower1Second
+                OperationMode = OperationMode.LowPower60Second
             };
         }
 
@@ -53,7 +48,7 @@ namespace Modicus.Sensor
                     IsRunning = true;
                     while (!sensor.IsDataReady && !token.IsCancellationRequested && !sensorToken.IsCancellationRequested)
                     {
-                        Thread.Sleep(100);
+                        Thread.Sleep(200);
                     }
 
                     var success = sensor.TryReadGasData(out VolumeConcentration eCO2, out VolumeConcentration eTVOC, out ElectricCurrent curr, out int adc);
@@ -62,15 +57,15 @@ namespace Modicus.Sensor
                     {
                         //Debug.WriteLine($"Success: {success}, eCO2: {eCO2.PartsPerMillion} ppm, eTVOC: {eTVOC.PartsPerBillion} ppb, Current: {curr.Microamperes} µA, ADC: {adc} = {adc * 1.65 / 1023} V.");
 
-                        this.eCO2 = eCO2.PartsPerMillion;
-                        this.eTVOC = eTVOC.PartsPerBillion;
-                        this.Current = curr.Microamperes;
-                        this.ADC = adc * 1.65 / 1023;
+                        //this.eCO2 = eCO2.PartsPerMillion;
+                        //this.eTVOC = eTVOC.PartsPerBillion;
+                        //this.Current = curr.Microamperes;
+                        //this.ADC = adc * 1.65 / 1023;
 
                         if (publishMqtt != null && publishMqtt.MainMqttMessage.Environment != null)
                         {
-                            publishMqtt.MainMqttMessage.Environment.TotalVolatileCompound = this.eCO2;
-                            publishMqtt.MainMqttMessage.Environment.TotalVolatileOrganicCompound = this.eTVOC;
+                            publishMqtt.MainMqttMessage.Environment.TotalVolatileCompound = eCO2.PartsPerMillion;
+                            publishMqtt.MainMqttMessage.Environment.TotalVolatileOrganicCompound = eTVOC.PartsPerBillion;
                         }
                     }
                     Thread.Sleep(MeasurementInterval);
@@ -101,8 +96,8 @@ namespace Modicus.Sensor
         }
 
         /// <summary>
-        /// Adjusta the temperatre measured by a different sensor in the CCS811 Sensor. 
-        /// Temperature is needed for correct measurement.
+        /// Adjusta the temperature and humidity, measured by a different sensor, in the CCS811 Sensor. 
+        /// Data is needed for correct measurement.
         /// </summary>
         private void AdjustTemperatureHumidity()
         {
@@ -111,7 +106,9 @@ namespace Modicus.Sensor
                 Debug.WriteLine("+++++ Updating Temperature and Humidity in CCS811 Sensor +++++");
 
                 if (publishMqtt.MainMqttMessage.Environment != null)
-                    sensor.SetEnvironmentData(Temperature.FromDegreesCelsius(publishMqtt.MainMqttMessage.Environment.Temperature), RelativeHumidity.FromPercent(publishMqtt.MainMqttMessage.Environment.Humidity));
+                    sensor.SetEnvironmentData(
+                        Temperature.FromDegreesCelsius(publishMqtt.MainMqttMessage.Environment.Temperature),
+                        RelativeHumidity.FromPercent(publishMqtt.MainMqttMessage.Environment.Humidity));
                 else
                     sensor.SetEnvironmentData(Temperature.FromDegreesCelsius(21.3), RelativeHumidity.FromPercent(42.5));
 

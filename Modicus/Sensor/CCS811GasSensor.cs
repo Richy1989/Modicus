@@ -28,7 +28,7 @@ namespace Modicus.Sensor
 
             sensor = new Ccs811Sensor(GetI2cDevice())
             {
-                OperationMode = OperationMode.LowPower60Second
+                OperationMode = OperationMode.ConstantPower1Second
             };
         }
 

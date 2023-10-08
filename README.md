@@ -53,7 +53,7 @@ Sets the client id for the MQTT service.
 Topic: <ClientID>/cmd/MqttClientId
 Payload JSON: {"ClientID": "<clientID>"}
 ```
-### Set MQTT Sent Interval 
+### Set MQTT Send Interval 
 Set the send interval for the MQTT service in seconds.
 ```sh
 Topic: <ClientID>/cmd/MqttSendInterval

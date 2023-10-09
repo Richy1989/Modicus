@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading;
 using Iot.Device.Ccs811;
 using Modicus.MQTT.Interfaces;
@@ -76,6 +75,7 @@ namespace Modicus.Sensor
             Thread adjustThread = new(new ThreadStart(AdjustTemperatureHumidity));
             adjustThread.Start();
 
+            //Give the adjust thread to start
             Thread.Sleep(500);
 
             sensorThread.Start();
@@ -96,7 +96,7 @@ namespace Modicus.Sensor
         }
 
         /// <summary>
-        /// Adjusta the temperature and humidity, measured by a different sensor, in the CCS811 Sensor. 
+        /// Adjusta the temperature and humidity, measured by a different sensor, in the CCS811 Sensor.
         /// Data is needed for correct measurement.
         /// </summary>
         private void AdjustTemperatureHumidity()
@@ -112,7 +112,7 @@ namespace Modicus.Sensor
                 else
                     sensor.SetEnvironmentData(Temperature.FromDegreesCelsius(21.3), RelativeHumidity.FromPercent(42.5));
 
-                Thread.Sleep(TimeSpan.FromSeconds(60));
+                Thread.Sleep(MeasurementInterval);
             }
         }
     }

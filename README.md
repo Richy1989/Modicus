@@ -25,7 +25,17 @@ Already Supported:
 
 ## Getting Started 
 First of all follow [Getting Started Guide for managed code (C#)](https://docs.nanoframework.net/content/getting-started-guides/getting-started-managed.html).
-Download the newest source, open with Visual Studio 2022 and deploy code. Use the Release Build for optimal performance.
+Download the newsest release. Execute the following in Power Shell. 
+
+Flash Firmware on ESP32
+```sh
+nanoff --update --platform esp32 --serialport <COMX>
+```
+
+Flash Application on ESP32
+```sh
+nanoff --target <ESPTarget> --serialport <COMX> --deploy --image "<Path to Modicus BIN File>"
+```
 
 ###
 Access Point: With the first startup a software access point will be started on the controller to reach the WebUI. 

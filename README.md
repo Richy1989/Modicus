@@ -1,15 +1,22 @@
 # Modicus
-## A nanoframework Sensor Data Collector for MQTT written in C# (nanoframework)
+## Modular IoT Sensor Data Collector written in C# (nanoframework)
+
+Modicus is an open-source software project designed for the ESP32 microcontroller, developed in C# using the NanoFramework.
+It provides a highly modular and extensible framework for collecting data from various sensors and forwarding that data to an MQTT broker.
+Whether you're working on IoT projects or sensor data collection applications, Modicus simplifies the process of connecting, collecting, and transmitting data.
 
 ### Built for the ESP32 Hardware
 Welcome to the official GitHub page for our Modicus C# application designed to gather sensor data and seamlessly transmit it to an MQTT broker. This project empowers you to easily monitor and manage various sensors while ensuring smooth integration with MQTT-based systems.
 
 ## Features
-- Read all kind of sensors with the help of the powerful nanoframework
-- Webserver for easy configuration
-- Wifi AP for setup
-- Get all data via MQTT
-- Control the application via MQTT
+- **Modular Design:** Modicus is
+- **Hotspot:** For forst time setup a hotspot is startet to make configuration as easy as possible
+- **Support for Various Sensors:** Modicus supports a variety of sensors, including temperature sensors, humidity sensors, motion detectors, and more. You can easily integrate additional sensors by creating custom modules.
+- **MQTT Integration:** Data collected from sensors is forwarded to an MQTT broker, allowing you to integrate Modicus with various IoT platforms or other services that support MQTT.
+- **Flexible Configuration:** Modicus provides a configuration system that allows you to customize MQTT server settings, sensor parameters, and data transmission intervals to suit your specific requirements.
+- **Webpage for Configuration:** Modicus provides a webserver for easy configuration of the whole system
+- **Easy Deployment:** Deploy Modicus on ESP32 devices with NanoFramework, a lightweight .NET runtime for resource-constrained devices.
+
 
 ## Note
 - This project is in alpha!

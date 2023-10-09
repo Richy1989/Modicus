@@ -86,12 +86,14 @@ namespace Modicus.Manager
             {
                 ISensor baseSensor = (ISensor)JsonConvert.DeserializeObject((string)item, typeof(BaseSensor));
                 baseSensor = (ISensor)JsonConvert.DeserializeObject((string)item, Type.GetType(baseSensor.Type));
-                
-                if(!ConfiguredSensors.Contains(baseSensor.Name))
+
+                if (!ConfiguredSensors.Contains(baseSensor.Name))
+                {
                     ConfiguredSensors.Add(baseSensor.Name, baseSensor);
 
-                baseSensor.Configure((IPublishMqtt)mqttManager);
-                baseSensor.StartMeasurement(tokenManager.Token);
+                    baseSensor.Configure((IPublishMqtt)mqttManager);
+                    baseSensor.StartMeasurement(tokenManager.Token);
+                }
             }
         }
 

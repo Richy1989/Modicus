@@ -6,7 +6,7 @@
         public double Pressure { get; set; }
         public double Altitude { get; set; }
         public double Humidity { get; set; }
-        public double TotalVolatileCompound { get; set; }
+        public double CO2 { get; set; }
         public double TotalVolatileOrganicCompound { get; set; }
     }
 }

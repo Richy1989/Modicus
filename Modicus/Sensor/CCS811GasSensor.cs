@@ -11,6 +11,7 @@ namespace Modicus.Sensor
         private Ccs811Sensor sensor;
         private IPublishMqtt publishMqtt;
         private CancellationToken token;
+        Thread adjustThread;
 
         /// <summary>Creates a new instance of the CCS811 Gas Sensor.</summary>
         public CCS811GasSensor()
@@ -29,6 +30,10 @@ namespace Modicus.Sensor
             {
                 OperationMode = OperationMode.ConstantPower1Second
             };
+
+            Debug.WriteLine($"CCS811 Bootload Version:{sensor.BootloaderVersion.ToString()}");
+            Debug.WriteLine($"CCS811 Application Version:{sensor.ApplicationVersion.ToString()}");
+            Debug.WriteLine($"CCS811 Hardware Version:{sensor.HardwareVersion.ToString()}");
         }
 
         /// <summary>Starts the Gas Measurement.</summary>
@@ -52,7 +57,12 @@ namespace Modicus.Sensor
 
                     var success = sensor.TryReadGasData(out VolumeConcentration eCO2, out VolumeConcentration eTVOC, out ElectricCurrent curr, out int adc);
 
-                    if (success)
+                    if (!success)
+                    {
+                        var error = sensor.Error;
+                        Debug.WriteLine($"Gas Sensor Measurement Error: {error}");
+                    }
+                    else
                     {
                         //Debug.WriteLine($"Success: {success}, eCO2: {eCO2.PartsPerMillion} ppm, eTVOC: {eTVOC.PartsPerBillion} ppb, Current: {curr.Microamperes} µA, ADC: {adc} = {adc * 1.65 / 1023} V.");
                         //this.eCO2 = eCO2.PartsPerMillion;
@@ -62,7 +72,7 @@ namespace Modicus.Sensor
 
                         if (publishMqtt != null && publishMqtt.MainMqttMessage.Environment != null)
                         {
-                            publishMqtt.MainMqttMessage.Environment.TotalVolatileCompound = eCO2.PartsPerMillion;
+                            publishMqtt.MainMqttMessage.Environment.CO2 = eCO2.PartsPerMillion;
                             publishMqtt.MainMqttMessage.Environment.TotalVolatileOrganicCompound = eTVOC.PartsPerBillion;
                         }
                     }
@@ -71,7 +81,7 @@ namespace Modicus.Sensor
                 IsRunning = false;
             });
 
-            Thread adjustThread = new(new ThreadStart(AdjustTemperatureHumidity));
+            adjustThread = new(new ThreadStart(AdjustTemperatureHumidity));
             adjustThread.Start();
 
             //Give the adjust thread to start
@@ -90,7 +100,7 @@ namespace Modicus.Sensor
 
             if (publishMqtt != null)
             {
-                publishMqtt.MainMqttMessage.Environment.TotalVolatileCompound = 0;
+                publishMqtt.MainMqttMessage.Environment.CO2 = 0;
                 publishMqtt.MainMqttMessage.Environment.TotalVolatileOrganicCompound = 0;
             }
 

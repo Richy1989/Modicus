@@ -4,7 +4,6 @@ using System.Threading;
 using Iot.Device.Bmxx80;
 using Iot.Device.Common;
 using Modicus.MQTT.Interfaces;
-using nanoFramework.Json;
 using UnitsNet;
 
 namespace Modicus.Sensor
@@ -96,7 +95,7 @@ namespace Modicus.Sensor
                     }
                     Thread.Sleep(MeasurementInterval);
                 }
-                IsRunning = false;  
+                IsRunning = false;
             });
             sensorThread.Start();
         }
@@ -110,7 +109,12 @@ namespace Modicus.Sensor
             sensorTokenSource?.Cancel();
 
             if (mqttPublisher != null)
-                mqttPublisher.MainMqttMessage.Environment = null;
+            {
+                mqttPublisher.MainMqttMessage.Environment.Temperature = 0;
+                mqttPublisher.MainMqttMessage.Environment.Humidity = 0;
+                mqttPublisher.MainMqttMessage.Environment.Pressure = 0;
+                mqttPublisher.MainMqttMessage.Environment.Altitude = 0;
+            }
 
             IsRunning = false;
         }

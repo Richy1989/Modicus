@@ -89,7 +89,10 @@ namespace Modicus.Sensor
             sensorTokenSource?.Cancel();
 
             if (publishMqtt != null)
-                publishMqtt.MainMqttMessage.Environment = null;
+            {
+                publishMqtt.MainMqttMessage.Environment.TotalVolatileCompound = 0;
+                publishMqtt.MainMqttMessage.Environment.TotalVolatileOrganicCompound = 0;
+            }
 
             IsRunning = false;
         }

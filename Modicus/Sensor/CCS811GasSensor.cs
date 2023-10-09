@@ -55,7 +55,6 @@ namespace Modicus.Sensor
                     if (success)
                     {
                         //Debug.WriteLine($"Success: {success}, eCO2: {eCO2.PartsPerMillion} ppm, eTVOC: {eTVOC.PartsPerBillion} ppb, Current: {curr.Microamperes} µA, ADC: {adc} = {adc * 1.65 / 1023} V.");
-
                         //this.eCO2 = eCO2.PartsPerMillion;
                         //this.eTVOC = eTVOC.PartsPerBillion;
                         //this.Current = curr.Microamperes;

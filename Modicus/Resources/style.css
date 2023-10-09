@@ -129,12 +129,12 @@ select {
     text-decoration: none;
     display: block;
     border: none;
-    width: 90%;
+    width: 100%;
 }
 
-    .dropdown-content input:hover {
-        background-color: #007BFF; /*#ddd;*/
-    }
+.dropdown-content input.input_drop_down:hover {
+    background-color: #007BFF; /*#ddd;*/
+}
 
 .dropdown:hover .dropdown-content {
     display: block;

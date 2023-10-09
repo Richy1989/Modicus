@@ -5,9 +5,6 @@ Modicus is an open-source software project designed for the ESP32 microcontrolle
 It provides a highly modular and extensible framework for collecting data from various sensors and forwarding that data to an MQTT broker.
 Whether you're working on IoT projects or sensor data collection applications, Modicus simplifies the process of connecting, collecting, and transmitting data.
 
-### Built for the ESP32 Hardware
-Welcome to the official GitHub page for our Modicus C# application designed to gather sensor data and seamlessly transmit it to an MQTT broker. This project empowers you to easily monitor and manage various sensors while ensuring smooth integration with MQTT-based systems.
-
 ## Features
 - **Modular Design:** Modicus is
 - **Hotspot:** For forst time setup a hotspot is startet to make configuration as easy as possible

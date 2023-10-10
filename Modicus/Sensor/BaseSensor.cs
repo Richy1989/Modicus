@@ -9,9 +9,10 @@ namespace Modicus.Sensor
     /// </summary>
     internal abstract class BaseSensor : ISensor
     {
+        /// The sensor token source is for cancellation within the sensor. e.g Stop Function
         internal CancellationTokenSource sensorTokenSource;
-        internal Thread sensorThread;
         internal CancellationToken sensorToken;
+        internal Thread sensorThread;
 
         public string Name { get; set; }
         public bool IsRunning { get; internal set; }

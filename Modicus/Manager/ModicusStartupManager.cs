@@ -44,7 +44,6 @@ namespace Modicus.Manager
             IWebManager webManager,
             IMqttManager mqttManager,
             IBusDeviceManager busManager,
-            INtpService ntpManager,
             ICommandManager commandManager)
         {
             //Close Startup LED to make sure we see the successfull startup at the end
@@ -90,8 +89,6 @@ namespace Modicus.Manager
             {
                 wifiManager.Start();
             }
-
-            ntpManager.Start();
 
             //Set all Commands for command capable managers
             CommandManager = commandManager;

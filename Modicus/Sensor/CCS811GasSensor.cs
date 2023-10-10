@@ -31,9 +31,9 @@ namespace Modicus.Sensor
                 OperationMode = OperationMode.ConstantPower1Second
             };
 
-            Debug.WriteLine($"CCS811 Bootload Version:{sensor.BootloaderVersion.ToString()}");
-            Debug.WriteLine($"CCS811 Application Version:{sensor.ApplicationVersion.ToString()}");
-            Debug.WriteLine($"CCS811 Hardware Version:{sensor.HardwareVersion.ToString()}");
+            Debug.WriteLine($"CCS811 Bootloader Version: {sensor.BootloaderVersion}");
+            Debug.WriteLine($"CCS811 Application Version: {sensor.ApplicationVersion}");
+            Debug.WriteLine($"CCS811 Hardware Version: {sensor.HardwareVersion}");
         }
 
         /// <summary>Starts the Gas Measurement.</summary>
@@ -52,7 +52,7 @@ namespace Modicus.Sensor
                     IsRunning = true;
                     while (!sensor.IsDataReady && !token.IsCancellationRequested && !sensorToken.IsCancellationRequested)
                     {
-                        Thread.Sleep(200);
+                        Thread.Sleep(1000);
                     }
 
                     var success = sensor.TryReadGasData(out VolumeConcentration eCO2, out VolumeConcentration eTVOC, out ElectricCurrent curr, out int adc);
@@ -84,7 +84,7 @@ namespace Modicus.Sensor
             adjustThread = new(new ThreadStart(AdjustTemperatureHumidity));
             adjustThread.Start();
 
-            //Give the adjust thread to start
+            //Give the adjust thread some time to start
             Thread.Sleep(500);
 
             sensorThread.Start();

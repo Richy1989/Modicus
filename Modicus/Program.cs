@@ -29,9 +29,7 @@ namespace Modicus
             Thread.Sleep(Timeout.Infinite);
         }
 
-        /// <summary>
-        /// Configure the Dependency Injection Services
-        /// </summary>
+        /// <summary>Configure the Dependency Injection Services</summary>
         private static ServiceProvider ConfigureServices()
         {
             return new ServiceCollection()
@@ -42,7 +40,6 @@ namespace Modicus
                 .AddSingleton(typeof(IWiFiManager), typeof(WiFiManager))
                 .AddSingleton(typeof(IBusDeviceManager), typeof(BusDeviceManager))
                 .AddSingleton(typeof(ITokenManager), typeof(TokenManager))
-                .AddSingleton(typeof(INtpService), typeof(NTPService))
                 .AddSingleton(typeof(IMqttManager), typeof(MqttManager))
                 .AddSingleton(typeof(ICommandManager), typeof(CommandManager))
                 .AddSingleton(typeof(ModicusWebpageAPI))

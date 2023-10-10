@@ -6,8 +6,8 @@ It provides a highly modular and extensible framework for collecting data from v
 Whether you're working on IoT projects or sensor data collection applications, Modicus simplifies the process of connecting, collecting, and transmitting data.
 
 ## Features
-- **Modular Design:** Modicus is
-- **Hotspot:** For forst time setup a hotspot is startet to make configuration as easy as possible
+- **Modular Design:** Modicus is designed with modularity in mind. You can easily add support for different sensors and communication protocols by creating modules, making it adaptable to a wide range of use cases.
+- **Hotspot:** For first time setup, a hotspot is startet to make configuration as easy as possible
 - **Support for Various Sensors:** Modicus supports a variety of sensors, including temperature sensors, humidity sensors, motion detectors, and more. You can easily integrate additional sensors by creating custom modules.
 - **MQTT Integration:** Data collected from sensors is forwarded to an MQTT broker, allowing you to integrate Modicus with various IoT platforms or other services that support MQTT.
 - **Flexible Configuration:** Modicus provides a configuration system that allows you to customize MQTT server settings, sensor parameters, and data transmission intervals to suit your specific requirements.

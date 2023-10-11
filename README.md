@@ -117,7 +117,7 @@ Payload JSON:
 
 ## Screen Shots
 <img src="https://github.com/Richy1989/Modicus/blob/main/images/modicus_main.jpg" alt="Modicus Main Webpage" width="400"/>
-
+<br />
 <img src="https://github.com/Richy1989/Modicus/blob/main/images/modicus_sensor.jpg" alt="Modicus Add Sensor Page" width="400"/>
 
 ## License

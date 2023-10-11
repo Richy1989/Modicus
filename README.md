@@ -87,6 +87,16 @@ Set the measurement interval for the sensors in seconds.
 Topic: <ClientID>/cmd/MeasurementInterval
 Payload JSON: {"Interval": <inverval>}
 ```
+### Sensor On / Off / Add / Delete
+Executes the given action on the selected sensor.
+```sh
+Topic: <ClientID>/cmd/SensorOnOff
+Payload JSON:
+{
+	"Name": "<Name of sensor>",
+	"Action": <0 = On | 1 = Off | 2 = AddOnly | 3 = Delete>
+}
+```
 
 ### Create new I2C Connected Sensor
 Creates and starts a new sensor connected to the I2C Bus and start it.

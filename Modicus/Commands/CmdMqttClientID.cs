@@ -34,10 +34,9 @@ namespace Modicus.Commands
         }
         public new void Execute(string content)
         {
-            CmdMqttClientIdData data = null;
             try
             {
-                data = (CmdMqttClientIdData)JsonConvert.DeserializeObject(content, typeof(CmdMqttClientIdData));
+                CmdMqttClientIdData data = (CmdMqttClientIdData)JsonConvert.DeserializeObject(content, typeof(CmdMqttClientIdData));
                 Debug.WriteLine($"New ClientID: {data.ClientID}s");
                 Execute(data);
             }

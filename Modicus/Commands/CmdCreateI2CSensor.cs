@@ -41,7 +41,6 @@ namespace Modicus.Commands
                     sensor.I2cBusSpeed = (I2cBusSpeed)content.I2cBusSpeed;
                     sensor.DeviceAddress = content.DeviceAddress;
                                    
-                    //ToDo: Use Command for that
                     busDeviceManager.AddSensor(sensor);
                     busDeviceManager.StartSensor(sensor);
                 }

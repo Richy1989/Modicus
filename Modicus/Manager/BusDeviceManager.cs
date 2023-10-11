@@ -60,12 +60,14 @@ namespace Modicus.Manager
 
         /// <summary>Stops the given sensor .</summary>
         /// <param name="sensor"></param>
-        public void StopSensor(ISensor sensor) => sensor.StopSensor();
+        public void StopSensor(ISensor sensor) => sensor?.StopSensor();
 
         /// <summary>Stops the given sensor.</summary>
         /// <param name="sensor"></param>
         public void DeleteSensor(ISensor sensor)
         {
+            if (sensor == null) return;
+
             sensor.StopSensor();
             sensor.Dispose();
             ConfiguredSensors.Remove(sensor.Name);

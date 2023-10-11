@@ -48,6 +48,11 @@ namespace Modicus.Commands
                         Debug.WriteLine($"Command: Turn Sensor: {content.Name} OFF.");
                         busDeviceManager.StopSensor(sensor);
                         break;
+                    case CmdSensorOnOffEnum.Delete:
+                        Debug.WriteLine($"Command: Turn Sensor: {content.Name} OFF.");
+                        busDeviceManager.StopSensor(sensor);
+                        busDeviceManager.DeleteSensor(sensor);
+                        break;
                 }
             }
             catch (Exception ex)
@@ -83,6 +88,7 @@ namespace Modicus.Commands
     {
         On, 
         Off, 
-        AddOnly
+        AddOnly,
+        Delete
     }
 }

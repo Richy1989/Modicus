@@ -116,8 +116,9 @@ Payload JSON:
 ```
 
 ## Screen Shots
-![Modicus Main Webpage](https://github.com/Richy1989/Modicus/blob/main/images/modicus_main.jpg)
-<img src="https://github.com/Richy1989/Modicus/blob/main/images/modicus_sensor.jpg" alt="drawing" width="200"/>
+<img src="https://github.com/Richy1989/Modicus/blob/main/images/modicus_main.jpg" alt="Modicus Main Webpage" width="400"/>
+
+<img src="https://github.com/Richy1989/Modicus/blob/main/images/modicus_sensor.jpg" alt="Modicus Add Sensor Page" width="400"/>
 
 ## License
 This program is licensed under GPL-3.0-only

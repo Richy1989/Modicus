@@ -93,7 +93,7 @@
       <HintPath>..\packages\nanoFramework.Iot.Device.Common.WeatherHelper.1.2.401\lib\Iot.Device.Common.WeatherHelper.dll</HintPath>
     </Reference>
     <Reference Include="Iot.Device.DhcpServer">
-      <HintPath>..\packages\nanoFramework.Iot.Device.DhcpServer.1.2.300\lib\Iot.Device.DhcpServer.dll</HintPath>
+      <HintPath>..\packages\nanoFramework.Iot.Device.DhcpServer.1.2.378\lib\Iot.Device.DhcpServer.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>..\packages\nanoFramework.CoreLibrary.1.14.2\lib\mscorlib.dll</HintPath>

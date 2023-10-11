@@ -41,12 +41,12 @@ namespace Modicus.Manager
         /// <param name="sensor"></param>
         public void AddSensor(ISensor sensor)
         {
-            settingsManager.SensorSettings.AddSensor(sensor);
-            sensor.Configure((IPublishMqtt)mqttManager);
-
-            if(ConfiguredSensors.Contains(sensor.Name))
+            if (ConfiguredSensors.Contains(sensor.Name))
                 return;
 
+            settingsManager.SensorSettings.AddSensor(sensor);
+
+            sensor.Configure((IPublishMqtt)mqttManager);
             ConfiguredSensors.Add(sensor.Name, sensor);
         }
 

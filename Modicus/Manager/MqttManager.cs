@@ -4,17 +4,16 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using Modicus.Commands;
+using Modicus.Commands.Interfaces;
+using Modicus.EventArgs;
+using Modicus.Manager.Interfaces;
 using Modicus.MQTT;
+using Modicus.MQTT.Interfaces;
 using Modicus.Settings;
+using Modicus.WiFi;
 using nanoFramework.Json;
 using nanoFramework.M2Mqtt;
 using nanoFramework.M2Mqtt.Messages;
-using Modicus.EventArgs;
-using Modicus.Commands.Interfaces;
-using Modicus.MQTT.Interfaces;
-using Modicus.WiFi;
-using Modicus.Manager.Interfaces;
-using System.Net;
 
 namespace Modicus.Manager
 {
@@ -29,6 +28,7 @@ namespace Modicus.Manager
 
         //Make sure only one thread at the time can work with the mqtt service
         private readonly ManualResetEvent mreMQTT = new(true);
+
         private readonly ISettingsManager settingsManager;
         private Thread mqttThread;
 
@@ -49,7 +49,6 @@ namespace Modicus.Manager
             SubscribeTopics = new Hashtable();
             MainMqttMessage = new MainMqttMessage();
             State = new StateMessage();
-            State.WiFi = new WiFiMessage();
         }
 
         /// <summary>
@@ -62,7 +61,6 @@ namespace Modicus.Manager
                 Debug.WriteLine("++++ MQTT is already running. No need to start. ++++");
                 return;
             }
-
 
             stopService = false;
             mqtt?.Close();
@@ -93,7 +91,6 @@ namespace Modicus.Manager
                     Thread.Sleep(1000);
             }
             while (autoRestartNeeded && !token.IsCancellationRequested && !stopService);
-
 
             if (resubscribeAll)
                 ResubscribeToNewClientID();
@@ -128,7 +125,7 @@ namespace Modicus.Manager
             resubscribeAll = true;
 
             enableAutoRestart = false;
-            
+
             mreMQTT.WaitOne();
 
             //mqtt?.Disconnect();
@@ -187,12 +184,12 @@ namespace Modicus.Manager
 
             mqtt.ConnectionClosed += (s, e) =>
             {
-                if(!stopService)
+                if (!stopService)
                     InitializeMQTT();
             };
 
             enableAutoRestart = true;
-            
+
             Debug.WriteLine($"++++ MQTT connecting successful: {ret} ++++");
             return true;
         }
@@ -233,7 +230,7 @@ namespace Modicus.Manager
         {
             Debug.WriteLine($"++++ New Client ID, restart service ++++");
 
-            //Stop MQTT but set ready for auto restart. 
+            //Stop MQTT but set ready for auto restart.
             StopMqtt(false);
         }
 

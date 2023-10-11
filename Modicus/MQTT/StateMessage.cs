@@ -8,6 +8,6 @@ namespace Modicus.MQTT
         public TimeSpan Uptime { get; set; }
         public double UptimeSec { get; set; }
 
-        public WiFiMessage WiFi { get; set; }
+        public WiFiMessage WiFi { get; set; } = new WiFiMessage();
     }
 }

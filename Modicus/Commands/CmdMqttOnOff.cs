@@ -9,49 +9,48 @@ namespace Modicus.Commands
     //With this command the ;QTT Service can be turned on and off
     internal class CmdMqttOnOff : BaseCommand
     {
-        private readonly ISettingsManager settingsManager;
         private readonly IMqttManager mqttManager;
 
         public CmdMqttOnOff(ISettingsManager settingsManager, IMqttManager mqttManager)
         {
             this.mqttManager = mqttManager;
-            this.settingsManager = settingsManager;
             Topic = settingsManager.GlobalSettings.CommandSettings.MqttOnOffTopic;
         }
 
-        public void Execute(CmdMqttOnOffData content)
+        public bool Execute(CmdMqttOnOffData content)
         {
-            base.mreExecute.WaitOne();
+            if (content == null)
+            {
+                Debug.WriteLine($"Command: MQTT On/Off -> No Payload!");
+                return false;
+            }
 
             try
-            {
-                if (content.On)
-                    Debug.WriteLine("Command: Turn MQTT ON");
-                else
-                    Debug.WriteLine("Command: Turn MQTT OFF");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error in measurement interval command: {ex.Message}");
-            }
-
-            if (content != null)
             {
                 if (content.On)
                     mqttManager.InitializeMQTT();
                 else
                     mqttManager.StopMqtt();
             }
-
-            base.mreExecute.Set();
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in turn MQTT ON/OFF command: {ex.Message}");
+                return false;
+            }
+            
+            return true;
         }
 
         //Execute the command
         public new void Execute(string content)
         {
+            base.mreExecute.WaitOne();
+
             CmdMqttOnOffData data = (CmdMqttOnOffData)JsonConvert.DeserializeObject(content, typeof(CmdMqttOnOffData));
-            Execute(data);
-            base.Execute(content);
+            if (Execute(data))
+                base.Execute(content);
+
+            base.mreExecute.Set();
         }
     }
 

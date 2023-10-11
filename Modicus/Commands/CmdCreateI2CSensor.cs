@@ -18,9 +18,13 @@ namespace Modicus.Commands
             Topic = settingsManager.GlobalSettings.CommandSettings.CreateI2CSensor;
         }
 
-        public void Execute(CmdCreateI2CSensorData content)
+        public bool Execute(CmdCreateI2CSensorData content)
         {
-            base.mreExecute.WaitOne();
+            if (content == null)
+            {
+                Debug.WriteLine($"Command: Create I2C Sensor -> No Payload!");
+                return false;
+            }
 
             var sensorType = busDeviceManager.SupportedSensors[content.SensorType];
 
@@ -36,7 +40,8 @@ namespace Modicus.Commands
                     sensor.BusID = content.BusID;
                     sensor.I2cBusSpeed = (I2cBusSpeed)content.I2cBusSpeed;
                     sensor.DeviceAddress = content.DeviceAddress;
-                                        
+                                   
+                    //ToDo: Use Command for that
                     busDeviceManager.AddSensor(sensor);
                     busDeviceManager.StartSensor(sensor);
                 }
@@ -44,17 +49,21 @@ namespace Modicus.Commands
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error in create i2c sensor command: {ex.Message}");
+                return false;
             }
-
-            base.mreExecute.Set();
+            return true;
         }
 
         //Execute the command
         public new void Execute(string content)
         {
+            base.mreExecute.WaitOne();
+
             CmdCreateI2CSensorData data = (CmdCreateI2CSensorData)JsonConvert.DeserializeObject(content, typeof(CmdCreateI2CSensorData));
-            Execute(data);
-            base.Execute(content);
+            if (Execute(data))
+                base.Execute(content);
+
+            base.mreExecute.Set();
         }
     }
 

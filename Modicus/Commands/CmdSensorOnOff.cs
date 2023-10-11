@@ -5,7 +5,7 @@ using nanoFramework.Json;
 
 namespace Modicus.Commands
 {
-    //With this command the ;QTT Service can be turned on and off
+    //With this command the MQTT Service can be turned on and off
     internal class CmdSensorOnOff : BaseCommand
     {
         private readonly IBusDeviceManager busDeviceManager;
@@ -28,10 +28,7 @@ namespace Modicus.Commands
             {
                 var sensor = busDeviceManager.GetSensorFromName(content.Name);
 
-                if(sensor == null)
-                {
-                    return false;
-                }
+                if(sensor == null) return false;
 
                 switch(content.Action)
                 {
@@ -49,7 +46,7 @@ namespace Modicus.Commands
                         busDeviceManager.StopSensor(sensor);
                         break;
                     case CmdSensorOnOffEnum.Delete:
-                        Debug.WriteLine($"Command: Turn Sensor: {content.Name} OFF.");
+                        Debug.WriteLine($"Command: Delete Sensor: {content.Name}.");
                         busDeviceManager.StopSensor(sensor);
                         busDeviceManager.DeleteSensor(sensor);
                         break;

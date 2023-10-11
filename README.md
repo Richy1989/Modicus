@@ -58,7 +58,7 @@ Only if GPIP 2 is constant High the boot was successful.
 Turns the MQTT service on or off.
 ```sh
 Topic: <ClientID>/cmd/MqttOnOff
-Payload JSON: {"On": "true|false"}
+Payload JSON: {"On": "<true|false>"}
 ```
 
 ### Set MQTT Client ID
@@ -116,7 +116,7 @@ Payload JSON:
 ```
 
 ## Screen Shots
-![Modicus Main Webpage](https://github.com/Richy1989/Modicus/blob/main/images/modicus_main.jpg?raw=true)
+![Modicus Main Webpage](https://github.com/Richy1989/Modicus/blob/main/images/modicus_main.jpg?raw=true = 400x)
 
 ## License
 This program is licensed under GPL-3.0-only

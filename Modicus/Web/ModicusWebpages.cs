@@ -12,9 +12,7 @@ namespace Modicus.Web
         private readonly ISettingsManager settingsManager;
         private readonly IBusDeviceManager busDeviceManager;
 
-        /// <summary>
-        /// Creates a new ModicusWebpages instance.
-        /// </summary>
+        /// <summary>Creates a new ModicusWebpages instance.</summary>
         public ModicusWebpages(ISettingsManager settingsManager, IBusDeviceManager busDeviceManager)
         {
             this.settingsManager = settingsManager;
@@ -160,10 +158,7 @@ namespace Modicus.Web
             string itemString = string.Empty;
             foreach (string item in busDeviceManager.SupportedSensors.Keys)
             {
-                //if (string.IsNullOrEmpty(itemString))
-                    itemString = string.Format("{0}<input type=\"submit\" class=\"input_drop_down\" name=\"item\" value=\"{1}\">", itemString, item);
-               // else
-                 //   itemString = string.Format("{0}<br><input type=\"submit\" name=\"item\" value=\"{1}\">", itemString, item);
+                itemString = string.Format("{0}<input type=\"submit\" class=\"input_drop_down\" name=\"item\" value=\"{1}\">", itemString, item);
             }
 
             body = string.Format(body, alreadyConfigured, itemString);

@@ -18,19 +18,8 @@ namespace Modicus.Commands
 
         public void Execute(CmdRebootControllerData content)
         {
-            //base.mreExecute.WaitOne();
-
             int delay = content != null ? content.Delay : 0;
-            
-            //var commandTime = DateTime.UtcNow;
-            //while((DateTime.UtcNow - commandTime).TotalSeconds < delay)
-            //{
-            //    Thread.Sleep(1000);
-            //}
-
             Power.RebootDevice(delay * 1000);
-
-            //base.mreExecute.Set();
         }
 
         //Execute the command

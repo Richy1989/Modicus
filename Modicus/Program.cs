@@ -7,8 +7,6 @@ using Modicus.Helpers.Interfaces;
 using Modicus.Manager;
 using Modicus.Manager.Interfaces;
 using Modicus.MQTT.Interfaces;
-using Modicus.Services;
-using Modicus.Services.Interfaces;
 using Modicus.Web;
 using Modicus.Wifi.Interfaces;
 using nanoFramework.DependencyInjection;

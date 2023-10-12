@@ -25,6 +25,8 @@ namespace Modicus.Manager
         private bool resubscribeAll = false;
         private bool stopService = false;
         private bool enableAutoRestart = true;
+        private CancellationTokenSource localCancellationTokenSource;
+        private CancellationToken localCancellationToken;
 
         //Make sure only one thread at the time can work with the mqtt service
         private readonly ManualResetEvent mreMQTT = new(true);
@@ -112,6 +114,11 @@ namespace Modicus.Manager
             }
             resubscribeAll = false;
 
+            localCancellationTokenSource?.Cancel();
+
+            localCancellationTokenSource = new CancellationTokenSource();
+            localCancellationToken = localCancellationTokenSource.Token;
+
             mqttThread = new(new ThreadStart(StartSending));
             mqttThread.Start();
         }
@@ -123,6 +130,7 @@ namespace Modicus.Manager
 
             //Set this variable to ensure a gracefull startup when we resart the service
             resubscribeAll = true;
+            localCancellationTokenSource?.Cancel();
 
             enableAutoRestart = false;
 
@@ -140,9 +148,9 @@ namespace Modicus.Manager
         /// </summary>
         public void StartSending()
         {
-            while (!token.IsCancellationRequested && !resubscribeAll)
+            while (!token.IsCancellationRequested && !localCancellationToken.IsCancellationRequested)
             {
-                if (!resubscribeAll && mqtt != null && mqtt.IsConnected)
+                if (!localCancellationToken.IsCancellationRequested && mqtt != null && mqtt.IsConnected)
                 {
                     mreMQTT.WaitOne();
                     //Set current time

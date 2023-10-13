@@ -7,8 +7,6 @@ using Modicus.Commands.Interfaces;
 using Modicus.Helpers;
 using Modicus.Manager.Interfaces;
 using Modicus.MQTT.Interfaces;
-using Modicus.Services;
-using Modicus.Services.Interfaces;
 using Modicus.Settings;
 using Modicus.Wifi.Interfaces;
 using nanoFramework.Hardware.Esp32;

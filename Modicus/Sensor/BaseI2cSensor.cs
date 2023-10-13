@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Device.I2c;
-using System.Threading;
 using Modicus.MQTT.Interfaces;
 using Modicus.Sensor.Interfaces;
 using nanoFramework.Hardware.Esp32;
@@ -37,7 +36,7 @@ namespace Modicus.Sensor
             i2cDevice = I2cDevice.Create(i2cSettings);
         }
 
-        public I2cDevice GetI2cDevice() => i2cDevice; 
+        public I2cDevice GetI2cDevice() => i2cDevice;
 
         public override void Dispose()
         {

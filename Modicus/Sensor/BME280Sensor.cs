@@ -48,57 +48,51 @@ namespace Modicus.Sensor
         }
 
         /// <summary>Starts the measurement thread.</summary>
-        public override void StartMeasurement(CancellationToken token)
+        protected override void DoMeasurement(CancellationToken token)
         {
-            sensorTokenSource = new CancellationTokenSource();
-            sensorToken = sensorTokenSource.Token;
-
-            sensorThread = new Thread(() =>
+            while (!token.IsCancellationRequested && !sensorToken.IsCancellationRequested)
             {
-                while (!token.IsCancellationRequested && !sensorToken.IsCancellationRequested)
+                // Perform a synchronous measurement
+                var readResult = i2CBme280.Read();
+
+                // Note that if you already have the pressure value and the temperature, you could also calculate altitude by using
+                // var altValue = WeatherHelper.CalculateAltitude(preValue, defaultSeaLevelPressure, tempValue) which would be more performant.
+                i2CBme280.TryReadAltitude(defaultSeaLevelPressure, out var altValue);
+
+                EnvironmentData measurement = mqttPublisher.MainMqttMessage.Environment;
+
+                if (measurement != null)
                 {
-                    IsRunning = true;
-
-                    // Perform a synchronous measurement
-                    var readResult = i2CBme280.Read();
-
-                    // Note that if you already have the pressure value and the temperature, you could also calculate altitude by using
-                    // var altValue = WeatherHelper.CalculateAltitude(preValue, defaultSeaLevelPressure, tempValue) which would be more performant.
-                    i2CBme280.TryReadAltitude(defaultSeaLevelPressure, out var altValue);
-
-                    EnvironmentData measurement = mqttPublisher.MainMqttMessage.Environment;
-
-                    if (measurement != null)
+                    if (readResult.TemperatureIsValid)
                     {
-                        if (readResult.TemperatureIsValid)
-                        {
-                            //Debug.WriteLine($"Temperature: {readResult.Temperature.DegreesCelsius}\u00B0C");
-                            measurement.Temperature = readResult.Temperature.DegreesCelsius;
-                        }
-                        if (readResult.PressureIsValid)
-                        {
-                            //Debug.WriteLine($"Pressure: {readResult.Pressure.Hectopascals}hPa");
-                            measurement.Pressure = readResult.Pressure.Hectopascals;
-                        }
-
-                        if (readResult.TemperatureIsValid && readResult.PressureIsValid)
-                        {
-                            //Debug.WriteLine($"Altitude: {altValue.Meters}m");
-                            measurement.Altitude = altValue.Meters;
-                        }
-
-                        if (readResult.HumidityIsValid)
-                        {
-                            //Debug.WriteLine($"Relative humidity: {readResult.Humidity.Percent}%");
-                            measurement.Humidity = readResult.Humidity.Percent;
-                        }
+                        //Debug.WriteLine($"Temperature: {readResult.Temperature.DegreesCelsius}\u00B0C");
+                        measurement.Temperature = readResult.Temperature.DegreesCelsius;
                     }
-                    Thread.Sleep(MeasurementInterval);
+                    if (readResult.PressureIsValid)
+                    {
+                        //Debug.WriteLine($"Pressure: {readResult.Pressure.Hectopascals}hPa");
+                        measurement.Pressure = readResult.Pressure.Hectopascals;
+                    }
+
+                    if (readResult.TemperatureIsValid && readResult.PressureIsValid)
+                    {
+                        //Debug.WriteLine($"Altitude: {altValue.Meters}m");
+                        measurement.Altitude = altValue.Meters;
+                    }
+
+                    if (readResult.HumidityIsValid)
+                    {
+                        //Debug.WriteLine($"Relative humidity: {readResult.Humidity.Percent}%");
+                        measurement.Humidity = readResult.Humidity.Percent;
+                    }
                 }
-                IsRunning = false;
-            });
-            sensorThread.Start();
+                Thread.Sleep(MeasurementInterval);
+            }
         }
+
+        /// <summary>Function that is executed after the measurement task has started.</summary>
+        protected override void PostStart()
+        { }
 
         /// <summary>Disposes the sensor.</summary>
         public override void Dispose() => i2CBme280?.Dispose();

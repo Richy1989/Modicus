@@ -36,58 +36,52 @@ namespace Modicus.Sensor
             Debug.WriteLine($"CCS811 Hardware Version: {sensor.HardwareVersion}");
         }
 
-        /// <summary>Starts the Gas Measurement.</summary>
+        /// <summary>
+        /// Starts the the Measurement.
+        /// Implement this function with the logic to do the active measurement.
+        /// </summary>
         /// <param name="token"></param>
-        public override void StartMeasurement(CancellationToken token)
+        protected override void DoMeasurement(CancellationToken token)
         {
             this.token = token;
 
-            sensorTokenSource = new CancellationTokenSource();
-            sensorToken = sensorTokenSource.Token;
-
-            sensorThread = new Thread(() =>
+            while (!token.IsCancellationRequested && !sensorToken.IsCancellationRequested)
             {
-                while (!token.IsCancellationRequested && !sensorToken.IsCancellationRequested)
+                while (!sensor.IsDataReady && !token.IsCancellationRequested && !sensorToken.IsCancellationRequested)
                 {
-                    IsRunning = true;
-                    while (!sensor.IsDataReady && !token.IsCancellationRequested && !sensorToken.IsCancellationRequested)
-                    {
-                        Thread.Sleep(1000);
-                    }
-
-                    var success = sensor.TryReadGasData(out VolumeConcentration eCO2, out VolumeConcentration eTVOC, out ElectricCurrent curr, out int adc);
-
-                    if (!success)
-                    {
-                        var error = sensor.Error;
-                        Debug.WriteLine($"Gas Sensor Measurement Error: {error}");
-                    }
-                    else
-                    {
-                        //Debug.WriteLine($"Success: {success}, eCO2: {eCO2.PartsPerMillion} ppm, eTVOC: {eTVOC.PartsPerBillion} ppb, Current: {curr.Microamperes} µA, ADC: {adc} = {adc * 1.65 / 1023} V.");
-                        //this.eCO2 = eCO2.PartsPerMillion;
-                        //this.eTVOC = eTVOC.PartsPerBillion;
-                        //this.Current = curr.Microamperes;
-                        //this.ADC = adc * 1.65 / 1023;
-
-                        if (publishMqtt != null && publishMqtt.MainMqttMessage.Environment != null)
-                        {
-                            publishMqtt.MainMqttMessage.Environment.CO2 = eCO2.PartsPerMillion;
-                            publishMqtt.MainMqttMessage.Environment.TotalVolatileOrganicCompound = eTVOC.PartsPerBillion;
-                        }
-                    }
-                    Thread.Sleep(MeasurementInterval);
+                    Thread.Sleep(1000);
                 }
-                IsRunning = false;
-            });
 
+                var success = sensor.TryReadGasData(out VolumeConcentration eCO2, out VolumeConcentration eTVOC, out ElectricCurrent curr, out int adc);
+
+                if (!success)
+                {
+                    var error = sensor.Error;
+                    Debug.WriteLine($"Gas Sensor Measurement Error: {error}");
+                }
+                else
+                {
+                    //Debug.WriteLine($"Success: {success}, eCO2: {eCO2.PartsPerMillion} ppm, eTVOC: {eTVOC.PartsPerBillion} ppb, Current: {curr.Microamperes} µA, ADC: {adc} = {adc * 1.65 / 1023} V.");
+                    //this.eCO2 = eCO2.PartsPerMillion;
+                    //this.eTVOC = eTVOC.PartsPerBillion;
+                    //this.Current = curr.Microamperes;
+                    //this.ADC = adc * 1.65 / 1023;
+
+                    if (publishMqtt != null && publishMqtt.MainMqttMessage.Environment != null)
+                    {
+                        publishMqtt.MainMqttMessage.Environment.CO2 = eCO2.PartsPerMillion;
+                        publishMqtt.MainMqttMessage.Environment.TotalVolatileOrganicCompound = eTVOC.PartsPerBillion;
+                    }
+                }
+                Thread.Sleep(MeasurementInterval);
+            }
+        }
+
+        /// <summary>Function that is executed after the measurement task has started.</summary>
+        protected override void PostStart()
+        {
             adjustThread = new(new ThreadStart(AdjustTemperatureHumidity));
             adjustThread.Start();
-
-            //Give the adjust thread some time to start
-            Thread.Sleep(500);
-
-            sensorThread.Start();
         }
 
         /// <summary>Disposes the sensor.</summary>

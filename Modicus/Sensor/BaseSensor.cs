@@ -4,9 +4,7 @@ using Modicus.Sensor.Interfaces;
 
 namespace Modicus.Sensor
 {
-    /// <summary>
-    /// Base sensor class, use this class for all kind of sensors. 
-    /// </summary>
+    /// <summary>Base sensor class, use this class as base for all kind of sensors.</summary>
     internal abstract class BaseSensor : ISensor
     {
         /// The sensor token source is for cancellation within the sensor. e.g Stop Function
@@ -24,25 +22,37 @@ namespace Modicus.Sensor
         {
         }
 
-        /// <summary>
-        /// Function to be called once to configure the sensor
-        /// </summary>
+        /// <summary>Function to be called once to configure the sensor.</summary>
         /// <param name="sensorData"></param>
         public abstract void Configure(IPublishMqtt publisher);
 
-        /// <summary>
-        /// Starts the measurement thread.
-        /// </summary>
-        public abstract void StartMeasurement(CancellationToken token);
+        /// <summary>Starts the measurement thread.</summary>
+        protected abstract void DoMeasurement(CancellationToken token);
 
-        /// <summary>
-        /// Disposes the object safely
-        /// </summary>
+        /// <summary>Function that is executed after the measurement task has started.</summary>
+        protected abstract void PostStart();
+
+        /// <summary>Implement this function with the logic to do the active measurement.</summary>
+        /// <param name="token">The global cancelltation token.</param>
+        public void StartMeasurement(CancellationToken token)
+        {
+            sensorTokenSource = new CancellationTokenSource();
+            sensorToken = sensorTokenSource.Token;
+
+            sensorThread = new Thread(() =>
+            {
+                IsRunning = true;
+                DoMeasurement(token);
+                IsRunning = false;
+            });
+            sensorThread.Start();
+            PostStart();
+        }
+
+        /// <summary>Disposes the object safely.</summary>
         public abstract void Dispose();
 
-        /// <summary>
-        /// Stops the sensor.
-        /// </summary>
+        /// <summary>Stops the sensor.</summary>
         public abstract void StopSensor();
     }
 }

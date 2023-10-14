@@ -14,7 +14,7 @@ namespace Modicus.Commands
         public CmdMqttOnOff(ISettingsManager settingsManager, IMqttManager mqttManager)
         {
             this.mqttManager = mqttManager;
-            Topic = settingsManager.GlobalSettings.CommandSettings.MqttOnOffTopic;
+            Topic = settingsManager.CommandSettings.MqttOnOffTopic;
         }
 
         public bool Execute(CmdMqttOnOffData content)

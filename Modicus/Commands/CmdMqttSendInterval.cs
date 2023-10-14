@@ -14,7 +14,7 @@ namespace Modicus.Commands
         public CmdMqttSendInterval(ISettingsManager settingsManager) : base()
         {
             this.settingsManager = settingsManager;
-            Topic = settingsManager.GlobalSettings.CommandSettings.MqttSendIntervalTopic;
+            Topic = settingsManager.CommandSettings.MqttSendIntervalTopic;
         }
 
         //Execute the command

@@ -17,7 +17,7 @@ namespace Modicus.Commands
         /// <param name="settingsManager"></param>
         public CmdMqttClientID(ISettingsManager settingsManager) : base()
         {
-            Topic = settingsManager.GlobalSettings.CommandSettings.MqttClientIdTopic;
+            Topic = settingsManager.CommandSettings.MqttClientIdTopic;
             this.settingsManager = settingsManager;
         }
 

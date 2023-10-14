@@ -13,7 +13,7 @@ namespace Modicus.Commands
         public CmdSensorOnOff(ISettingsManager settingsManager, IBusDeviceManager busDeviceManager)
         {
             this.busDeviceManager = busDeviceManager;
-            Topic = settingsManager.GlobalSettings.CommandSettings.SensorOnOffTopic;
+            Topic = settingsManager.CommandSettings.SensorOnOffTopic;
         }
 
         public bool Execute(CmdSensorOnOffData content)

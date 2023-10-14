@@ -15,7 +15,7 @@ namespace Modicus.Commands
         public CmdCreateI2CSensor(ISettingsManager settingsManager, IBusDeviceManager busDeviceManager)
         {
             this.busDeviceManager = busDeviceManager;
-            Topic = settingsManager.GlobalSettings.CommandSettings.CreateI2CSensor;
+            Topic = settingsManager.CommandSettings.CreateI2CSensor;
         }
 
         public bool Execute(CmdCreateI2CSensorData content)

@@ -13,7 +13,7 @@ namespace Modicus.Commands
     {
         public CmdSystemReboot(ISettingsManager settingsManager)
         {
-            Topic = settingsManager.GlobalSettings.CommandSettings.RebootControllerTopic;
+            Topic = settingsManager.CommandSettings.RebootControllerTopic;
         }
 
         public void Execute(CmdRebootControllerData content)

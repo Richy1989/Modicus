@@ -14,7 +14,7 @@ namespace Modicus.Commands
 
         public CmdMeasurementInterval(ISettingsManager settingsManager) : base()
         {
-            Topic = settingsManager.GlobalSettings.CommandSettings.MeasurementIntervalTopic;
+            Topic = settingsManager.CommandSettings.MeasurementIntervalTopic;
             this.settingsManager = settingsManager;
         }
 

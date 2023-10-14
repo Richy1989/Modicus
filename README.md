@@ -32,7 +32,7 @@ First of all follow [Getting Started Guide for managed code (C#)](https://docs.n
 Download the newsest release. Execute the following in Power Shell. 
 
 Note:
-The last firmware version on wich Modicus was tested is always attached in the release files. Since nanoframework is an active project there may be breaking changes and Modicus might not work if you use the last available firmware.
+The last firmware version on which Modicus was tested is always attached in the release files. Since nanoframework is an active project there may be breaking changes and Modicus might not work if you use the latest firmware.
 
 Flash Firmware on ESP32
 ```sh

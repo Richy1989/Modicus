@@ -31,9 +31,12 @@ Already Supported:
 First of all follow [Getting Started Guide for managed code (C#)](https://docs.nanoframework.net/content/getting-started-guides/getting-started-managed.html).
 Download the newsest release. Execute the following in Power Shell. 
 
+Note:
+The last firmware version on wich Modicus was tested is always attached in the release files. Since nanoframework is an active project there may be breaking changes and Modicus might not work if you use the last available firmware.
+
 Flash Firmware on ESP32
 ```sh
-nanoff --update --platform esp32 --serialport <COMX>
+nanoff --update --target <ESP Target> --serialport COM<X> --clrfile "<Path to nanoCLR.bin File>"
 ```
 
 Flash Application on ESP32

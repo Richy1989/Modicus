@@ -188,6 +188,8 @@ namespace Modicus.Web
             var back = (string)hashPars["back"];
             var save = (string)hashPars["save"];
             var name = (string)hashPars["device-name"];
+            var enableSignal = (string)hashPars["enable-signal"];
+            var signalPinString = (string)hashPars["signal-gpio"];
 
             string message = "";
             Thread systemSettingsTask;
@@ -196,7 +198,20 @@ namespace Modicus.Web
             {
                 systemSettingsTask = new Thread(() =>
                 {
-                    settingsManager.GlobalSettings.InstanceName = name;
+                    settingsManager.GlobalSettings.SystemSettings.InstanceName = name;
+
+                    settingsManager.GlobalSettings.SystemSettings.UseSignalling = enableSignal != null && enableSignal == "on";
+                    if(settingsManager.GlobalSettings.SystemSettings.UseSignalling)
+                        message = $"Signal GPIO is activated - Please reboot device.\n{message}";
+                    else
+                        message = $"Signal GPIO is deactivated - Please reboot device.\n{message}";
+
+                    if (int.TryParse(signalPinString, out var signalPin))
+                    {
+                        settingsManager.GlobalSettings.SystemSettings.SignalGpioPin = signalPin;
+                        message = $"New Signal GPIO Pin: {signalPin} - Please reboot device.\n{message}";
+                    }
+                    
                     settingsManager.UpdateSettings();
                 });
                 systemSettingsTask.Start();

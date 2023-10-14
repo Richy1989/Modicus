@@ -16,13 +16,13 @@ namespace Modicus.Sensor
 
         private I2cDevice i2cDevice;
 
+        /// <summary>Initializes a new instance of the <see cref="BaseI2cSensor"/> class.</summary>
         internal BaseI2cSensor() : base()
         {
         }
 
-        /// <summary>
-        /// Configure the sensor, call this function first
-        /// </summary>
+        /// <summary>Configure the sensor, call this function first.</summary>
+        /// <param name="publisher">The publisher.</param>
         public override void Configure(IPublishMqtt publisher)
         {
             //////////////////////////////////////////////////////////////////////
@@ -36,14 +36,19 @@ namespace Modicus.Sensor
             i2cDevice = I2cDevice.Create(i2cSettings);
         }
 
+        /// <summary>Gets the i2c device.</summary>
+        /// <returns></returns>
         public I2cDevice GetI2cDevice() => i2cDevice;
 
+        /// <summary>Releases unmanaged and - optionally - managed resources.</summary>
         public override void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Releases unmanaged and - optionally - managed resources.</summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)

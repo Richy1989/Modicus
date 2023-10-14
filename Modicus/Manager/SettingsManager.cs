@@ -11,7 +11,7 @@ namespace Modicus.Manager
     internal class SettingsManager : ISettingsManager
     {
         //Setings file Path (I = Internal Flash Memory)
-        private const string FilePath = "I:\\settingsnew.json";
+        private const string FilePath = "I:\\settings.json";
 
         //Make sure only one thread at the time can modify the settings file
         private ManualResetEvent mreSettings = new(true);
@@ -20,6 +20,7 @@ namespace Modicus.Manager
         public SensorSettings SensorSettings { get; private set; }
         public CommandSettings CommandSettings { get; private set; } = new CommandSettings();
 
+        /// <summary>Initializes a new instance of the <see cref="SettingsManager"/> class.</summary>
         public SettingsManager()
         {
             LoadSettings(false);
@@ -44,11 +45,7 @@ namespace Modicus.Manager
                 Debug.WriteLine("+++++ Read settings from file +++++");
                 FileStream fs2 = new(FilePath, FileMode.Open, FileAccess.ReadWrite);
 
-                //GlobalSettings = (GlobalSettings)JsonConvert.DeserializeObject(fs2, typeof(GlobalSettings));
-                //SensorSettings = new SensorSettings();
-                //SensorSettings.LoadSettings();
-                //fs2.Close();
-                //fs2.Dispose();
+                //  GlobalSettings = (GlobalSettings)JsonConvert.DeserializeObject(fs2, typeof(GlobalSettings));
 
                 byte[] fileContent = new byte[fs2.Length];
                 fs2.Read(fileContent, 0, (int)fs2.Length);

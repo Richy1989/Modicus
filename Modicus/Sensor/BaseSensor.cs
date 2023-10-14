@@ -13,7 +13,7 @@ namespace Modicus.Sensor
         internal Thread sensorThread;
 
         public string Name { get; set; }
-        public bool IsRunning { get; internal set; }
+        public bool IsRunning { get; protected set; }
         public int MeasurementInterval { get; set; }
         public string Type { get; set; }
 
@@ -30,7 +30,7 @@ namespace Modicus.Sensor
         protected abstract void DoMeasurement(CancellationToken token);
 
         /// <summary>Function that is executed after the measurement task has started.</summary>
-        protected abstract void PostStart();
+        protected abstract void PostStartMeasurement();
 
         /// <summary>Implement this function with the logic to do the active measurement.</summary>
         /// <param name="token">The global cancelltation token.</param>
@@ -46,7 +46,7 @@ namespace Modicus.Sensor
                 IsRunning = false;
             });
             sensorThread.Start();
-            PostStart();
+            PostStartMeasurement();
         }
 
         /// <summary>Disposes the object safely.</summary>

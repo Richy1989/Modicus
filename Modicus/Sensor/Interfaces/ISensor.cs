@@ -4,9 +4,7 @@ using Modicus.MQTT.Interfaces;
 
 namespace Modicus.Sensor.Interfaces
 {
-    /// <summary>
-    /// The base interface for all sensors
-    /// </summary>
+    /// <summary>The base interface for all sensors.</summary>
     internal interface ISensor : IDisposable
     {
         bool IsRunning { get; }
@@ -14,18 +12,14 @@ namespace Modicus.Sensor.Interfaces
         string Name { get; set; }
         int MeasurementInterval { get; set; }
 
-        /// <summary>
-        /// Function to be called once to configure the sensor
-        /// </summary>
+        /// <summary>Function to be called once to configure the sensor.</summary>
         /// <param name="sensorData"></param>
         void Configure(IPublishMqtt publisher);
 
-        /// <summary>
-        /// Starts the measurement thread
-        /// </summary>
+        /// <summary>Starts the measurement thread.</summary>
         void StartMeasurement(CancellationToken token);
 
-        /// <summary>Stops the sensor</summary>
+        /// <summary>Stops the sensor.</summary>
         void StopSensor();
     }
 }

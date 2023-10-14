@@ -5,6 +5,7 @@ using System.Net.NetworkInformation;
 using System.Threading;
 using Modicus.Commands.Interfaces;
 using Modicus.Helpers;
+using Modicus.Helpers.Interfaces;
 using Modicus.Manager.Interfaces;
 using Modicus.MQTT.Interfaces;
 using Modicus.Settings;
@@ -22,32 +23,28 @@ namespace Modicus.Manager
         public GlobalSettings GlobalSettings { get; set; }
         public string AsseblyName { get; }
 
-        public static GpioPin pin;
-
-        private readonly GpioController controller;
-
         /// <summary>
+        /// Initializes a new instance of the <see cref="ModicusStartupManager"/> class.
         /// Creates the Modicus Startup Manager, handles the whole application
         /// </summary>
-        /// <param name="tokenManager"></param>
-        /// <param name="settingsManager"></param>
-        /// <param name="wifiManager"></param>
-        /// <param name="webManager"></param>
-        /// <param name="mqttManager"></param>
-        /// <param name="busManager"></param>
-        /// <param name="commandManager"></param>
+        /// <param name="tokenManager">The token manager.</param>
+        /// <param name="settingsManager">The settings manager.</param>
+        /// <param name="wifiManager">The wifi manager.</param>
+        /// <param name="webManager">The web manager.</param>
+        /// <param name="mqttManager">The MQTT manager.</param>
+        /// <param name="busManager">The bus manager.</param>
+        /// <param name="commandManager">The command manager.</param>
         public ModicusStartupManager(ITokenManager tokenManager,
             ISettingsManager settingsManager,
             IWiFiManager wifiManager,
             IWebManager webManager,
             IMqttManager mqttManager,
             IBusDeviceManager busManager,
-            ICommandManager commandManager)
+            ICommandManager commandManager,
+            ISignalService signalService)
         {
-            //Close Startup LED to make sure we see the successfull startup at the end
-            controller = new GpioController();
-            pin = controller.OpenPin(Gpio.IO02, PinMode.Output);
-            pin.Write(PinValue.Low);
+
+            signalService.SignalOff();
 
             AsseblyName = "modicus";
             SettingsManager = settingsManager;
@@ -107,7 +104,7 @@ namespace Modicus.Manager
             diagTask.Start();
 #endif
             //Set LED on GPIO Pin 2 ON, to show successful startup
-            pin.Write(PinValue.High);
+            signalService.SignalOn();
         }
 
         //Initialize the settings for a fresh install. This happens only once

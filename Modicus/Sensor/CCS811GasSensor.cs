@@ -13,7 +13,7 @@ namespace Modicus.Sensor
         private CancellationToken token;
         Thread adjustThread;
 
-        /// <summary>Creates a new instance of the CCS811 Gas Sensor.</summary>
+        /// <summary>Initializes a new instance of the <see cref="CCS811GasSensor"/> class.</summary>
         public CCS811GasSensor()
         {
         }
@@ -78,7 +78,7 @@ namespace Modicus.Sensor
         }
 
         /// <summary>Function that is executed after the measurement task has started.</summary>
-        protected override void PostStart()
+        protected override void PostStartMeasurement()
         {
             adjustThread = new(new ThreadStart(AdjustTemperatureHumidity));
             adjustThread.Start();

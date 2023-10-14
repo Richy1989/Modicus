@@ -96,7 +96,7 @@ namespace Modicus.Web
             e.Context.Response.ContentType = "text/html";
 
             var message = "Welcome to Modicus ... Have fun!";
-            var body = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.index), settingsManager.GlobalSettings.InstanceName);
+            var body = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.index), settingsManager.GlobalSettings.SystemSettings.InstanceName);
 
             var page = CreateSite("Modicus", body, message);
 
@@ -134,7 +134,9 @@ namespace Modicus.Web
         public string CreateSystemSettingsPage(string message)
         {
             var body = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.system_settings),
-                settingsManager.GlobalSettings.InstanceName);
+                settingsManager.GlobalSettings.SystemSettings.InstanceName,
+                settingsManager.GlobalSettings.SystemSettings.UseSignalling ? "checked" : "unchecked",
+                settingsManager.GlobalSettings.SystemSettings.SignalGpioPin);
             return CreateSite("System Settings", body, message);
         }
 

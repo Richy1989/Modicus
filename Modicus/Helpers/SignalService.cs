@@ -1,7 +1,8 @@
 ﻿using System.Device.Gpio;
 using System.Threading;
 using Modicus.Helpers.Interfaces;
-using Modicus.Manager;
+using Modicus.Manager.Interfaces;
+using nanoFramework.Hardware.Esp32;
 
 namespace Modicus.Helpers
 {
@@ -11,15 +12,28 @@ namespace Modicus.Helpers
         private bool Running;
         private CancellationTokenSource source;
         private CancellationToken token;
+        private readonly GpioController controller;
+        private readonly ISettingsManager settingManager;
+        public GpioPin pin;
 
-        public SignalService() 
+        /// <summary>Initializes a new instance of the <see cref="SignalService"/> class.</summary>
+        /// <param name="settingManager">The setting manager.</param>
+        public SignalService(ISettingsManager settingManager)
         {
-            
+            this.settingManager = settingManager;
+            if (!settingManager.GlobalSettings.SystemSettings.UseSignalling) return;
+
+            controller = new GpioController();
+            pin = controller.OpenPin(Gpio.IO02, PinMode.Output);
         }
 
+        /// <summary>Signals at the defined GPIO output.</summary>
+        /// <param name="millisecondsDelay">The milliseconds delay.</param>
         private void Signal(int millisecondsDelay)
         {
-            if(errorsignal != null)
+            if (!settingManager.GlobalSettings.SystemSettings.UseSignalling) return;
+
+            if (errorsignal != null)
             {
                 errorsignal.Abort();
                 source?.Cancel();
@@ -27,8 +41,6 @@ namespace Modicus.Helpers
 
             source = new CancellationTokenSource();
             token = source.Token;
-
-            var pin = ModicusStartupManager.pin;
             errorsignal = new Thread(() =>
             {
                 while (!token.IsCancellationRequested)
@@ -43,6 +55,7 @@ namespace Modicus.Helpers
             errorsignal.Start();
         }
 
+        /// <summary>Signals an Error at the defined GPIO output.</summary>
         public void SignalError()
         {
             if (Running) return;
@@ -50,9 +63,24 @@ namespace Modicus.Helpers
             Signal(200);
         }
 
+        /// <summary>Signals a "Reboot Needed" at the defined GPIO output.</summary>
         public void SignalReboot()
         {
             Signal(1000);
+        }
+
+        /// <summary>Turn the signal GPIO off.</summary>
+        public void SignalOff()
+        {
+            if (!settingManager.GlobalSettings.SystemSettings.UseSignalling) return;
+            pin.Write(PinValue.Low);
+        }
+
+        /// <summary>Turn the signal GPIO on.</summary>
+        public void SignalOn()
+        {
+            if (!settingManager.GlobalSettings.SystemSettings.UseSignalling) return;
+            pin.Write(PinValue.High);
         }
     }
 }

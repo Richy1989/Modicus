@@ -14,7 +14,7 @@ namespace Modicus.Sensor
         private Pressure defaultSeaLevelPressure;
         private IPublishMqtt mqttPublisher;
 
-        /// <summary>Creates new instamce of BME280 Sensor</summary>
+        /// <summary>Initializes a new instance of the <see cref="BME280Sensor"/> class.</summary>
         internal BME280Sensor() : base()
         { }
 
@@ -91,7 +91,7 @@ namespace Modicus.Sensor
         }
 
         /// <summary>Function that is executed after the measurement task has started.</summary>
-        protected override void PostStart()
+        protected override void PostStartMeasurement()
         { }
 
         /// <summary>Disposes the sensor.</summary>

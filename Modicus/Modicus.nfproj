@@ -72,6 +72,7 @@
     <Compile Include="Settings\GlobalSettings.cs" />
     <Compile Include="Manager\SettingsManager.cs" />
     <Compile Include="Settings\CommandSettings.cs" />
+    <Compile Include="Settings\SystemSettings.cs" />
     <Compile Include="Settings\SensorSettings.cs" />
     <Compile Include="Settings\WifiSettings.cs" />
     <Compile Include="Manager\WiFiManager.cs" />

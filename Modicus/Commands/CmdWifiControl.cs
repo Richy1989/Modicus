@@ -13,7 +13,7 @@ namespace Modicus.Commands
     {
         private readonly IWiFiManager wiFiManager;
         private readonly ISettingsManager settingsManager;
-                       
+                      
         public CmdWifiControl(ISettingsManager settingsManager, IWiFiManager wiFiManager)
         {
             this.wiFiManager = wiFiManager;

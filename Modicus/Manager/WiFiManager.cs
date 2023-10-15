@@ -18,7 +18,7 @@ namespace Modicus.Manager
         private readonly IPublishMqtt publishMqtt;
         private readonly ISettingsManager settingsManager;
         private readonly ISignalService signalService;
-        private TimeSpan downTime;
+        //private TimeSpan downTime;
 
         public bool IsConnected { get; private set; }
         public bool ISoftAP { get; private set; }

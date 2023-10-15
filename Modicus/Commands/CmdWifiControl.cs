@@ -13,7 +13,7 @@ namespace Modicus.Commands
     {
         private readonly IWiFiManager wiFiManager;
         private readonly ISettingsManager settingsManager;
-
+                       
         public CmdWifiControl(ISettingsManager settingsManager, IWiFiManager wiFiManager)
         {
             this.wiFiManager = wiFiManager;
@@ -96,7 +96,6 @@ namespace Modicus.Commands
         public string DefaultGateway { get; set; }
         public bool UseDHCP { get; set; }
         public CmdWifiMode Mode { get; set; }
-        //public CmdWifiStartStop StartStop { get; set; }
     }
 
     internal enum CmdWifiMode
@@ -105,10 +104,4 @@ namespace Modicus.Commands
         ConfigureAccessPoint,
         ConfigureWireless80211
     }
-
-    //internal enum CmdWifiStartStop
-    //{
-    //    Start,
-    //    Stop
-    //}
 }

@@ -15,7 +15,6 @@ namespace Modicus.Manager
 {
     internal class WiFiManager : IWiFiManager
     {
-        private readonly CancellationToken token;
         private readonly IPublishMqtt publishMqtt;
         private readonly ISettingsManager settingsManager;
         private readonly ISignalService signalService;
@@ -41,11 +40,12 @@ namespace Modicus.Manager
             }
         }
 
+        /// <summary>Starts the wifi instance.</summary>
         public void Start()
         {
             var wifiSettings = settingsManager.GlobalSettings.WifiSettings;
+
             // If Wireless station is not enabled then start Soft AP to allow Wireless configuration
-            // or Button pressed
             if (!Wireless80211.IsEnabled() || wifiSettings.StartInAPMode)
             {
                 ISoftAP = true;
@@ -104,34 +104,29 @@ namespace Modicus.Manager
             }
         }
 
-        public void Disconnect()
-        {
-            WifiNetworkHelper.Disconnect();
-        }
+        //public void KeepConnected()
+        //{
+        //    while (!token.IsCancellationRequested)
+        //    {
+        //        if (WifiNetworkHelper.Status != NetworkHelperStatus.NetworkIsReady)
+        //        {
+        //            downTime = downTime + TimeSpan.FromSeconds(1);
+        //            var success = WifiNetworkHelper.Reconnect();
 
-        public void KeepConnected()
-        {
-            while (!token.IsCancellationRequested)
-            {
-                if (WifiNetworkHelper.Status != NetworkHelperStatus.NetworkIsReady)
-                {
-                    downTime = downTime + TimeSpan.FromSeconds(1);
-                    var success = WifiNetworkHelper.Reconnect();
+        //            if (!success)
+        //            {
+        //                // Something went wrong, you can get details with the ConnectionError property:
+        //                Debug.WriteLine($"Can't connect to the network, error: {WifiNetworkHelper.Status}");
+        //                if (WifiNetworkHelper.HelperException != null)
+        //                {
+        //                    Debug.WriteLine($"ex: {WifiNetworkHelper.HelperException}");
+        //                }
+        //            }
 
-                    if (!success)
-                    {
-                        // Something went wrong, you can get details with the ConnectionError property:
-                        Debug.WriteLine($"Can't connect to the network, error: {WifiNetworkHelper.Status}");
-                        if (WifiNetworkHelper.HelperException != null)
-                        {
-                            Debug.WriteLine($"ex: {WifiNetworkHelper.HelperException}");
-                        }
-                    }
-
-                    publishMqtt.State.WiFi.DownTime = downTime;
-                }
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-            }
-        }
+        //            publishMqtt.State.WiFi.DownTime = downTime;
+        //        }
+        //        Thread.Sleep(TimeSpan.FromSeconds(1));
+        //    }
+        //}
     }
 }

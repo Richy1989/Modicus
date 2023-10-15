@@ -13,15 +13,15 @@ namespace Modicus.WiFi
 {
     internal class Wireless80211
     {
+        /// <summary>Determines whether Wireless80211 is enabled.</summary>
+        /// <returns><c>true</c> if this instance is enabled; otherwise, <c>false</c>.</returns>
         public static bool IsEnabled()
         {
             Wireless80211Configuration wconf = GetConfiguration();
             return !string.IsNullOrEmpty(wconf.Ssid);
         }
 
-        /// <summary>
-        /// Disable the Wireless station interface.
-        /// </summary>
+        /// <summary>Disable the Wireless station interface.</summary>
         public static void Disable()
         {
             Wireless80211Configuration wconf = GetConfiguration();
@@ -29,12 +29,8 @@ namespace Modicus.WiFi
             wconf.SaveConfiguration();
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="wifiSettings"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
+        /// <summary>Configures the specified wifi settings.</summary>
+        /// <param name="wifiSettings">The wifi settings.</param>
         public static void Configure(WifiSettings wifiSettings)
         {
             // And we have to force connect once here even for a short time
@@ -55,9 +51,7 @@ namespace Modicus.WiFi
             return;
         }
 
-        /// <summary>
-        /// Get the Wireless station configuration.
-        /// </summary>
+        /// <summary>Get the Wireless station configuration.</summary>
         /// <returns>Wireless80211Configuration object</returns>
         public static Wireless80211Configuration GetConfiguration()
         {
@@ -65,6 +59,8 @@ namespace Modicus.WiFi
             return Wireless80211Configuration.GetAllWireless80211Configurations()[ni.SpecificConfigId];
         }
 
+        /// <summary>Gets the network interface.</summary>
+        /// <returns>NetworkInterface</returns>
         public static NetworkInterface GetInterface()
         {
             NetworkInterface[] Interfaces = NetworkInterface.GetAllNetworkInterfaces();
@@ -80,9 +76,7 @@ namespace Modicus.WiFi
             return null;
         }
 
-        /// <summary>
-        /// Returns the IP address
-        /// </summary>
+        /// <summary>Returns the IP address.</summary>
         /// <returns>IP address</returns>
         public static string GetIP()
         {

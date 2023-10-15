@@ -8,7 +8,6 @@ using Modicus.Commands;
 using Modicus.Commands.Interfaces;
 using Modicus.Manager.Interfaces;
 using Modicus.Sensor.Interfaces;
-using Modicus.WiFi;
 using nanoFramework.WebServer;
 
 namespace Modicus.Web
@@ -21,10 +20,16 @@ namespace Modicus.Web
         private readonly ModicusWebpages modicusWebpages;
         private readonly IBusDeviceManager busDeviceManager;
 
-        /// <summary>
-        /// Creates a new ModicusWebpageAPI instance.
-        /// </summary>
-        public ModicusWebpageAPI(ISettingsManager settingsManager, IBusDeviceManager busDeviceManager, ICommandManager commandManager, ModicusWebpages modicusWebpages)
+        /// <summary>Initializes a new instance of the <see cref="ModicusWebpageAPI"/> class.</summary>
+        /// <param name="settingsManager">The settings manager.</param>
+        /// <param name="busDeviceManager">The bus device manager.</param>
+        /// <param name="commandManager">The command manager.</param>
+        /// <param name="modicusWebpages">The modicus webpages.</param>
+        public ModicusWebpageAPI(
+            ISettingsManager settingsManager,
+            IBusDeviceManager busDeviceManager,
+            ICommandManager commandManager,
+            ModicusWebpages modicusWebpages)
         {
             this.settingsManager = settingsManager;
             this.commandManager = commandManager;
@@ -32,11 +37,8 @@ namespace Modicus.Web
             this.busDeviceManager = busDeviceManager;
         }
 
-        /// <summary>
-        /// Route for IP Settings. Handels the request to set the new IP Settings and saves everything
-        /// </summary>
-        /// <param name="e"></param>
-
+        /// <summary>Route for IP Settings. Handels the request to set the new IP Settings and saves everything.</summary>
+        /// <param name="e">The <see cref="WebServerEventArgs"/> instance containing the event data.</param>
         [Route("ip_settings")]
         public void IPSettings(WebServerEventArgs e)
         {
@@ -74,45 +76,6 @@ namespace Modicus.Web
 
                 wifiSetupTask.Start();
 
-                ////var wifiSettings = settingsManager.GlobalSettings.WifiSettings;
-                ////wifiSettings.UseDHCP = useDhcp != null && useDhcp == "on";
-
-                ////if (!wifiSettings.UseDHCP)
-                ////{
-                ////    string errorMessage = "IP";
-                ////    try
-                ////    {
-                ////        IPAddress.Parse(ip);
-                ////        wifiSettings.IP = ip;
-
-                ////        errorMessage = "Default Gateway";
-                ////        IPAddress.Parse(gateway);
-                ////        wifiSettings.DefaultGateway = gateway;
-
-                ////        errorMessage = "Subnetmask";
-                ////        IPAddress.Parse(subnet);
-                ////        wifiSettings.NetworkMask = subnet;
-                ////    }
-                ////    catch
-                ////    {
-                ////        message = $"{errorMessage} not Valid!\n{message}";
-                ////        message = $"DHCP use not activated!\n{message}";
-                ////        wifiSettings.UseDHCP = false;
-                ////    }
-                ////}
-
-                ////wifiSettings.Ssid = ssid;
-                ////wifiSettings.Password = password;
-                ////wifiSettings.StartInAPMode = false;
-
-                ////wifiSetupTask = new Thread(() =>
-                ////{
-                ////    settingsManager.UpdateSettings();
-                ////    Wireless80211.Configure(wifiSettings);
-                ////    WirelessAP.Disable();
-                ////});
-                ////wifiSetupTask.Start();
-
                 message = $"Reboot Controller!\n{message}";
             }
 
@@ -125,10 +88,8 @@ namespace Modicus.Web
             WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateIPSettingsPage(message));
         }
 
-        /// <summary>
-        /// Route fot MQTT Settings. Handles all the config, saves and restarted the MQTT server
-        /// </summary>
-        /// <param name="e"></param>
+        /// <summary>Route fot MQTT Settings. Handles all the config, saves and restarted the MQTT server.</summary>
+        /// <param name="e">The <see cref="WebServerEventArgs"/> instance containing the event data.</param>
         [Route("mqtt_settings")]
         public void MqttSettings(WebServerEventArgs e)
         {
@@ -194,11 +155,8 @@ namespace Modicus.Web
             WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateMQTTSettingsPage(message));
         }
 
-        /// <summary>
-        /// Route for System Settings. Handels the request to set the new system settings
-        /// </summary>
-        /// <param name="e"></param>
-
+        /// <summary>Route for System Settings. Handels the request to set the new system settings.</summary>
+        /// <param name="e">The <see cref="WebServerEventArgs"/> instance containing the event data.</param>
         [Route("system_settings")]
         public void SystemSettings(WebServerEventArgs e)
         {
@@ -220,7 +178,7 @@ namespace Modicus.Web
                     settingsManager.GlobalSettings.SystemSettings.InstanceName = name;
 
                     settingsManager.GlobalSettings.SystemSettings.UseSignalling = enableSignal != null && enableSignal == "on";
-                    if(settingsManager.GlobalSettings.SystemSettings.UseSignalling)
+                    if (settingsManager.GlobalSettings.SystemSettings.UseSignalling)
                         message = $"Signal GPIO is activated - Please reboot device.\n{message}";
                     else
                         message = $"Signal GPIO is deactivated - Please reboot device.\n{message}";
@@ -230,7 +188,7 @@ namespace Modicus.Web
                         settingsManager.GlobalSettings.SystemSettings.SignalGpioPin = signalPin;
                         message = $"New Signal GPIO Pin: {signalPin} - Please reboot device.\n{message}";
                     }
-                    
+
                     settingsManager.UpdateSettings();
                 });
                 systemSettingsTask.Start();
@@ -287,7 +245,7 @@ namespace Modicus.Web
 
             bool isOk = true;
 
-            if(back != null)
+            if (back != null)
             {
                 WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateSensorSelectionSite(""));
                 return;
@@ -375,7 +333,7 @@ namespace Modicus.Web
             ISensor sensor = busDeviceManager.GetSensorFromName(sensorString);
 
             string message = string.Empty;
-            if (sensor != null) 
+            if (sensor != null)
             {
                 if (start != null)
                 {
@@ -393,7 +351,7 @@ namespace Modicus.Web
                     message = $"Sensor: {sensor.Name} Deleted!";
                 }
             }
-            else if(back != null)
+            else if (back != null)
             {
                 modicusWebpages.Default(e);
                 return;

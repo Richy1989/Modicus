@@ -15,9 +15,7 @@ namespace Modicus
 {
     public class Program
     {
-        /// <summary>
-        /// Main class for Modicus, this initializes the main manager
-        /// </summary>
+        /// <summary>Main class for Modicus, this initializes the main manager.</summary>
         public static void Main()
         {
             Debug.WriteLine("Hello from Modicus!");

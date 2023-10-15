@@ -20,6 +20,7 @@
   <ItemGroup>
     <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="Commands\CmdCreateI2CSensor.cs" />
+    <Compile Include="Commands\CmdWifiControl.cs" />
     <Compile Include="Commands\CmdSensorOnOff.cs" />
     <Compile Include="Commands\CmdSystemReboot.cs" />
     <Compile Include="Commands\CmdMqttOnOff.cs" />

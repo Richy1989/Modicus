@@ -56,47 +56,66 @@ namespace Modicus.Web
             string message = "";
             if (save != null)
             {
-                var wifiSettings = settingsManager.GlobalSettings.WifiSettings;
-                wifiSettings.UseDHCP = useDhcp != null && useDhcp == "on";
-
-                if (!wifiSettings.UseDHCP)
+                CmdWifiControlData wifiData = new()
                 {
-                    string errorMessage = "IP";
-                    try
-                    {
-                        IPAddress.Parse(ip);
-                        wifiSettings.IP = ip;
-
-                        errorMessage = "Default Gateway";
-                        IPAddress.Parse(gateway);
-                        wifiSettings.DefaultGateway = gateway;
-
-                        errorMessage = "Subnetmask";
-                        IPAddress.Parse(subnet);
-                        wifiSettings.NetworkMask = subnet;
-                    }
-                    catch
-                    {
-                        message = $"{errorMessage} not Valid!\n{message}";
-                        message = $"DHCP use not activated!\n{message}";
-                        wifiSettings.UseDHCP = false;
-                    }
-                }
-
-                wifiSettings.Ssid = ssid;
-                wifiSettings.Password = password;
-                wifiSettings.StartInAPMode = false;
+                    IP = ip,
+                    DefaultGateway = gateway,
+                    NetworkMask = subnet,
+                    Ssid = ssid,
+                    Password = password,
+                    UseDHCP = useDhcp != null && useDhcp == "on",
+                    Mode = CmdWifiMode.ConfigureWireless80211
+                };
 
                 wifiSetupTask = new Thread(() =>
                 {
-                    settingsManager.UpdateSettings();
-                    Wireless80211.Configure(wifiSettings);
-                    WirelessAP.Disable();
+                    commandManager.CmdWifiControl.Execute(wifiData);
                 });
+
                 wifiSetupTask.Start();
+
+                ////var wifiSettings = settingsManager.GlobalSettings.WifiSettings;
+                ////wifiSettings.UseDHCP = useDhcp != null && useDhcp == "on";
+
+                ////if (!wifiSettings.UseDHCP)
+                ////{
+                ////    string errorMessage = "IP";
+                ////    try
+                ////    {
+                ////        IPAddress.Parse(ip);
+                ////        wifiSettings.IP = ip;
+
+                ////        errorMessage = "Default Gateway";
+                ////        IPAddress.Parse(gateway);
+                ////        wifiSettings.DefaultGateway = gateway;
+
+                ////        errorMessage = "Subnetmask";
+                ////        IPAddress.Parse(subnet);
+                ////        wifiSettings.NetworkMask = subnet;
+                ////    }
+                ////    catch
+                ////    {
+                ////        message = $"{errorMessage} not Valid!\n{message}";
+                ////        message = $"DHCP use not activated!\n{message}";
+                ////        wifiSettings.UseDHCP = false;
+                ////    }
+                ////}
+
+                ////wifiSettings.Ssid = ssid;
+                ////wifiSettings.Password = password;
+                ////wifiSettings.StartInAPMode = false;
+
+                ////wifiSetupTask = new Thread(() =>
+                ////{
+                ////    settingsManager.UpdateSettings();
+                ////    Wireless80211.Configure(wifiSettings);
+                ////    WirelessAP.Disable();
+                ////});
+                ////wifiSetupTask.Start();
 
                 message = $"Reboot Controller!\n{message}";
             }
+
             if (back != null)
             {
                 modicusWebpages.Default(e);
@@ -222,7 +241,7 @@ namespace Modicus.Web
             {
                 systemSettingsTask = new Thread(() =>
                 {
-                    commandManager.CmdSystemReboot.Execute(new Commands.CmdRebootControllerData { Delay = 2 });
+                    commandManager.CmdSystemReboot.Execute(new CmdRebootControllerData { Delay = 2 });
                 });
                 systemSettingsTask.Start();
 

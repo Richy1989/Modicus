@@ -5,8 +5,8 @@ namespace Modicus.Settings
 {
     public class MqttSettings
     {
-        //Default Measurement Interval is 5 Minutes
-        public TimeSpan SendInterval { get; set; } = TimeSpan.FromSeconds(1);// TimeSpan.FromMinutes(5);
+        //Default Measurement Interval is 10 Seconds
+        public TimeSpan SendInterval { get; set; } = TimeSpan.FromSeconds(10);
 
         public bool ConnectToMqtt { get; set; }
         public string MqttUserName { get; set; }

@@ -21,26 +21,22 @@ namespace Modicus.Settings
         public IList SensorsStringList { get; set; } = new ArrayList();
 
         /// <summary>
-        /// Creates a new instance of the settings for the ConfiguredSensors.
-        /// This class keeps all the sensor saved and handels the read an write to a file.
+        /// Initializes a new instance of the <see cref="SensorSettings"/> class.
+        /// This class keeps all the sensor saved and handels the read an write actions to the settings file.
         /// </summary>
         public SensorSettings()
         {
             saveLoadFileManager = new SaveLoadFileManager();
         }
 
-        /// <summary>
-        /// Saves the settings to a file
-        /// </summary>
+        /// <summary>Saves the settings to a file.</summary>
         public void SaveSettings()
         {
             string sensorSettingString = JsonConvert.SerializeObject(SensorsStringList);
             saveLoadFileManager.CreateSettingFile(filepath, sensorSettingString);
         }
 
-        /// <summary>
-        /// Reads the settings from a file
-        /// </summary>
+        /// <summary>Reads the settings from a file.</summary>
         public void LoadSettings()
         {
             string sensorSettingString = saveLoadFileManager.LoadSettings(filepath);
@@ -57,9 +53,7 @@ namespace Modicus.Settings
             }
         }
 
-        /// <summary>
-        /// Adds a new sensor to the collection of sensors
-        /// </summary>
+        /// <summary>Adds a new sensor to the collection of sensors.</summary>
         /// <param name="sensor"></param>
         public void AddSensor(ISensor sensor)
         {
@@ -68,9 +62,7 @@ namespace Modicus.Settings
             SaveSettings();
         }
 
-        /// <summary>
-        /// Removes a sensor from the sensor collection
-        /// </summary>
+        /// <summary>Removes a sensor from the sensor collection.</summary>
         /// <param name="sensor"></param>
         public void RemoveSensor(ISensor sensor)
         {

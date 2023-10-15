@@ -1,31 +1,33 @@
 ﻿using System;
-using System.Device.Wifi;
 using System.Diagnostics;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Threading;
 using Iot.Device.DhcpServer;
-using Modicus.Helpers;
 using Modicus.Helpers.Interfaces;
 using Modicus.Manager.Interfaces;
 using Modicus.MQTT.Interfaces;
 using Modicus.Wifi.Interfaces;
 using Modicus.WiFi;
 using nanoFramework.Networking;
-using nanoFramework.Runtime.Native;
 
 namespace Modicus.Manager
 {
     internal class WiFiManager : IWiFiManager
     {
-        private CancellationToken token;
+        private readonly CancellationToken token;
         private readonly IPublishMqtt publishMqtt;
+        private readonly ISettingsManager settingsManager;
+        private readonly ISignalService signalService;
         private TimeSpan downTime;
-        private ISettingsManager settingsManager;
-        private ISignalService signalService;
+
         public bool IsConnected { get; private set; }
         public bool ISoftAP { get; private set; }
 
+        /// <summary>Initializes a new instance of the <see cref="WiFiManager"/> class.</summary>
+        /// <param name="publishMqtt">The publish MQTT.</param>
+        /// <param name="settingsManager">The settings manager.</param>
+        /// <param name="signalService">The signal service.</param>
         public WiFiManager(IMqttManager publishMqtt, ISettingsManager settingsManager, ISignalService signalService)
         {
             this.signalService = signalService;
@@ -51,7 +53,7 @@ namespace Modicus.Manager
                 if (WirelessAP.Setup() == false)
                 {
                     // Reboot device to Activate Access Point on restart
-                    Debug.WriteLine($"Setup Soft AP, Rebooting device");
+                    Debug.WriteLine($"Setup Soft AP, Please reboot the device");
                     IsConnected = false;
                     return;
                     //Power.RebootDevice();
@@ -77,14 +79,14 @@ namespace Modicus.Manager
             else
             {
                 ISoftAP = false;
-                Debug.WriteLine($"Running in normal mode, connecting to Access point");
+                Debug.WriteLine($"Running in normal mode, connecting to access point");
                 bool success;
 
                 if (wifiSettings.UseDHCP)
                     success = WifiNetworkHelper.ScanAndConnectDhcp(wifiSettings.Ssid, wifiSettings.Password);
                 else
                 {
-                    IPConfiguration iPConfiguration = new IPConfiguration(wifiSettings.IP, wifiSettings.NetworkMask, wifiSettings.DefaultGateway);
+                    IPConfiguration iPConfiguration = new(wifiSettings.IP, wifiSettings.NetworkMask, wifiSettings.DefaultGateway);
                     success = WifiNetworkHelper.ConnectFixAddress(wifiSettings.Ssid, wifiSettings.Password, iPConfiguration, System.Device.Wifi.WifiReconnectionKind.Automatic, false, 0, token: new CancellationTokenSource(10000).Token);
                 }
 
@@ -100,6 +102,11 @@ namespace Modicus.Manager
                     signalService.SignalError();
                 }
             }
+        }
+
+        public void Disconnect()
+        {
+            WifiNetworkHelper.Disconnect();
         }
 
         public void KeepConnected()

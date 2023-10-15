@@ -18,9 +18,12 @@ namespace Modicus.Manager
         private readonly ITokenManager tokenManager;
 
         /// <summary>
-        /// Creates a new instance of bus device manager.
+        /// Initializes a new instance of the <see cref="BusDeviceManager"/> class.
         /// This instance can handle all sensors connected to a bus of the device.
         /// </summary>
+        /// <param name="settingsManager">The settings manager.</param>
+        /// <param name="mqttManager">The MQTT manager.</param>
+        /// <param name="tokenManager">The token manager.</param>
         public BusDeviceManager(ISettingsManager settingsManager, IMqttManager mqttManager, ITokenManager tokenManager)
         {
             //All supported sensors need to be entered here!

@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Device.Gpio;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Threading;
+using Modicus.Commands;
 using Modicus.Commands.Interfaces;
 using Modicus.Helpers;
 using Modicus.Helpers.Interfaces;
@@ -10,7 +10,6 @@ using Modicus.Manager.Interfaces;
 using Modicus.MQTT.Interfaces;
 using Modicus.Settings;
 using Modicus.Wifi.Interfaces;
-using nanoFramework.Hardware.Esp32;
 using GC = nanoFramework.Runtime.Native.GC;
 
 namespace Modicus.Manager
@@ -25,7 +24,7 @@ namespace Modicus.Manager
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModicusStartupManager"/> class.
-        /// Creates the Modicus Startup Manager, handles the whole application
+        /// Creates the Modicus Startup Manager, handles the whole application.
         /// </summary>
         /// <param name="tokenManager">The token manager.</param>
         /// <param name="settingsManager">The settings manager.</param>
@@ -43,7 +42,6 @@ namespace Modicus.Manager
             ICommandManager commandManager,
             ISignalService signalService)
         {
-
             signalService.SignalOff();
 
             AsseblyName = "modicus";
@@ -59,7 +57,7 @@ namespace Modicus.Manager
 
             if (GlobalSettings.WifiSettings.ConnectToWifi)
             {
-                wifiManager.Start();
+                commandManager.CmdWifiControl.Execute(new CmdWifiControlData { Mode = CmdWifiMode.StartOnly });
             }
 
             //Set all Commands for command capable managers

@@ -10,6 +10,7 @@ namespace Modicus.Commands.Interfaces
         CmdMqttOnOff CmdMqttOnOff { get; }
         CmdSystemReboot CmdSystemReboot { get; }
         CmdCreateI2CSensor CmdCreateI2CSensor { get; }
+        CmdWifiControl CmdWifiControl { get; }
 
         void AddCommandCapableManager(Type type, ICommandCapable commandCapable);
 

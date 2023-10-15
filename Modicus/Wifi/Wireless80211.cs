@@ -35,7 +35,7 @@ namespace Modicus.WiFi
         /// <param name="wifiSettings"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static bool Configure(WifiSettings wifiSettings)
+        public static void Configure(WifiSettings wifiSettings)
         {
             // And we have to force connect once here even for a short time
             bool success;
@@ -48,10 +48,11 @@ namespace Modicus.WiFi
             }
 
             Debug.WriteLine($"Connection is {success}");
+
             Wireless80211Configuration wconf = GetConfiguration();
             wconf.Options = Wireless80211Configuration.ConfigurationOptions.AutoConnect | Wireless80211Configuration.ConfigurationOptions.Enable;
             wconf.SaveConfiguration();
-            return true;
+            return;
         }
 
         /// <summary>

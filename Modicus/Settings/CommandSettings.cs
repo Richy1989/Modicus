@@ -1,8 +1,6 @@
 ﻿namespace Modicus.Settings
 {
-    /// <summary>
-    /// Command Settings 
-    /// </summary>
+    /// <summary>Command Settings.</summary>
     public class CommandSettings
     {
         public string MeasurementIntervalTopic { get; } = "MeasurementInterval";
@@ -12,5 +10,6 @@
         public string SensorOnOffTopic { get; } = "SensorOnOff";
         public string RebootControllerTopic { get; } = "Reboot";
         public string CreateI2CSensor { get; } = "CreateI2CSensor";
+        public string WifiControl { get; } = "WifiControl";
     }
 }

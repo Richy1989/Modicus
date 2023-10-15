@@ -118,6 +118,22 @@ Payload JSON:
 }
 ```
 
+### Configure Wifi
+Configures the wifi settings
+```sh
+Topic: <ClientID>/cmd/WifiControl
+Payload JSON:
+{
+	"Ssid": "<Wifi SSID to connect>",
+	"Password": "<Wifi passwort>",
+	"IP": "<IP if static>",
+	"NetworkMask": "<Network mask if static>",
+	"DefaultGateway": "<Default Gateway if static>",
+	"UseDHCP": <"TRUE | FALSE">,
+	"Mode": <0 =  StartOnly | 1 = ConfigureAccessPoint | 2 = ConfigureWireless80211>
+}
+```
+
 ## Screen Shots
 <img src="https://github.com/Richy1989/Modicus/blob/main/images/modicus_main.jpg" alt="Modicus Main Webpage" width="400"/>
 <br />

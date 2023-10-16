@@ -1,4 +1,6 @@
 ﻿using System.Collections;
+using System.Diagnostics;
+using System.Text;
 using System.Threading;
 using Modicus.Extensions;
 using Modicus.Manager.Interfaces;
@@ -84,6 +86,10 @@ namespace Modicus.Manager
         public string GetJsonString()
         {
             mre.WaitOne();
+            string json = JsonCreator(OutputData);
+            mre.Set();
+
+            /*
             bool isFirst = true;
 
             string json = "{";
@@ -105,6 +111,7 @@ namespace Modicus.Manager
                     if (!isFirstSub)
                         json += ",";
 
+
                     json = $"{json} \"{data.Key}\":";
 
                     if (data.Value.IsNumber())
@@ -123,8 +130,44 @@ namespace Modicus.Manager
             json += "}";
 
             mre.Set();
-
+            */
             return json;
+        }
+
+        private string JsonCreator(IDictionary dictionary)
+        {
+            StringBuilder stringBuilder = new();
+            stringBuilder.Append("{");
+            bool isFirst = true;
+            foreach (DictionaryEntry data in dictionary)
+            {
+                if (!isFirst)
+                    stringBuilder.Append(",");
+
+                stringBuilder.Append(string.Format("\"{0}\": {", data.Key));
+
+                //jsonString = $"{jsonString} \"{data.Key}\": {{";
+
+                if (data.Value is IDictionary subDictionary)
+                {
+                    stringBuilder.Append(string.Format(" {0}", JsonCreator(subDictionary)));
+                    //jsonString = $"{jsonString} {JsonCreator(subDictionary)}";
+                }
+                else if (data.Value.IsNumber())
+                {
+                    stringBuilder.Append(string.Format(" {0}", data.Value));
+                    //jsonString = $"{jsonString} {data.Value}";
+                }
+                else
+                {
+                    stringBuilder.Append(string.Format(" \"{0}\"", data.Value));
+                    //jsonString = $"{jsonString} \"{data.Value}\"";
+                }
+                isFirst = false;
+            }
+
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
         }
 
         /// <summary>Starts the sending.</summary>
@@ -138,7 +181,6 @@ namespace Modicus.Manager
                 {
                     devicedevice.PublishAll("TODO: ADD State", GetJsonString());
                 }
-
                 ////Set current time
                 //MainMqttMessage.Time = DateTime.UtcNow;
                 //State.Uptime = DateTime.UtcNow - settingsManager.GlobalSettings.StartupTime;

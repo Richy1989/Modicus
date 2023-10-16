@@ -12,10 +12,12 @@ namespace Modicus.Manager
     {
         public IDictionary ConfiguredSensors { get; }
         public IDictionary SupportedSensors { get; }
+        public IDictionary OutputManagers { get; }
 
         private readonly ISettingsManager settingsManager;
         private readonly IMqttManager mqttManager;
         private readonly ITokenManager tokenManager;
+        private readonly IOutputManager outputManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BusDeviceManager"/> class.
@@ -24,7 +26,11 @@ namespace Modicus.Manager
         /// <param name="settingsManager">The settings manager.</param>
         /// <param name="mqttManager">The MQTT manager.</param>
         /// <param name="tokenManager">The token manager.</param>
-        public BusDeviceManager(ISettingsManager settingsManager, IMqttManager mqttManager, ITokenManager tokenManager)
+        public BusDeviceManager(
+            ISettingsManager settingsManager,
+            IMqttManager mqttManager,
+            IOutputManager outputManager,
+            ITokenManager tokenManager)
         {
             //All supported sensors need to be entered here!
             SupportedSensors = new Hashtable
@@ -37,6 +43,7 @@ namespace Modicus.Manager
             this.settingsManager = settingsManager;
             this.mqttManager = mqttManager;
             this.tokenManager = tokenManager;
+            this.outputManager = outputManager;
             CreateStartAllSensors();
         }
 
@@ -57,13 +64,30 @@ namespace Modicus.Manager
         /// <param name="sensor"></param>
         public void StartSensor(ISensor sensor)
         {
-            if (!sensor.IsRunning)
+            if (sensor != null && !sensor.IsRunning)
+            {
+                sensor.MeasurementAvailable += Sensor_MeasurementAvailable;
                 sensor.StartMeasurement(tokenManager.Token);
+            }
+        }
+
+        /// <summary>Handles the MeasurementAvailable event of the Sensor control.</summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs.MeasurementAvailableEventArgs"/> instance containing the event data.</param>
+        private void Sensor_MeasurementAvailable(object sender, EventArgs.MeasurementAvailableEventArgs e)
+        {
+            outputManager.AddMeasurementData(e.Data);
         }
 
         /// <summary>Stops the given sensor .</summary>
         /// <param name="sensor"></param>
-        public void StopSensor(ISensor sensor) => sensor?.StopSensor();
+        public void StopSensor(ISensor sensor)
+        {
+            if (sensor == null) return;
+
+            sensor.MeasurementAvailable -= Sensor_MeasurementAvailable;
+            sensor.StopSensor();
+        }
 
         /// <summary>Stops the given sensor.</summary>
         /// <param name="sensor"></param>
@@ -71,7 +95,7 @@ namespace Modicus.Manager
         {
             if (sensor == null) return;
 
-            sensor.StopSensor();
+            StopSensor(sensor);
             sensor.Dispose();
             ConfiguredSensors.Remove(sensor.Name);
         }
@@ -97,7 +121,7 @@ namespace Modicus.Manager
                     ConfiguredSensors.Add(baseSensor.Name, baseSensor);
 
                     baseSensor.Configure((IPublishMqtt)mqttManager);
-                    baseSensor.StartMeasurement(tokenManager.Token);
+                    StartSensor(baseSensor);
                 }
             }
         }

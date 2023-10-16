@@ -27,6 +27,7 @@
     <Compile Include="Commands\CmdMqttSendInterval.cs" />
     <Compile Include="Commands\CmdMqttClientID.cs" />
     <Compile Include="EventArgs\CommandRaisedEventArgs.cs" />
+    <Compile Include="EventArgs\MeasurementAvailableEventArgs.cs" />
     <Compile Include="Extensions\CommonExtensions.cs" />
     <Compile Include="Commands\Interfaces\ICommand.cs" />
     <Compile Include="Commands\Interfaces\ICommandCapable.cs" />
@@ -35,6 +36,10 @@
     <Compile Include="Helpers\Interfaces\ISignalService.cs" />
     <Compile Include="Manager\BusDeviceManager.cs" />
     <Compile Include="Manager\Interfaces\IBusDeviceManager.cs" />
+    <Compile Include="OutputDevice\BaseOutputDevice.cs" />
+    <Compile Include="OutputDevice\Interface\IOutputDevice.cs" />
+    <Compile Include="Manager\Interfaces\IOutputManager.cs" />
+    <Compile Include="Manager\OutputManager.cs" />
     <Compile Include="Manager\SaveLoadFileManager.cs" />
     <Compile Include="MQTT\Interfaces\IMqttManager.cs" />
     <Compile Include="MQTT\Interfaces\IPublishMqtt.cs" />
@@ -66,6 +71,7 @@
     <Compile Include="Sensor\CCS811GasSensor.cs" />
     <Compile Include="Sensor\Interfaces\II2cSensor.cs" />
     <Compile Include="Sensor\Interfaces\ISensor.cs" />
+    <Compile Include="Sensor\Measurement\BaseMeasurement.cs" />
     <Compile Include="Services\Interfaces\INtpService.cs" />
     <Compile Include="Services\NTPService.cs" />
     <Compile Include="Helpers\SignalService.cs" />

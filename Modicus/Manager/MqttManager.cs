@@ -9,6 +9,7 @@ using Modicus.EventArgs;
 using Modicus.Manager.Interfaces;
 using Modicus.MQTT;
 using Modicus.MQTT.Interfaces;
+using Modicus.OutputDevice;
 using Modicus.Settings;
 using Modicus.WiFi;
 using nanoFramework.Json;
@@ -17,45 +18,29 @@ using nanoFramework.M2Mqtt.Messages;
 
 namespace Modicus.Manager
 {
-    internal class MqttManager : IMqttManager, IPublishMqtt
+    internal class MqttManager : BaseOutputDevice, IMqttManager, IPublishMqtt, ICommandCapable
     {
+        //Make sure only one thread at the time can work with the mqtt service
+        private readonly ManualResetEvent mreMQTT = new(true);
+
         private MqttClient mqtt;
         private readonly CancellationToken token;
         private readonly GlobalSettings globalSettings;
         private bool resubscribeAll = false;
         private bool stopService = false;
         private bool enableAutoRestart = true;
-        private CancellationTokenSource localCancellationTokenSource;
-        private CancellationToken localCancellationToken;
-
-        //Make sure only one thread at the time can work with the mqtt service
-        private readonly ManualResetEvent mreMQTT = new(true);
-
-        private readonly ISettingsManager settingsManager;
-        private Thread mqttThread;
-
-        public MainMqttMessage MainMqttMessage { get; set; }
-        public StateMessage State { get; set; }
         public IDictionary SubscribeTopics { get; private set; }
 
-        /// <summary>
-        /// Initializes a new MQTT Manager
-        /// </summary>
+        /// <summary>Initializes a new MQTT Manager.</summary>
         /// <param name="modicusStartupManager"></param>
         /// <param name="token"></param>
-        public MqttManager(ISettingsManager settingsManager, ITokenManager tokenManager)
+        public MqttManager(IOutputManager outputManager, ITokenManager tokenManager) : base(outputManager)
         {
-            this.globalSettings = settingsManager.GlobalSettings;
             this.token = tokenManager.Token;
-            this.settingsManager = settingsManager;
             SubscribeTopics = new Hashtable();
-            MainMqttMessage = new MainMqttMessage();
-            State = new StateMessage();
         }
 
-        /// <summary>
-        /// Initialize the MQTT Service, repeat this function periodically to make sure we always reconnect.
-        /// </summary>
+        /// <summary>Initialize the MQTT Service, repeat this function periodically to make sure we always reconnect.</summary>
         public void InitializeMQTT()
         {
             if (mqtt != null && mqtt.IsConnected)
@@ -114,13 +99,7 @@ namespace Modicus.Manager
             }
             resubscribeAll = false;
 
-            localCancellationTokenSource?.Cancel();
-
-            localCancellationTokenSource = new CancellationTokenSource();
-            localCancellationToken = localCancellationTokenSource.Token;
-
-            mqttThread = new(new ThreadStart(StartSending));
-            mqttThread.Start();
+            outputManager.RegisterOutputDevice(this);
         }
 
         public void StopMqtt(bool preventAutoRestart = true)
@@ -130,7 +109,6 @@ namespace Modicus.Manager
 
             //Set this variable to ensure a gracefull startup when we resart the service
             resubscribeAll = true;
-            localCancellationTokenSource?.Cancel();
 
             enableAutoRestart = false;
 
@@ -140,44 +118,12 @@ namespace Modicus.Manager
             mqtt?.Close();
             mqtt?.Dispose();
 
+            outputManager.RemoveOutputDevice(this);
+
             mreMQTT.Set();
         }
 
-        /// <summary>
-        /// Send the MQTT messages
-        /// </summary>
-        public void StartSending()
-        {
-            while (!token.IsCancellationRequested && !localCancellationToken.IsCancellationRequested)
-            {
-                if (!localCancellationToken.IsCancellationRequested && mqtt != null && mqtt.IsConnected)
-                {
-                    mreMQTT.WaitOne();
-                    //Set current time
-                    MainMqttMessage.Time = DateTime.UtcNow;
-                    State.Uptime = DateTime.UtcNow - settingsManager.GlobalSettings.StartupTime;
-                    State.UptimeSec = State.Uptime.TotalSeconds;
-                    State.WiFi.SSId = settingsManager.GlobalSettings.WifiSettings.Ssid;
-                    State.WiFi.IPAddress = Wireless80211.GetIP();
-
-                    Publish("STATE", JsonConvert.SerializeObject(State));
-                    Publish("SENSOR", JsonConvert.SerializeObject(MainMqttMessage));
-
-                    mreMQTT.Set();
-
-                    Thread.Sleep(globalSettings.MqttSettings.SendInterval);
-                }
-                else
-                {
-                    //When no connection try every 5 seconds to send again
-                    Thread.Sleep(TimeSpan.FromSeconds(5));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Create new MQTT Client and start a connectrion with necessary subscriptions
-        /// </summary>
+        /// <summary>.Create new MQTT Client and start a connectrion with necessary subscriptions.</summary>
         private bool EstablishConnection()
         {
             mqtt = new MqttClient(globalSettings.MqttSettings.MqttHostName, globalSettings.MqttSettings.MqttPort, secure: false, null, null, MqttSslProtocols.None);
@@ -202,11 +148,9 @@ namespace Modicus.Manager
             return true;
         }
 
-        /// <summary>
-        /// Event callback when a subscribed message is received
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <summary>Event callback when a subscribed message is received.</summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">MqttMsgPublishEventArgs</param>
         private void Mqtt_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
             Debug.WriteLine($"++++ MQTT Command Received:\nTopic:\n{e.Topic}\nContent:\n{Encoding.UTF8.GetString(e.Message, 0, e.Message.Length)} ++++");
@@ -215,9 +159,7 @@ namespace Modicus.Manager
             subscriber?.Execute(Encoding.UTF8.GetString(e.Message, 0, e.Message.Length));
         }
 
-        /// <summary>
-        /// Register new command to the MQTT Manager
-        /// </summary>
+        /// <summary>Register new command to the MQTT Manager.</summary>
         /// <param name="command"></param>
         public void RegisterCommand(ICommand command)
         {
@@ -229,9 +171,21 @@ namespace Modicus.Manager
             }
         }
 
-        /// <summary>
-        /// The Event callback for a MQTT Client ID Change command
-        /// </summary>
+        /// <summary>Publish a message to the MQTT broker.</summary>
+        /// <param name="topic"></param>
+        /// <param name="message"></param>
+        public void Publish(string topic, string message) => SendMessage(topic, Encoding.UTF8.GetBytes(message));
+
+        /// <summary>Publishes all data from modicus on the output device.</summary>
+        /// <param name="state">The state.</param>
+        /// <param name="sensorData">The sensor data.</param>
+        public override void PublishAll(string state, string sensorData)
+        {
+            //Publish("STATE", JsonConvert.SerializeObject(State));
+            Publish("SENSOR", sensorData);
+        }
+
+        /// <summary>The Event callback for a MQTT Client ID Change command.</summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Command_MQTTClientIDCommandRaisedEvent(object sender, CommandRaisedEventArgs e)
@@ -242,9 +196,7 @@ namespace Modicus.Manager
             StopMqtt(false);
         }
 
-        /// <summary>
-        /// Add new subscribing service to a specified command topic
-        /// </summary>
+        /// <summary>Add new subscribing service to a specified command topic.</summary>
         /// <param name="subscriber"></param>
         private void AddSubcriber(ICommand subscriber)
         {
@@ -252,27 +204,18 @@ namespace Modicus.Manager
             SubscribeTopics.Add(topic, subscriber);
         }
 
-        /// <summary>
-        /// Publish a message to the MQTT broker
-        /// </summary>
-        /// <param name="topic"></param>
-        /// <param name="message"></param>
-        public void Publish(string topic, string message) => SendMessage(topic, Encoding.UTF8.GetBytes(message));
-
-        /// <summary>
-        /// Send a the message to publish
-        /// </summary>
+        /// <summary>Send a the message to publish.</summary>
         /// <param name="topic"></param>
         /// <param name="message"></param>
         private void SendMessage(string topic, byte[] message)
         {
+            if (mqtt == null || !mqtt.IsConnected) return;
+
             string to = $"{globalSettings.MqttSettings.MqttClientID}/{topic}";
             mqtt.Publish(to, message);
         }
 
-        /// <summary>
-        /// Resubsribe all commands again after we have a new MQTT client ID
-        /// </summary>
+        /// <summary>Resubsribe all commands again after we have a new MQTT client ID.</summary>
         private void ResubscribeToNewClientID()
         {
             IDictionary newSubscribers = new Hashtable();
@@ -286,7 +229,6 @@ namespace Modicus.Manager
 
             foreach (ICommand command in newSubscribers.Values)
             {
-                //RegisterCommand(command);
                 AddSubcriber(command);
             }
         }

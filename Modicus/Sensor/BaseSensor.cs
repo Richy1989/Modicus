@@ -1,12 +1,18 @@
 ﻿using System.Threading;
+using Modicus.EventArgs;
 using Modicus.MQTT.Interfaces;
 using Modicus.Sensor.Interfaces;
 
 namespace Modicus.Sensor
 {
+    // Declare the delegate (if using non-generic pattern).
+    internal delegate void MeasurementAvailableHandler(object sender, MeasurementAvailableEventArgs e);
+
     /// <summary>Base sensor class, use this class as base for all kind of sensors.</summary>
     internal abstract class BaseSensor : ISensor
     {
+        public event MeasurementAvailableHandler MeasurementAvailable;
+
         /// The sensor token source is for cancellation within the sensor. e.g Stop Function
         internal CancellationTokenSource sensorTokenSource;
         internal CancellationToken sensorToken;
@@ -17,16 +23,16 @@ namespace Modicus.Sensor
         public int MeasurementInterval { get; set; }
         public string Type { get; set; }
 
-        /// <summary>Constructor for Base Sensor class</summary>
+        /// <summary>Initializes a new instance of the <see cref="BaseSensor"/> class.</summary>
         internal BaseSensor()
         {
         }
 
         /// <summary>Function to be called once to configure the sensor.</summary>
-        /// <param name="sensorData"></param>
-        public abstract void Configure(IPublishMqtt publisher);
+        public abstract void Configure();
 
-        /// <summary>Starts the measurement thread.</summary>
+        /// <summary>Measurement function which will be called within measurement thread.</summary>
+        /// <param name="token">The cancellation token.</param>
         protected abstract void DoMeasurement(CancellationToken token);
 
         /// <summary>Function that is executed after the measurement task has started.</summary>
@@ -54,5 +60,13 @@ namespace Modicus.Sensor
 
         /// <summary>Stops the sensor.</summary>
         public abstract void StopSensor();
+
+        /// <summary>Called when [measurement available].</summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="MeasurementAvailableEventArgs"/> instance containing the event data.</param>
+        protected virtual void OnMeasurementAvailable(object sender, MeasurementAvailableEventArgs e)
+        {
+            MeasurementAvailable?.Invoke(this, e);
+        }
     }
 }

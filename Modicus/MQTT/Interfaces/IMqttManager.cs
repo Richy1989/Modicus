@@ -2,7 +2,7 @@
 
 namespace Modicus.MQTT.Interfaces
 {
-    internal interface IMqttManager : ICommandCapable
+    internal interface IMqttManager
     {
         void InitializeMQTT();
 

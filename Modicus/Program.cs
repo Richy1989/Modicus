@@ -34,6 +34,7 @@ namespace Modicus
                 .AddSingleton(typeof(ISignalService), typeof(SignalService))
                 .AddSingleton(typeof(ISettingsManager), typeof(SettingsManager))
                 .AddSingleton(typeof(IWiFiManager), typeof(WiFiManager))
+                .AddSingleton(typeof(IOutputManager), typeof(OutputManager))
                 .AddSingleton(typeof(IBusDeviceManager), typeof(BusDeviceManager))
                 .AddSingleton(typeof(ITokenManager), typeof(TokenManager))
                 .AddSingleton(typeof(IMqttManager), typeof(MqttManager))

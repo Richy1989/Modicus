@@ -23,7 +23,7 @@ namespace Modicus.Sensor
 
         /// <summary>Configure the sensor, call this function first.</summary>
         /// <param name="publisher">The publisher.</param>
-        public override void Configure(IPublishMqtt publisher)
+        public override void Configure()
         {
             //////////////////////////////////////////////////////////////////////
             // when connecting to an ESP32 device, need to configure the I2C GPIOs

@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using Iot.Device.Ccs811;
-using Modicus.MQTT.Interfaces;
+using Modicus.EventArgs;
+using Modicus.Sensor.Measurement;
 using UnitsNet;
 
 namespace Modicus.Sensor
@@ -9,22 +10,17 @@ namespace Modicus.Sensor
     internal class CCS811GasSensor : BaseI2cSensor
     {
         private Ccs811Sensor sensor;
-        private IPublishMqtt publishMqtt;
         private CancellationToken token;
-        Thread adjustThread;
+        private Thread adjustThread;
 
         /// <summary>Initializes a new instance of the <see cref="CCS811GasSensor"/> class.</summary>
-        public CCS811GasSensor()
-        {
-        }
+        public CCS811GasSensor() : base()
+        { }
 
         /// <summary>Configures the CCS811 Gas Sensor.</summary>
-        /// <param name="publisher"></param>
-        public override void Configure(IPublishMqtt publisher)
+        public override void Configure()
         {
-            base.Configure(publisher);
-
-            this.publishMqtt = publisher;
+            base.Configure();
 
             sensor = new Ccs811Sensor(GetI2cDevice())
             {
@@ -67,11 +63,13 @@ namespace Modicus.Sensor
                     //this.Current = curr.Microamperes;
                     //this.ADC = adc * 1.65 / 1023;
 
-                    if (publishMqtt != null && publishMqtt.MainMqttMessage.Environment != null)
+                    BaseMeasurement measurement = new CCS811Data
                     {
-                        publishMqtt.MainMqttMessage.Environment.CO2 = eCO2.PartsPerMillion;
-                        publishMqtt.MainMqttMessage.Environment.TotalVolatileOrganicCompound = eTVOC.PartsPerBillion;
-                    }
+                        eCO2 = eCO2.PartsPerMillion,
+                        TotalVolatileOrganicCompound = eTVOC.PartsPerBillion
+                    };
+
+                    OnMeasurementAvailable(this, new MeasurementAvailableEventArgs(this, measurement));
                 }
                 Thread.Sleep(MeasurementInterval);
             }
@@ -91,13 +89,6 @@ namespace Modicus.Sensor
         public override void StopSensor()
         {
             sensorTokenSource?.Cancel();
-
-            if (publishMqtt != null)
-            {
-                publishMqtt.MainMqttMessage.Environment.CO2 = 0;
-                publishMqtt.MainMqttMessage.Environment.TotalVolatileOrganicCompound = 0;
-            }
-
             IsRunning = false;
         }
 
@@ -120,6 +111,27 @@ namespace Modicus.Sensor
 
                 Thread.Sleep(MeasurementInterval);
             }
+        }
+    }
+
+    internal class CCS811Data : BaseMeasurement
+    {
+        public double TotalVolatileOrganicCompound { get; set; }
+        public double eCO2 { get; set; }
+
+        public CCS811Data()
+        {
+            MeasurmentCategory = "Gas";
+        }
+
+        internal override BaseMeasurement Clone()
+        {
+            CCS811Data cloned = new()
+            {
+                TotalVolatileOrganicCompound = TotalVolatileOrganicCompound,
+                eCO2 = eCO2
+            };
+            return cloned;
         }
     }
 }

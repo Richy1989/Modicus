@@ -12,9 +12,10 @@ namespace Modicus.Sensor.Interfaces
         string Name { get; set; }
         int MeasurementInterval { get; set; }
 
+        event MeasurementAvailableHandler MeasurementAvailable;
+
         /// <summary>Function to be called once to configure the sensor.</summary>
-        /// <param name="sensorData"></param>
-        void Configure(IPublishMqtt publisher);
+        void Configure();
 
         /// <summary>Starts the measurement thread.</summary>
         void StartMeasurement(CancellationToken token);

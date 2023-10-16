@@ -3,7 +3,9 @@ using System.Diagnostics;
 using System.Threading;
 using Iot.Device.Bmxx80;
 using Iot.Device.Common;
+using Modicus.EventArgs;
 using Modicus.MQTT.Interfaces;
+using Modicus.Sensor.Measurement;
 using UnitsNet;
 
 namespace Modicus.Sensor
@@ -12,19 +14,15 @@ namespace Modicus.Sensor
     {
         private Bme280 i2CBme280;
         private Pressure defaultSeaLevelPressure;
-        private IPublishMqtt mqttPublisher;
 
         /// <summary>Initializes a new instance of the <see cref="BME280Sensor"/> class.</summary>
         internal BME280Sensor() : base()
         { }
 
         /// <summary>Configures the Sensor</summary>
-        /// <param name="publisher"></param>
-        public override void Configure(IPublishMqtt publisher)
+        public override void Configure()
         {
-            base.Configure(publisher);
-
-            this.mqttPublisher = publisher;
+            base.Configure();
 
             //set this to the current sea level pressure in the area for correct altitude readings
             defaultSeaLevelPressure = WeatherHelper.MeanSeaLevel;
@@ -59,33 +57,33 @@ namespace Modicus.Sensor
                 // var altValue = WeatherHelper.CalculateAltitude(preValue, defaultSeaLevelPressure, tempValue) which would be more performant.
                 i2CBme280.TryReadAltitude(defaultSeaLevelPressure, out var altValue);
 
-                EnvironmentData measurement = mqttPublisher.MainMqttMessage.Environment;
+                var measurement = new BME280Data();
 
-                if (measurement != null)
+                if (readResult.TemperatureIsValid)
                 {
-                    if (readResult.TemperatureIsValid)
-                    {
-                        //Debug.WriteLine($"Temperature: {readResult.Temperature.DegreesCelsius}\u00B0C");
-                        measurement.Temperature = readResult.Temperature.DegreesCelsius;
-                    }
-                    if (readResult.PressureIsValid)
-                    {
-                        //Debug.WriteLine($"Pressure: {readResult.Pressure.Hectopascals}hPa");
-                        measurement.Pressure = readResult.Pressure.Hectopascals;
-                    }
-
-                    if (readResult.TemperatureIsValid && readResult.PressureIsValid)
-                    {
-                        //Debug.WriteLine($"Altitude: {altValue.Meters}m");
-                        measurement.Altitude = altValue.Meters;
-                    }
-
-                    if (readResult.HumidityIsValid)
-                    {
-                        //Debug.WriteLine($"Relative humidity: {readResult.Humidity.Percent}%");
-                        measurement.Humidity = readResult.Humidity.Percent;
-                    }
+                    //Debug.WriteLine($"Temperature: {readResult.Temperature.DegreesCelsius}\u00B0C");
+                    measurement.Temperature = readResult.Temperature.DegreesCelsius;
                 }
+                if (readResult.PressureIsValid)
+                {
+                    //Debug.WriteLine($"Pressure: {readResult.Pressure.Hectopascals}hPa");
+                    measurement.Pressure = readResult.Pressure.Hectopascals;
+                }
+
+                if (readResult.TemperatureIsValid && readResult.PressureIsValid)
+                {
+                    //Debug.WriteLine($"Altitude: {altValue.Meters}m");
+                    measurement.Altitude = altValue.Meters;
+                }
+
+                if (readResult.HumidityIsValid)
+                {
+                    //Debug.WriteLine($"Relative humidity: {readResult.Humidity.Percent}%");
+                    measurement.Humidity = readResult.Humidity.Percent;
+                }
+
+                OnMeasurementAvailable(this, new MeasurementAvailableEventArgs(this, measurement));
+
                 Thread.Sleep(MeasurementInterval);
             }
         }
@@ -101,16 +99,32 @@ namespace Modicus.Sensor
         public override void StopSensor()
         {
             sensorTokenSource?.Cancel();
-
-            if (mqttPublisher != null)
-            {
-                mqttPublisher.MainMqttMessage.Environment.Temperature = 0;
-                mqttPublisher.MainMqttMessage.Environment.Humidity = 0;
-                mqttPublisher.MainMqttMessage.Environment.Pressure = 0;
-                mqttPublisher.MainMqttMessage.Environment.Altitude = 0;
-            }
-
             IsRunning = false;
+        }
+    }
+
+    internal class BME280Data : BaseMeasurement
+    {
+        public double Temperature { get; set; }
+        public double Pressure { get; set; }
+        public double Altitude { get; set; }
+        public double Humidity { get; set; }
+
+        public BME280Data()
+        {
+            MeasurmentCategory = "Environment";
+        }
+
+        internal override BaseMeasurement Clone()
+        {
+            BME280Data cloned = new()
+            {
+                Temperature = Temperature,
+                Pressure = Pressure,
+                Altitude = Altitude,
+                Humidity = Humidity
+            };
+            return cloned;
         }
     }
 }

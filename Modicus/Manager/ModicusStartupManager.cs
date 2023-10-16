@@ -62,7 +62,7 @@ namespace Modicus.Manager
 
             //Set all Commands for command capable managers
             CommandManager = commandManager;
-            CommandManager.AddCommandCapableManager(typeof(MqttManager), mqttManager);
+            CommandManager.AddCommandCapableManager(typeof(MqttManager), (ICommandCapable)mqttManager);
             CommandManager.SetMqttCommands();
 
             ///Start MQTT Service if needed

@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Threading;
 using Iot.Device.Bmxx80;
 using Iot.Device.Common;
 using Modicus.EventArgs;
-using Modicus.MQTT.Interfaces;
 using Modicus.Sensor.Measurement;
 using UnitsNet;
 
@@ -18,6 +18,9 @@ namespace Modicus.Sensor
         /// <summary>Initializes a new instance of the <see cref="BME280Sensor"/> class.</summary>
         internal BME280Sensor() : base()
         { }
+
+        /// <summary>Returns a list of Measurements this Sensor depends on.</summary>
+        public override IList DependsOnMeasurement() => null;
 
         /// <summary>Configures the Sensor</summary>
         public override void Configure()
@@ -57,7 +60,7 @@ namespace Modicus.Sensor
                 // var altValue = WeatherHelper.CalculateAltitude(preValue, defaultSeaLevelPressure, tempValue) which would be more performant.
                 i2CBme280.TryReadAltitude(defaultSeaLevelPressure, out var altValue);
 
-                var measurement = new BME280Data();
+                var measurement = new EnvironmentMeasurement();
 
                 if (readResult.TemperatureIsValid)
                 {
@@ -101,30 +104,12 @@ namespace Modicus.Sensor
             sensorTokenSource?.Cancel();
             IsRunning = false;
         }
-    }
 
-    internal class BME280Data : BaseMeasurement
-    {
-        public double Temperature { get; set; }
-        public double Pressure { get; set; }
-        public double Altitude { get; set; }
-        public double Humidity { get; set; }
-
-        public BME280Data()
+        /// <summary>Injects the depended measurement.</summary>
+        /// <param name="measurement">The measurement.</param>
+        public override void InjectDependedMeasurement(BaseMeasurement measurement)
         {
-            MeasurmentCategory = "Environment";
-        }
-
-        internal override BaseMeasurement Clone()
-        {
-            BME280Data cloned = new()
-            {
-                Temperature = Temperature,
-                Pressure = Pressure,
-                Altitude = Altitude,
-                Humidity = Humidity
-            };
-            return cloned;
+            throw new NotImplementedException();
         }
     }
 }

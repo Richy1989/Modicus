@@ -36,7 +36,9 @@ namespace Modicus.Manager
             if (ni.Length > 0)
             {
                 var physicalAddress = ni[0].PhysicalAddress;
-                this.publishMqtt.State.WiFi.BSSId = BitConverter.ToString(physicalAddress);
+                
+                //ToDo: Fix This!!!!
+                //this.publishMqtt.State.WiFi.BSSId = BitConverter.ToString(physicalAddress);
             }
         }
 

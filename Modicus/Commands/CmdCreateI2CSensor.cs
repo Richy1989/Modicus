@@ -11,7 +11,7 @@ namespace Modicus.Commands
     internal class CmdCreateI2CSensor : BaseCommand
     {
         private readonly IBusDeviceManager busDeviceManager;
-
+        
         public CmdCreateI2CSensor(ISettingsManager settingsManager, IBusDeviceManager busDeviceManager)
         {
             this.busDeviceManager = busDeviceManager;

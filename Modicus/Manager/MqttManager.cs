@@ -34,8 +34,9 @@ namespace Modicus.Manager
         /// <summary>Initializes a new MQTT Manager.</summary>
         /// <param name="modicusStartupManager"></param>
         /// <param name="token"></param>
-        public MqttManager(IOutputManager outputManager, ITokenManager tokenManager) : base(outputManager)
+        public MqttManager(IOutputManager outputManager, ISettingsManager settingsManager, ITokenManager tokenManager) : base(outputManager)
         {
+            this.globalSettings = settingsManager.GlobalSettings;
             this.token = tokenManager.Token;
             SubscribeTopics = new Hashtable();
         }

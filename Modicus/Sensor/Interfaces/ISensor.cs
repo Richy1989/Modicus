@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Threading;
 using Modicus.MQTT.Interfaces;
+using Modicus.Sensor.Measurement;
 
 namespace Modicus.Sensor.Interfaces
 {
@@ -22,5 +24,12 @@ namespace Modicus.Sensor.Interfaces
 
         /// <summary>Stops the sensor.</summary>
         void StopSensor();
+
+        /// <summary>Returns a list of Measurements this Sensor depends on.</summary>
+        IList DependsOnMeasurement();
+
+        /// <summary>Injects the depended measurement.</summary>
+        /// <param name="measurement">The measurement.</param>
+        void InjectDependedMeasurement(BaseMeasurement measurement);
     }
 }

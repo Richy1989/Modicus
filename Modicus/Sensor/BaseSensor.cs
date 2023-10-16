@@ -1,7 +1,9 @@
-﻿using System.Threading;
+﻿using System.Collections;
+using System.Threading;
 using Modicus.EventArgs;
 using Modicus.MQTT.Interfaces;
 using Modicus.Sensor.Interfaces;
+using Modicus.Sensor.Measurement;
 
 namespace Modicus.Sensor
 {
@@ -27,6 +29,13 @@ namespace Modicus.Sensor
         internal BaseSensor()
         {
         }
+
+        /// <summary>Returns a list of Measurements this Sensor depends on.</summary>
+        public abstract IList DependsOnMeasurement();
+
+        /// <summary>Injects the depended measurement.</summary>
+        /// <param name="measurement">The measurement.</param>
+        public abstract void InjectDependedMeasurement(BaseMeasurement measurement);
 
         /// <summary>Function to be called once to configure the sensor.</summary>
         public abstract void Configure();

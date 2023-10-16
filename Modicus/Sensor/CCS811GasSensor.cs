@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections;
+using System.Diagnostics;
 using System.Threading;
 using Iot.Device.Ccs811;
 using Modicus.EventArgs;
@@ -9,13 +10,18 @@ namespace Modicus.Sensor
 {
     internal class CCS811GasSensor : BaseI2cSensor
     {
+        private readonly IList dependsOn;
         private Ccs811Sensor sensor;
         private CancellationToken token;
-        private Thread adjustThread;
 
         /// <summary>Initializes a new instance of the <see cref="CCS811GasSensor"/> class.</summary>
         public CCS811GasSensor() : base()
-        { }
+        {
+            dependsOn = new ArrayList
+            {
+                typeof(EnvironmentMeasurement)
+            };
+        }
 
         /// <summary>Configures the CCS811 Gas Sensor.</summary>
         public override void Configure()
@@ -30,6 +36,19 @@ namespace Modicus.Sensor
             Debug.WriteLine($"CCS811 Bootloader Version: {sensor.BootloaderVersion}");
             Debug.WriteLine($"CCS811 Application Version: {sensor.ApplicationVersion}");
             Debug.WriteLine($"CCS811 Hardware Version: {sensor.HardwareVersion}");
+        }
+
+        /// <summary>Returns a list of Measurements this Sensor depends on.</summary>
+        public override IList DependsOnMeasurement() => dependsOn;
+
+        /// <summary>Injects the depended measurement.</summary>
+        /// <param name="measurement">The measurement.</param>
+        public override void InjectDependedMeasurement(BaseMeasurement measurement)
+        {
+            if(measurement.GetType() == typeof(EnvironmentMeasurement))
+            {
+                AdjustTemperatureHumidity((EnvironmentMeasurement)measurement);
+            }
         }
 
         /// <summary>
@@ -63,7 +82,7 @@ namespace Modicus.Sensor
                     //this.Current = curr.Microamperes;
                     //this.ADC = adc * 1.65 / 1023;
 
-                    BaseMeasurement measurement = new CCS811Data
+                    BaseMeasurement measurement = new GasSensorMeasurement
                     {
                         eCO2 = eCO2.PartsPerMillion,
                         TotalVolatileOrganicCompound = eTVOC.PartsPerBillion
@@ -78,8 +97,6 @@ namespace Modicus.Sensor
         /// <summary>Function that is executed after the measurement task has started.</summary>
         protected override void PostStartMeasurement()
         {
-            adjustThread = new(new ThreadStart(AdjustTemperatureHumidity));
-            adjustThread.Start();
         }
 
         /// <summary>Disposes the sensor.</summary>
@@ -96,42 +113,17 @@ namespace Modicus.Sensor
         /// Adjusta the temperature and humidity, measured by a different sensor, in the CCS811 Sensor.
         /// Data is needed for correct measurement.
         /// </summary>
-        private void AdjustTemperatureHumidity()
+        private void AdjustTemperatureHumidity(EnvironmentMeasurement measurement)
         {
-            while (!token.IsCancellationRequested && !sensorTokenSource.IsCancellationRequested)
-            {
-                Debug.WriteLine("+++++ Updating Temperature and Humidity in CCS811 Sensor +++++");
+            Debug.WriteLine("+++++ Updating Temperature and Humidity in CCS811 Sensor +++++");
 
-                if (publishMqtt.MainMqttMessage.Environment != null)
-                    sensor.SetEnvironmentData(
-                        Temperature.FromDegreesCelsius(publishMqtt.MainMqttMessage.Environment.Temperature),
-                        RelativeHumidity.FromPercent(publishMqtt.MainMqttMessage.Environment.Humidity));
-                else
-                    sensor.SetEnvironmentData(Temperature.FromDegreesCelsius(21.3), RelativeHumidity.FromPercent(42.5));
 
-                Thread.Sleep(MeasurementInterval);
-            }
-        }
-    }
-
-    internal class CCS811Data : BaseMeasurement
-    {
-        public double TotalVolatileOrganicCompound { get; set; }
-        public double eCO2 { get; set; }
-
-        public CCS811Data()
-        {
-            MeasurmentCategory = "Gas";
-        }
-
-        internal override BaseMeasurement Clone()
-        {
-            CCS811Data cloned = new()
-            {
-                TotalVolatileOrganicCompound = TotalVolatileOrganicCompound,
-                eCO2 = eCO2
-            };
-            return cloned;
+            if (measurement != null)
+                sensor.SetEnvironmentData(
+                    Temperature.FromDegreesCelsius(measurement.Temperature),
+                    RelativeHumidity.FromPercent(measurement.Humidity));
+            else
+                sensor.SetEnvironmentData(Temperature.FromDegreesCelsius(21.3), RelativeHumidity.FromPercent(42.5));
         }
     }
 }

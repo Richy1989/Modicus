@@ -15,7 +15,6 @@ namespace Modicus.Manager
         public IDictionary OutputManagers { get; }
 
         private readonly ISettingsManager settingsManager;
-        private readonly IMqttManager mqttManager;
         private readonly ITokenManager tokenManager;
         private readonly IOutputManager outputManager;
 
@@ -28,7 +27,6 @@ namespace Modicus.Manager
         /// <param name="tokenManager">The token manager.</param>
         public BusDeviceManager(
             ISettingsManager settingsManager,
-            IMqttManager mqttManager,
             IOutputManager outputManager,
             ITokenManager tokenManager)
         {
@@ -41,7 +39,6 @@ namespace Modicus.Manager
 
             this.ConfiguredSensors = new Hashtable();
             this.settingsManager = settingsManager;
-            this.mqttManager = mqttManager;
             this.tokenManager = tokenManager;
             this.outputManager = outputManager;
             CreateStartAllSensors();
@@ -56,7 +53,7 @@ namespace Modicus.Manager
 
             settingsManager.SensorSettings.AddSensor(sensor);
 
-            sensor.Configure((IPublishMqtt)mqttManager);
+            sensor.Configure();
             ConfiguredSensors.Add(sensor.Name, sensor);
         }
 
@@ -77,6 +74,23 @@ namespace Modicus.Manager
         private void Sensor_MeasurementAvailable(object sender, EventArgs.MeasurementAvailableEventArgs e)
         {
             outputManager.AddMeasurementData(e.Data);
+
+            //Check if all sensors is depended on received mesurement, if so inject it.
+            foreach (ISensor sensor in ConfiguredSensors.Values)
+            {
+                var dependedMeasurementList = sensor.DependsOnMeasurement();
+
+                if (dependedMeasurementList != null)
+                {
+                    foreach (Type dependedType in dependedMeasurementList)
+                    {
+                        if (dependedType == e.Data.GetType())
+                        {
+                            sensor.InjectDependedMeasurement(e.Data);
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>Stops the given sensor .</summary>
@@ -120,7 +134,7 @@ namespace Modicus.Manager
                 {
                     ConfiguredSensors.Add(baseSensor.Name, baseSensor);
 
-                    baseSensor.Configure((IPublishMqtt)mqttManager);
+                    baseSensor.Configure();
                     StartSensor(baseSensor);
                 }
             }

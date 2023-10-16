@@ -84,21 +84,25 @@ namespace Modicus.Manager
         public string GetJsonString()
         {
             mre.WaitOne();
+            bool isFirst = true;
 
             string json = "{";
             foreach (DictionaryEntry item in OutputData)
             {
+                if (!isFirst)
+                    json += ",";
+
                 string category = (string)item.Key;
 
-                json = $"{json}\"{category}\":{{";
+                json = $"{json} \"{category}\":{{";
 
                 IDictionary measurementData = (Hashtable)item.Value;
 
-                bool isFirst = true;
+                bool isFirstSub = true;
 
                 foreach (DictionaryEntry data in measurementData)
                 {
-                    if (!isFirst)
+                    if (!isFirstSub)
                         json += ",";
 
                     json = $"{json} \"{data.Key}\":";
@@ -111,8 +115,9 @@ namespace Modicus.Manager
                     {
                         json = $"{json} \"{data.Value}\"";
                     }
-                    isFirst = false;
+                    isFirstSub = false;
                 }
+                isFirst = false;
                 json += "}";
             }
             json += "}";

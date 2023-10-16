@@ -22,7 +22,7 @@ namespace Modicus.Sensor
         /// <summary>Returns a list of Measurements this Sensor depends on.</summary>
         public override IList DependsOnMeasurement() => null;
 
-        /// <summary>Configures the Sensor</summary>
+        /// <summary>Configures the Sensor.</summary>
         public override void Configure()
         {
             base.Configure();

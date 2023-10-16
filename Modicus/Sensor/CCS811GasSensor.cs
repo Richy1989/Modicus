@@ -12,7 +12,6 @@ namespace Modicus.Sensor
     {
         private readonly IList dependsOn;
         private Ccs811Sensor sensor;
-        private CancellationToken token;
 
         /// <summary>Initializes a new instance of the <see cref="CCS811GasSensor"/> class.</summary>
         public CCS811GasSensor() : base()
@@ -58,8 +57,6 @@ namespace Modicus.Sensor
         /// <param name="token"></param>
         protected override void DoMeasurement(CancellationToken token)
         {
-            this.token = token;
-
             while (!token.IsCancellationRequested && !sensorToken.IsCancellationRequested)
             {
                 while (!sensor.IsDataReady && !token.IsCancellationRequested && !sensorToken.IsCancellationRequested)

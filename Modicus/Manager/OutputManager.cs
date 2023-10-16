@@ -136,6 +136,7 @@ namespace Modicus.Manager
 
         private string JsonCreator(IDictionary dictionary)
         {
+            //ToDo: Check if recursive is to much workload for ESP32
             StringBuilder stringBuilder = new();
             stringBuilder.Append("{");
             bool isFirst = true;

@@ -112,6 +112,8 @@ namespace Modicus.Manager
             StopSensor(sensor);
             sensor.Dispose();
             ConfiguredSensors.Remove(sensor.Name);
+            settingsManager.SensorSettings.RemoveSensor(sensor);
+            outputManager.PurgeMeasurementData(sensor.Measurement);
         }
 
         /// <summary>Returns a sensor.</summary>

@@ -241,7 +241,7 @@ namespace Modicus.Web
             string message = "Error in sensor creation:\n";
             var item = (string)hashPars["sensor-type"];
             var back = (string)hashPars["back"];
-            var sensor = busDeviceManager.SupportedSensors[item];
+           // var sensor = busDeviceManager.SupportedSensors[item];
 
             bool isOk = true;
 
@@ -320,7 +320,7 @@ namespace Modicus.Web
                 WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateI2CSettingsSite($"Sensor: {name} crated!", item));
                 return;
             }
-            WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateI2CSettingsSite("Configure Away!", item));
+            WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateI2CSettingsSite(message, item));
         }
 
         [Route("edit_sensor")]

@@ -51,6 +51,36 @@ namespace Modicus.Manager
             OutputDevices.Remove(device);
         }
 
+        /// <summary>Purges the measurement data from the OutputData.</summary>
+        /// <param name="measurement">The measurement.</param>
+        public void PurgeMeasurementData(BaseMeasurement measurement)
+        {
+            if (measurement == null)
+                return;
+
+            mre.WaitOne();
+
+            if (OutputData.Contains(measurement.MeasurmentCategory))
+            {
+                IDictionary outDta = (Hashtable)OutputData[measurement.MeasurmentCategory];
+
+                var method = measurement.GetType().GetMethods();
+
+                foreach (var item in method)
+                {
+                    if (item.Name.StartsWith("get"))
+                    {
+                        string name = item.Name.Split('_')[1];
+
+                        if (outDta.Contains(name))
+                            outDta.Remove(name);
+                    }
+                }
+            }
+
+            mre.Set();
+        }
+
         /// <summary>Adds new measurment data.</summary>
         /// <param name="measurement">The measurement.</param>
         public void AddMeasurementData(BaseMeasurement measurement)
@@ -62,13 +92,14 @@ namespace Modicus.Manager
                 OutputData.Add(measurement.MeasurmentCategory, new Hashtable());
             }
 
+            IDictionary outDta = (Hashtable)OutputData[measurement.MeasurmentCategory];
+
             var method = measurement.GetType().GetMethods();
 
             foreach (var item in method)
             {
                 if (item.Name.StartsWith("get"))
                 {
-                    IDictionary outDta = (Hashtable)OutputData[measurement.MeasurmentCategory];
                     string name = item.Name.Split('_')[1];
                     var value = item.Invoke(measurement, null);
 

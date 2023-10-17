@@ -24,5 +24,9 @@ namespace Modicus.Manager.Interfaces
         /// <summary>Removes the output device.</summary>
         /// <param name="device">The device.</param>
         void RemoveOutputDevice(IOutputDevice device);
+
+        /// <summary>Purges the measurement data from the OutputData.</summary>
+        /// <param name="measurement">The measurement.</param>
+        void PurgeMeasurementData(BaseMeasurement measurement);
     }
 }

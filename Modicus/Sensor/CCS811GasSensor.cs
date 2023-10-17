@@ -84,6 +84,7 @@ namespace Modicus.Sensor
                         eCO2 = eCO2.PartsPerMillion,
                         TotalVolatileOrganicCompound = eTVOC.PartsPerBillion
                     };
+                    Measurement = measurement;
 
                     OnMeasurementAvailable(this, new MeasurementAvailableEventArgs(this, measurement));
                 }

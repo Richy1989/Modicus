@@ -60,7 +60,8 @@ namespace Modicus.Sensor
                 // var altValue = WeatherHelper.CalculateAltitude(preValue, defaultSeaLevelPressure, tempValue) which would be more performant.
                 i2CBme280.TryReadAltitude(defaultSeaLevelPressure, out var altValue);
 
-                var measurement = new EnvironmentMeasurement(MeasurementCategory);
+                Measurement = new EnvironmentMeasurement(MeasurementCategory);
+                EnvironmentMeasurement measurement = (EnvironmentMeasurement)Measurement;
 
                 if (readResult.TemperatureIsValid)
                 {

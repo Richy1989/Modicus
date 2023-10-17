@@ -67,6 +67,7 @@ namespace Modicus.Settings
         public void RemoveSensor(ISensor sensor)
         {
             SensorsStringList.Remove(sensor);
+            SaveSettings();
         }
     }
 }

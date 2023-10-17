@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Threading;
 using Modicus.EventArgs;
-using Modicus.MQTT.Interfaces;
 using Modicus.Sensor.Interfaces;
 using Modicus.Sensor.Measurement;
 
@@ -17,6 +16,7 @@ namespace Modicus.Sensor
 
         /// The sensor token source is for cancellation within the sensor. e.g Stop Function
         internal CancellationTokenSource sensorTokenSource;
+
         internal CancellationToken sensorToken;
         internal Thread sensorThread;
 
@@ -25,6 +25,7 @@ namespace Modicus.Sensor
         public int MeasurementInterval { get; set; }
         public string Type { get; set; }
         public string MeasurementCategory { get; set; }
+        public BaseMeasurement Measurement { get; set; }
 
         /// <summary>Initializes a new instance of the <see cref="BaseSensor"/> class.</summary>
         internal BaseSensor()

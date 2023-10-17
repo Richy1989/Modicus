@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Device.I2c;
-using Modicus.MQTT.Interfaces;
 using Modicus.Sensor.Interfaces;
 using nanoFramework.Hardware.Esp32;
 

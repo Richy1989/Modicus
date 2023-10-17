@@ -7,14 +7,15 @@
         public double Altitude { get; set; }
         public double Humidity { get; set; }
 
-        public EnvironmentMeasurement()
+        public EnvironmentMeasurement(string measurmentCategory) : base(measurmentCategory)
         {
-            MeasurmentCategory = "Environment";
+            if(string.IsNullOrEmpty(measurmentCategory))
+                MeasurmentCategory = "Environment";
         }
 
         internal override BaseMeasurement Clone()
         {
-            EnvironmentMeasurement cloned = new()
+            EnvironmentMeasurement cloned = new(MeasurmentCategory)
             {
                 Temperature = Temperature,
                 Pressure = Pressure,

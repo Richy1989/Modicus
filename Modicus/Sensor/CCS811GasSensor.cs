@@ -44,7 +44,7 @@ namespace Modicus.Sensor
         /// <param name="measurement">The measurement.</param>
         public override void InjectDependedMeasurement(BaseMeasurement measurement)
         {
-            if(measurement.GetType() == typeof(EnvironmentMeasurement))
+            if (measurement.GetType() == typeof(EnvironmentMeasurement))
             {
                 AdjustTemperatureHumidity((EnvironmentMeasurement)measurement);
             }
@@ -79,7 +79,7 @@ namespace Modicus.Sensor
                     //this.Current = curr.Microamperes;
                     //this.ADC = adc * 1.65 / 1023;
 
-                    BaseMeasurement measurement = new GasSensorMeasurement
+                    BaseMeasurement measurement = new GasSensorMeasurement(MeasurementCategory)
                     {
                         eCO2 = eCO2.PartsPerMillion,
                         TotalVolatileOrganicCompound = eTVOC.PartsPerBillion

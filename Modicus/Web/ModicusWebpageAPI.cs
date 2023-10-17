@@ -293,6 +293,7 @@ namespace Modicus.Web
             }
 
             string name = (string)hashPars["name"];
+            string category = (string)hashPars["category"];
 
             if (isOk)
             {
@@ -305,7 +306,9 @@ namespace Modicus.Web
                     DeviceAddress = address,
                     Name = name,
                     BusID = busid,
-                    SensorType = item
+                    SensorType = item,
+                    MeasurementCategory = category
+                    
                 };
 
                 Thread createTask = new(() =>

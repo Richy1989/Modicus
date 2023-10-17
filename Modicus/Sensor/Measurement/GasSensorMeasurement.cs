@@ -5,14 +5,18 @@
         public double TotalVolatileOrganicCompound { get; set; }
         public double eCO2 { get; set; }
 
-        public GasSensorMeasurement()
+        /// <summary>Initializes a new instance of the <see cref="GasSensorMeasurement"/> class.</summary>
+        /// <param name="measurmentCategory">The measurment category.</param>
+        public GasSensorMeasurement(string measurmentCategory) : base(measurmentCategory)
         {
-            MeasurmentCategory = "Gas";
+            if (string.IsNullOrEmpty(measurmentCategory))
+                MeasurmentCategory = "Gas";
         }
 
+        /// <summary>Clones this instance.</summary>
         internal override BaseMeasurement Clone()
         {
-            GasSensorMeasurement cloned = new()
+            GasSensorMeasurement cloned = new(MeasurmentCategory)
             {
                 TotalVolatileOrganicCompound = TotalVolatileOrganicCompound,
                 eCO2 = eCO2

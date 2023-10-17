@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
@@ -86,7 +87,8 @@ namespace Modicus.Manager
         public string GetJsonString()
         {
             mre.WaitOne();
-            string json = JsonCreator(OutputData);
+            string json = JsonCreator((Hashtable)OutputData);
+            Debug.WriteLine(json);
             mre.Set();
 
             /*
@@ -134,37 +136,44 @@ namespace Modicus.Manager
             return json;
         }
 
-        private string JsonCreator(IDictionary dictionary)
+        /// <summary>Recursivly creates a json string out of the outdata.</summary>
+        /// <param name="dictionary">The dictionary.</param>
+        private string JsonCreator(Hashtable dictionary)
         {
-            //ToDo: Check if recursive is to much workload for ESP32
             StringBuilder stringBuilder = new();
             stringBuilder.Append("{");
-            bool isFirst = true;
-            foreach (DictionaryEntry data in dictionary)
+            try
             {
-                if (!isFirst)
-                    stringBuilder.Append(",");
-
-                stringBuilder.Append(string.Format("\"{0}\": {", data.Key));
-
-                //jsonString = $"{jsonString} \"{data.Key}\": {{";
-
-                if (data.Value is IDictionary subDictionary)
+                bool isFirst = true;
+                foreach (string dataKey in dictionary.Keys)
                 {
-                    stringBuilder.Append(string.Format(" {0}", JsonCreator(subDictionary)));
-                    //jsonString = $"{jsonString} {JsonCreator(subDictionary)}";
+                    object dataValue = dictionary[dataKey];
+
+                    if (!isFirst)
+                        stringBuilder.Append(", ");
+
+                    stringBuilder.Append(string.Format("\"{0}\"", dataKey));
+                    stringBuilder.Append(": ");
+
+                    if (dataValue is Hashtable subDictionary)
+                    {
+                        stringBuilder.Append(JsonCreator(subDictionary));
+                    }
+                    else if (dataValue.IsNumber())
+                    {
+                        stringBuilder.Append(dataValue);
+                    }
+                    else
+                    {
+                        stringBuilder.Append(string.Format("\"{0}\"", dataValue));
+                    }
+                    isFirst = false;
                 }
-                else if (data.Value.IsNumber())
-                {
-                    stringBuilder.Append(string.Format(" {0}", data.Value));
-                    //jsonString = $"{jsonString} {data.Value}";
-                }
-                else
-                {
-                    stringBuilder.Append(string.Format(" \"{0}\"", data.Value));
-                    //jsonString = $"{jsonString} \"{data.Value}\"";
-                }
-                isFirst = false;
+            }
+            catch (Exception ex)
+            {
+                //ToDo: This exception shoud not happen, had problems here, maybe remove in the future after further testing
+                Debug.WriteLine($"Error in Json Creator in OutManager: {ex.Message}");
             }
 
             stringBuilder.Append("}");

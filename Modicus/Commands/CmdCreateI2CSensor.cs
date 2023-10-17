@@ -34,6 +34,7 @@ namespace Modicus.Commands
                 {
                     BaseI2cSensor sensor = (BaseI2cSensor)Activator.CreateInstance(((Type)sensorType));
                     sensor.Name = content.Name;
+                    sensor.MeasurementCategory = content.MeasurementCategory;
                     sensor.SclPin = content.SclPin;
                     sensor.SdaPin = content.SdaPin;
                     sensor.MeasurementInterval =  content.MeasurementInterval * 1000;
@@ -71,6 +72,7 @@ namespace Modicus.Commands
     {
         public string SensorType { get; set; }
         public string Name { get; set; }
+        public string MeasurementCategory { get; set; }
         public int MeasurementInterval { get; set; }
         public int SclPin { get; set; }
         public int SdaPin { get; set; }

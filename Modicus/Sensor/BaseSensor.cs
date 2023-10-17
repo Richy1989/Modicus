@@ -24,6 +24,7 @@ namespace Modicus.Sensor
         public bool IsRunning { get; protected set; }
         public int MeasurementInterval { get; set; }
         public string Type { get; set; }
+        public string MeasurementCategory { get; set; }
 
         /// <summary>Initializes a new instance of the <see cref="BaseSensor"/> class.</summary>
         internal BaseSensor()

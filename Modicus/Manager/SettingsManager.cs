@@ -72,7 +72,6 @@ namespace Modicus.Manager
                     }
 
                     SensorSettings = new SensorSettings();
-                    SensorSettings.LoadSettings();
                 }
             }
             mreSettings.Set();

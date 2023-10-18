@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Diagnostics;
+using System.Text;
 using GardenLightHyperionConnector.Manager;
 using Modicus.Manager.Interfaces;
 using Modicus.Sensor.Interfaces;
 using nanoFramework.WebServer;
+using GC = nanoFramework.Runtime.Native.GC;
 
 namespace Modicus.Web
 {
@@ -142,29 +144,33 @@ namespace Modicus.Web
 
         public string CreateSensorSelectionSite(string message)
         {
-            var body = Resources.Resources.GetString(Resources.Resources.StringResources.select_sensor);
-            var edit_sensor = Resources.Resources.GetString(Resources.Resources.StringResources.edit_sensor);
+            //var edit_sensor = Resources.Resources.GetString(Resources.Resources.StringResources.edit_sensor);
 
+            StringBuilder alreadyConfigured = new();
 
-            string alreadyConfigured = string.Empty;
-            foreach (string item in busDeviceManager.ConfiguredSensors.Keys)
-            {
-                ISensor sensor = busDeviceManager.GetSensorFromName(item);
-                alreadyConfigured = string.Format(edit_sensor,
-                    alreadyConfigured,
-                    item,
-                    sensor.IsRunning ? "Yes" : "No",
-                    item);
-            }
+            ////foreach (string item in busDeviceManager.ConfiguredSensors.Keys)
+            ////{
+            ////    ISensor sensor = busDeviceManager.GetSensorFromName(item);
+            ////    alreadyConfigured.Append(string.Format(edit_sensor, item, sensor.IsRunning ? "Yes" : "No", item));
+            ////}
 
-            string itemString = string.Empty;
+            StringBuilder itemString = new();
             foreach (string item in busDeviceManager.SupportedSensors.Keys)
             {
-                itemString = string.Format("{0}<input type=\"submit\" class=\"input_drop_down\" name=\"item\" value=\"{1}\">", itemString, item);
+                itemString.Append(string.Format("<input type=\"submit\" class=\"input_drop_down\" name=\"item\" value=\"{0}\">", item));
             }
 
-            body = string.Format(body, alreadyConfigured, itemString);
-            return CreateSite("Sensor Selection", body, message);
+            StringBuilder bodyString = new();
+            bodyString.Append(
+                string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.select_sensor),
+                alreadyConfigured.ToString(),
+                itemString.ToString())
+            );
+
+            alreadyConfigured.Clear();
+            itemString.Clear();
+
+            return CreateSite("Sensor Selection", bodyString.ToString(), message);
         }
 
         public string CreateI2CSettingsSite(string message, string sensortype)

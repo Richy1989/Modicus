@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Diagnostics;
+using System.Threading;
 using Modicus.Manager;
 using Modicus.Sensor.Interfaces;
 using nanoFramework.Json;
@@ -15,10 +16,17 @@ namespace Modicus.Settings
         private const string filepath = "I:\\sensor_settings.json";
         private readonly SaveLoadFileManager saveLoadFileManager;
 
-        /// <summary>
-        /// The sensor list serialized.
-        /// </summary>
-        public IList SensorsStringList { get; set; } = new ArrayList();
+        //Make sure only one thread at the time can work with the mqtt service
+        private readonly ManualResetEvent mre = new(true);
+
+        /// <summary>The sensor list serialized.</summary>
+        public IList SensorsStringList
+        {
+            get
+            {
+                return LoadSettings();
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SensorSettings"/> class.
@@ -29,45 +37,50 @@ namespace Modicus.Settings
             saveLoadFileManager = new SaveLoadFileManager();
         }
 
-        /// <summary>Saves the settings to a file.</summary>
-        public void SaveSettings()
-        {
-            string sensorSettingString = JsonConvert.SerializeObject(SensorsStringList);
-            saveLoadFileManager.CreateSettingFile(filepath, sensorSettingString);
-        }
-
         /// <summary>Reads the settings from a file.</summary>
-        public void LoadSettings()
+        public IList LoadSettings()
         {
+            mre.WaitOne();
+
+            IList localSensorsStringList;
             string sensorSettingString = saveLoadFileManager.LoadSettings(filepath);
             Debug.WriteLine("+++ Read Configured Sensors +++");
             Debug.WriteLine(sensorSettingString);
             try
             {
-                SensorsStringList = (ArrayList)JsonConvert.DeserializeObject(sensorSettingString, typeof(ArrayList));
+                localSensorsStringList = (ArrayList)JsonConvert.DeserializeObject(sensorSettingString, typeof(ArrayList));
             }
             catch
             {
-                Debug.WriteLine($"No sonsors configured, creating new sensor string list");
-                SensorsStringList = new ArrayList();
+                Debug.WriteLine($"No sensors configured, creating new sensor string list");
+                localSensorsStringList = new ArrayList();
             }
+
+            mre.Set();
+            return localSensorsStringList;
         }
 
-        /// <summary>Adds a new sensor to the collection of sensors.</summary>
-        /// <param name="sensor"></param>
-        public void AddSensor(ISensor sensor)
+        /// <summary>Saves the sensors to a json file.</summary>
+        /// <param name="configuredSensors">The configured sensors.</param>
+        public void SaveSensors(IDictionary configuredSensors)
         {
-            sensor.Type = sensor.GetType().FullName;
-            SensorsStringList.Add(JsonSerializer.SerializeObject(sensor));
-            SaveSettings();
-        }
+            mre.WaitOne();
+            ICollection sensors = configuredSensors.Values;
+            
+            IList sensorList = new ArrayList();
+            foreach (ISensor item in sensors)
+            {
+                item.Type = item.GetType().FullName;
+                sensorList.Add(JsonSerializer.SerializeObject(item));
+            }
 
-        /// <summary>Removes a sensor from the sensor collection.</summary>
-        /// <param name="sensor"></param>
-        public void RemoveSensor(ISensor sensor)
-        {
-            SensorsStringList.Remove(sensor);
-            SaveSettings();
+            string sensorSettingString = JsonConvert.SerializeObject(sensorList);
+            sensorList.Clear();
+
+            Debug.Write(sensorSettingString);
+
+            saveLoadFileManager.CreateSettingFile(filepath, sensorSettingString);
+            mre.Set();
         }
     }
 }

@@ -51,10 +51,11 @@ namespace Modicus.Manager
             if (ConfiguredSensors.Contains(sensor.Name))
                 return;
 
-            settingsManager.SensorSettings.AddSensor(sensor);
+            //settingsManager.SensorSettings.AddSensor(sensor);
 
             sensor.Configure();
             ConfiguredSensors.Add(sensor.Name, sensor);
+            settingsManager.SensorSettings.SaveSensors(ConfiguredSensors);
         }
 
         /// <summary>Starts the measurement of the sernsor.</summary>
@@ -112,7 +113,7 @@ namespace Modicus.Manager
             StopSensor(sensor);
             sensor.Dispose();
             ConfiguredSensors.Remove(sensor.Name);
-            settingsManager.SensorSettings.RemoveSensor(sensor);
+            settingsManager.SensorSettings.SaveSensors(ConfiguredSensors);
             outputManager.PurgeMeasurementData(sensor.Measurement);
         }
 

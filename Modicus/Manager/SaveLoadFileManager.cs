@@ -42,8 +42,11 @@ namespace Modicus.Manager
                 fs2.Read(fileContent, 0, (int)fs2.Length);
 
                 var settingsText = Encoding.UTF8.GetString(fileContent, 0, (int)fs2.Length);
+
+                fs2.Close();
+                fs2.Dispose();
+
                 setting = settingsText;
-                //setting = (string)JsonConvert.DeserializeObject(settingsText, typeof(string));
             }
             mreSettings.Set();
             return setting;

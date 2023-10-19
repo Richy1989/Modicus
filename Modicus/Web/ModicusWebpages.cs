@@ -146,11 +146,11 @@ namespace Modicus.Web
         {
             StringBuilder alreadyConfigured = new();
 
-            foreach (DictionaryEntry item in busDeviceManager.ConfiguredSensors)
-            {
-                ISensor sensor = busDeviceManager.GetSensorFromName(item.Key as string);
-                alreadyConfigured.Append(string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.edit_sensor), item.Key, sensor.IsRunning ? "Yes" : "No", item.Key));
-            }
+            ////foreach (DictionaryEntry item in busDeviceManager.ConfiguredSensors)
+            ////{
+            ////    ISensor sensor = busDeviceManager.GetSensorFromName(item.Key as string);
+            ////    alreadyConfigured.Append(string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.edit_sensor), item.Key, sensor.IsRunning ? "Yes" : "No", item.Key));
+            ////}
 
             StringBuilder itemString = new();
             foreach (string item in busDeviceManager.SupportedSensors.Keys)

@@ -8,22 +8,24 @@ namespace Modicus.Helpers
 {
     internal class SignalService : ISignalService
     {
-        public Thread errorsignal;
-        private bool Running;
-        private CancellationTokenSource source;
-        private CancellationToken token;
         private readonly GpioController controller;
         private readonly ISettingsManager settingManager;
-        public GpioPin pin;
+        private readonly GpioPin pin;
+
+        private Thread errorsignal;
+        private bool Running;
+
+        private CancellationTokenSource source;
+        private CancellationToken token;
 
         /// <summary>Initializes a new instance of the <see cref="SignalService"/> class.</summary>
         /// <param name="settingManager">The setting manager.</param>
-        public SignalService(ISettingsManager settingManager)
+        public SignalService(ISettingsManager settingManager, GpioController controller)
         {
+            this.controller = controller;
             this.settingManager = settingManager;
             if (!settingManager.GlobalSettings.SystemSettings.UseSignalling) return;
 
-            controller = new GpioController();
             pin = controller.OpenPin(Gpio.IO02, PinMode.Output);
         }
 

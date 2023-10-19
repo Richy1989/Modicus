@@ -26,6 +26,8 @@ namespace Modicus.Manager
             LoadSettings(false);
         }
 
+        /// <summary>Loads the settings.</summary>
+        /// <param name="resetSettings">if set to <c>true</c> [reset settings].</param>
         public void LoadSettings(bool resetSettings = false)
         {
             mreSettings.WaitOne();
@@ -77,6 +79,7 @@ namespace Modicus.Manager
             mreSettings.Set();
         }
 
+        /// <summary>Creates the new settings file.</summary>
         private void CreateNewSettingsFile()
         {
             Debug.WriteLine("+++++ Create new Settings File +++++");

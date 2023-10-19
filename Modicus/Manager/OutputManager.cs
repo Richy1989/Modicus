@@ -45,7 +45,7 @@ namespace Modicus.Manager
             OutputDevices.Add(device);
         }
 
-        /// <summary>Removes the output device..</summary>
+        /// <summary>Removes the output device.</summary>
         /// <param name="device">The device.</param>
         public void RemoveOutputDevice(IOutputDevice device)
         {
@@ -126,17 +126,63 @@ namespace Modicus.Manager
             }
         }
 
-        /// <summary>Creates a json string of the saved measurement data.</summary>
+        /// <summary>
+        /// Creates a json string of the saved measurement data.
+        /// </summary>
         /// <returns>Measurement Data JSON string.</returns>
         public string GetJsonString()
         {
             mre.WaitOne();
             string json = JsonCreator((Hashtable)OutputData);
+
+            ////StringBuilder stringBuilder = new();
+
+            ////bool isFirst = true;
+
+            ////stringBuilder.Append("{");
+            ////foreach (DictionaryEntry item in OutputData)
+            ////{
+            ////    if (!isFirst)
+            ////        stringBuilder.Append(", ");
+
+            ////    string category = (string)item.Key;
+
+            ////    stringBuilder.Append(string.Format("\"{0}\": {{", category));
+
+            ////    IDictionary measurementData = (Hashtable)item.Value;
+
+            ////    bool isFirstSub = true;
+
+            ////    foreach (DictionaryEntry data in measurementData)
+            ////    {
+            ////        if (!isFirstSub)
+            ////            stringBuilder.Append(", ");
+
+            ////        stringBuilder.Append(string.Format("\"{0}\":", data.Key));
+
+            ////        if (data.Value.IsNumber())
+            ////        {
+            ////            stringBuilder.Append(string.Format(" {0}", data.Value));
+            ////        }
+            ////        else
+            ////        {
+            ////            stringBuilder.Append(string.Format(" \"{0}\"", data.Value));
+            ////        }
+            ////        isFirstSub = false;
+            ////    }
+
+            ////    isFirst = false;
+            ////    stringBuilder.Append("}");
+            ////}
+            ////stringBuilder.Append("}");
+
             mre.Set();
+
+            //Debug.WriteLine(stringBuilder.ToString());
             return json;
         }
 
-        /// <summary>Recursivly creates a json string out of the outdata.</summary>
+        /// <summary>Recursively creates a JSON string out of the outdata.</summary>
         /// <param name="dictionary">The dictionary.</param>
         private string JsonCreator(Hashtable dictionary)
         {
@@ -180,7 +226,8 @@ namespace Modicus.Manager
             return stringBuilder.ToString();
         }
 
-        /// <summary>Starts the sending.</summary>
+       
+        /// <summary>Starts the output manager sending and forwards the messages to all defined output devices.</summary>
         public void StartSending()
         {
             var token = tokenManager.Token;

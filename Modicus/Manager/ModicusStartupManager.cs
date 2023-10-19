@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Device.Gpio;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Threading;
@@ -40,7 +41,8 @@ namespace Modicus.Manager
             IMqttManager mqttManager,
             IBusDeviceManager busManager,
             ICommandManager commandManager,
-            ISignalService signalService)
+            ISignalService signalService,
+            GpioController controller)
         {
             signalService.SignalOff();
 
@@ -101,9 +103,18 @@ namespace Modicus.Manager
 
             diagTask.Start();
 #endif
+
+            ////var pin = controller.OpenPin(12, PinMode.Input);
+            ////pin.ValueChanged += Pin_ValueChanged;
+
             //Set LED on GPIO Pin 2 ON, to show successful startup
             signalService.SignalOn();
         }
+
+        ////private void Pin_ValueChanged(object sender, PinValueChangedEventArgs e)
+        ////{
+        ////    Debug.WriteLine(e.ChangeType == PinEventTypes.Rising ? "True" : "False");
+        ////}
 
         //Initialize the settings for a fresh install. This happens only once
         public void InitializeFrehInstall()
@@ -111,7 +122,7 @@ namespace Modicus.Manager
             this.GlobalSettings.MqttSettings.MqttClientID = string.Format("{0}/{1}", AsseblyName, $"modicus_sensorrange_{GetUniqueID()}");
         }
 
-        //Create a Unique ID based on the MAC address of the controller
+        //Create a Unique ID based on the MAC address of the controller.
         public static string GetUniqueID()
         {
             var ni = NetworkInterface.GetAllNetworkInterfaces();
@@ -130,7 +141,7 @@ namespace Modicus.Manager
             }
         }
 
-        //Create a Unique ID based on the MAC address of the controller
+        //Create a Unique ID based on the MAC address of the controller.
         public static string GetUniqueIDPlainString()
         {
             var ni = NetworkInterface.GetAllNetworkInterfaces();

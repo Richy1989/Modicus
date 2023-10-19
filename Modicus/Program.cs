@@ -1,3 +1,4 @@
+using System.Device.Gpio;
 using System.Diagnostics;
 using System.Threading;
 using GardenLightHyperionConnector.Manager;
@@ -30,6 +31,7 @@ namespace Modicus
         {
             return new ServiceCollection()
                 .AddSingleton(typeof(ModicusStartupManager))
+                .AddSingleton(typeof(GpioController))
                 .AddSingleton(typeof(IWebManager), typeof(WebManager))
                 .AddSingleton(typeof(ISignalService), typeof(SignalService))
                 .AddSingleton(typeof(ISettingsManager), typeof(SettingsManager))

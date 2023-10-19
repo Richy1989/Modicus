@@ -115,7 +115,7 @@ namespace Modicus.Web
                 mqttSettings.MqttUserName,
                 mqttSettings.MqttPassword,
                 mqttSettings.MqttClientID,
-                mqttSettings.SendInterval.TotalSeconds);
+                settingsManager.GlobalSettings.SendInterval.TotalSeconds);
             return CreateSite("MQTT Settings", body, message);
         }
 
@@ -144,15 +144,13 @@ namespace Modicus.Web
 
         public string CreateSensorSelectionSite(string message)
         {
-            //var edit_sensor = Resources.Resources.GetString(Resources.Resources.StringResources.edit_sensor);
-
             StringBuilder alreadyConfigured = new();
 
-            ////foreach (string item in busDeviceManager.ConfiguredSensors.Keys)
-            ////{
-            ////    ISensor sensor = busDeviceManager.GetSensorFromName(item);
-            ////    alreadyConfigured.Append(string.Format(edit_sensor, item, sensor.IsRunning ? "Yes" : "No", item));
-            ////}
+            foreach (DictionaryEntry item in busDeviceManager.ConfiguredSensors)
+            {
+                ISensor sensor = busDeviceManager.GetSensorFromName(item.Key as string);
+                alreadyConfigured.Append(string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.edit_sensor), item.Key, sensor.IsRunning ? "Yes" : "No", item.Key));
+            }
 
             StringBuilder itemString = new();
             foreach (string item in busDeviceManager.SupportedSensors.Keys)

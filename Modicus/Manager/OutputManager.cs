@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using Modicus.Extensions;
 using Modicus.Manager.Interfaces;
+using Modicus.MQTT;
 using Modicus.OutputDevice.Interface;
 using Modicus.Sensor.Measurement;
+using Modicus.WiFi;
+using nanoFramework.Json;
 
 namespace Modicus.Manager
 {
@@ -85,6 +89,7 @@ namespace Modicus.Manager
         /// <param name="measurement">The measurement.</param>
         public void AddMeasurementData(BaseMeasurement measurement)
         {
+            measurement.Time = DateTime.UtcNow;
             mre.WaitOne();
 
             if (!OutputData.Contains(measurement.MeasurmentCategory))
@@ -94,23 +99,31 @@ namespace Modicus.Manager
 
             IDictionary outDta = (Hashtable)OutputData[measurement.MeasurmentCategory];
 
-            var method = measurement.GetType().GetMethods();
-
-            foreach (var item in method)
-            {
-                if (item.Name.StartsWith("get"))
-                {
-                    string name = item.Name.Split('_')[1];
-                    var value = item.Invoke(measurement, null);
-
-                    if (!outDta.Contains(name))
-                        outDta.Add(name, value);
-                    else
-                        outDta[name] = value;
-                }
-            }
+            var method = measurement.GetType().GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            ParseMethods(outDta, method, measurement);
 
             mre.Set();
+        }
+
+        /// <summary>Parses the methods of the BeaseMeasurement and adds them to the OutputData dictionary.</summary>
+        /// <param name="dict">The dictionary.</param>
+        /// <param name="method">The method.</param>
+        /// <param name="instance">The instance.</param>
+        private void ParseMethods(IDictionary dict, MethodInfo[] method, BaseMeasurement instance)
+        {
+            foreach (var item in method)
+            {
+                if (item.Name.StartsWith("get") && !item.Name.Contains(nameof(instance.MeasurmentCategory)))
+                {
+                    string name = item.Name.Split('_')[1];
+                    var value = item.Invoke(instance, null);
+
+                    if (!dict.Contains(name))
+                        dict.Add(name, value);
+                    else
+                        dict[name] = value;
+                }
+            }
         }
 
         /// <summary>Creates a json string of the saved measurement data.</summary>
@@ -119,51 +132,7 @@ namespace Modicus.Manager
         {
             mre.WaitOne();
             string json = JsonCreator((Hashtable)OutputData);
-            Debug.WriteLine(json);
             mre.Set();
-
-            /*
-            bool isFirst = true;
-
-            string json = "{";
-            foreach (DictionaryEntry item in OutputData)
-            {
-                if (!isFirst)
-                    json += ",";
-
-                string category = (string)item.Key;
-
-                json = $"{json} \"{category}\":{{";
-
-                IDictionary measurementData = (Hashtable)item.Value;
-
-                bool isFirstSub = true;
-
-                foreach (DictionaryEntry data in measurementData)
-                {
-                    if (!isFirstSub)
-                        json += ",";
-
-
-                    json = $"{json} \"{data.Key}\":";
-
-                    if (data.Value.IsNumber())
-                    {
-                        json = $"{json} {data.Value}";
-                    }
-                    else
-                    {
-                        json = $"{json} \"{data.Value}\"";
-                    }
-                    isFirstSub = false;
-                }
-                isFirst = false;
-                json += "}";
-            }
-            json += "}";
-
-            mre.Set();
-            */
             return json;
         }
 
@@ -218,18 +187,22 @@ namespace Modicus.Manager
 
             while (!token.IsCancellationRequested)
             {
+                StateMessage stateMessage = new()
+                {
+                    Uptime = DateTime.UtcNow - settingsManager.GlobalSettings.StartupTime,
+                    UptimeSec = (DateTime.UtcNow - settingsManager.GlobalSettings.StartupTime).TotalSeconds
+                };
+
+                stateMessage.WiFi.SSId = settingsManager.GlobalSettings.WifiSettings.Ssid;
+                stateMessage.WiFi.IPAddress = Wireless80211.GetIP();
+                stateMessage.WiFi.BSSId = Wireless80211.GetPhysicalAddress();
+
                 foreach (IOutputDevice devicedevice in OutputDevices)
                 {
-                    devicedevice.PublishAll("TODO: ADD State", GetJsonString());
+                    devicedevice.PublishAll(JsonConvert.SerializeObject(stateMessage), GetJsonString());
                 }
-                ////Set current time
-                //MainMqttMessage.Time = DateTime.UtcNow;
-                //State.Uptime = DateTime.UtcNow - settingsManager.GlobalSettings.StartupTime;
-                //State.UptimeSec = State.Uptime.TotalSeconds;
-                //State.WiFi.SSId = settingsManager.GlobalSettings.WifiSettings.Ssid;
-                //State.WiFi.IPAddress = Wireless80211.GetIP();
 
-                Thread.Sleep(settingsManager.GlobalSettings.MqttSettings.SendInterval);
+                Thread.Sleep(settingsManager.GlobalSettings.SendInterval);
             }
         }
     }

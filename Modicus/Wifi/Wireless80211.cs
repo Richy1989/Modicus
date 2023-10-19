@@ -76,6 +76,13 @@ namespace Modicus.WiFi
             return null;
         }
 
+        /// <summary>Gets the physical address.</summary>
+        public static string GetPhysicalAddress()
+        {
+            var physicalAddress = GetInterface().PhysicalAddress;
+            return string.Format("{0:X}:{1:X}:{2:X}:{3:X}:{4:X}:{5:X}", physicalAddress[0], physicalAddress[1], physicalAddress[2], physicalAddress[3], physicalAddress[4], physicalAddress[5]);
+        }
+
         /// <summary>Returns the IP address.</summary>
         /// <returns>IP address</returns>
         public static string GetIP()

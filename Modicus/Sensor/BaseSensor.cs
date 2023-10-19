@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Threading;
 using Modicus.EventArgs;
 using Modicus.Sensor.Interfaces;
@@ -25,7 +26,9 @@ namespace Modicus.Sensor
         public int MeasurementInterval { get; set; }
         public string Type { get; set; }
         public string MeasurementCategory { get; set; }
-        public BaseMeasurement Measurement { get; set; }
+
+        [NonSerialized()]
+        public BaseMeasurement Measurement;
 
         /// <summary>Initializes a new instance of the <see cref="BaseSensor"/> class.</summary>
         internal BaseSensor()

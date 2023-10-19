@@ -12,6 +12,7 @@ namespace Modicus.Settings
 
         //Default Measurement Interval
         public TimeSpan MeasurementInterval { get; set; } = TimeSpan.FromSeconds(10);
+        public TimeSpan SendInterval { get; set; } = TimeSpan.FromSeconds(10);
 
         public WifiSettings WifiSettings { get; set; } = new WifiSettings();
         public MqttSettings MqttSettings { get; set; } = new MqttSettings();

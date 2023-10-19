@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using Modicus.Manager.Interfaces;
-using Modicus.MQTT.Interfaces;
 using Modicus.Sensor;
 using Modicus.Sensor.Interfaces;
 using nanoFramework.Json;
@@ -114,7 +114,7 @@ namespace Modicus.Manager
             sensor.Dispose();
             ConfiguredSensors.Remove(sensor.Name);
             settingsManager.SensorSettings.SaveSensors(ConfiguredSensors);
-            outputManager.PurgeMeasurementData(sensor.Measurement);
+            outputManager.PurgeMeasurementData((sensor as BaseSensor).Measurement);
         }
 
         /// <summary>Returns a sensor.</summary>
@@ -130,6 +130,7 @@ namespace Modicus.Manager
 
             foreach (var item in sensorString)
             {
+                Debug.WriteLine(item as string);
                 ISensor baseSensor = (ISensor)JsonConvert.DeserializeObject((string)item, typeof(BaseSensor));
                 baseSensor = (ISensor)JsonConvert.DeserializeObject((string)item, Type.GetType(baseSensor.Type));
 

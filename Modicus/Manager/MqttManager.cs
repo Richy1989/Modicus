@@ -182,7 +182,7 @@ namespace Modicus.Manager
         /// <param name="sensorData">The sensor data.</param>
         public override void PublishAll(string state, string sensorData)
         {
-            //Publish("STATE", JsonConvert.SerializeObject(State));
+            Publish("STATE", state);
             Publish("SENSOR", sensorData);
         }
 

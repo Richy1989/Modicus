@@ -14,8 +14,6 @@ namespace Modicus.Sensor.Interfaces
         string Name { get; set; }
         int MeasurementInterval { get; set; }
 
-        BaseMeasurement Measurement { get; set; }
-
         event MeasurementAvailableHandler MeasurementAvailable;
 
         /// <summary>Function to be called once to configure the sensor.</summary>

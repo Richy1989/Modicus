@@ -120,7 +120,7 @@ namespace Modicus.Web
                 if (int.TryParse(sendInterval, out var result))
                 {
                     if (result >= 1)
-                        mqttSettings.SendInterval = TimeSpan.FromSeconds(result);
+                        settingsManager.GlobalSettings.SendInterval = TimeSpan.FromSeconds(result);
                 }
                 else
                     message = $"Send Interval not Valid!\n{message}";

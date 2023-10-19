@@ -33,7 +33,7 @@ namespace Modicus.Commands
 
             if (data != null)
             {
-                settingsManager.GlobalSettings.MqttSettings.SendInterval = TimeSpan.FromSeconds(data.Interval);
+                settingsManager.GlobalSettings.SendInterval = TimeSpan.FromSeconds(data.Interval);
                 Thread updateSettingsThread = new(new ThreadStart(settingsManager.UpdateSettings));
                 updateSettingsThread.Start();
                 base.Execute(content);

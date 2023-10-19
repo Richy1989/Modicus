@@ -77,8 +77,6 @@ namespace Modicus.Settings
             string sensorSettingString = JsonConvert.SerializeObject(sensorList);
             sensorList.Clear();
 
-            Debug.Write(sensorSettingString);
-
             saveLoadFileManager.CreateSettingFile(filepath, sensorSettingString);
             mre.Set();
         }

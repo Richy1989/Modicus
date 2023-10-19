@@ -56,7 +56,6 @@
     <Compile Include="MQTT\WiFiMessage.cs" />
     <Compile Include="MQTT\StateMessage.cs" />
     <Compile Include="Manager\MqttManager.cs" />
-    <Compile Include="MQTT\MainMqttMessage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Resources.Designer.cs">
@@ -67,7 +66,6 @@
     <Compile Include="Sensor\BaseI2cSensor.cs" />
     <Compile Include="Sensor\BaseSensor.cs" />
     <Compile Include="Sensor\BME280Sensor.cs" />
-    <Compile Include="Sensor\EnvironmentData.cs" />
     <Compile Include="Sensor\CCS811GasSensor.cs" />
     <Compile Include="Sensor\Interfaces\II2cSensor.cs" />
     <Compile Include="Sensor\Interfaces\ISensor.cs" />
@@ -160,7 +158,7 @@
       <HintPath>..\packages\nanoFramework.System.Device.Spi.1.3.37\lib\System.Device.Spi.dll</HintPath>
     </Reference>
     <Reference Include="System.Device.Wifi">
-      <HintPath>..\packages\nanoFramework.System.Device.Wifi.1.5.54\lib\System.Device.Wifi.dll</HintPath>
+      <HintPath>..\packages\nanoFramework.System.Device.Wifi.1.5.65\lib\System.Device.Wifi.dll</HintPath>
     </Reference>
     <Reference Include="System.Diagnostics.Stopwatch">
       <HintPath>..\packages\nanoFramework.System.Diagnostics.Stopwatch.1.2.325\lib\System.Diagnostics.Stopwatch.dll</HintPath>

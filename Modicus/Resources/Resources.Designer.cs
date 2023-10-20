@@ -32,6 +32,7 @@ namespace Modicus.Resources
         [System.SerializableAttribute()]
         internal enum StringResources : short
         {
+            edit_sensor_table = -31125,
             select_sensor = -26240,
             mqtt_settings = -21146,
             ip_settings = -11416,

@@ -1,12 +1,21 @@
-<tr>
-    <td>{0}</td>
-    <td>{1}</td>
-    <td>
-        <form method='POST' action="edit_sensor">
-            <input type="hidden" name="selected_sensor" value="{2}">
-            <input type="submit" class="edit-button" name="start" value="&#9654;">
-            <input type="submit" class="edit-button" name="stop" value="&#9632;">
-            <input type="submit" class="edit-button" name="delete" value="X">
-        </form>
-    </td>
-</tr>
+<header>
+    <h1>Edit Sensors</h1>
+</header>
+
+<h2>Configured Senors:</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Sensor Name</th>
+            <th>Is Running</th>
+            <th>Control</th>
+        </tr>
+    </thead>
+    <tbody>
+        {0}
+    </tbody>
+</table>
+
+<form method='POST' action="edit_sensor">
+    <input class="save_back_submit" type="submit" value="Back" name="back">
+</form>

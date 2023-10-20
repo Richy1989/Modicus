@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Text;
 using GardenLightHyperionConnector.Manager;
@@ -79,7 +80,7 @@ namespace Modicus.Web
 
             if (sensor_selection != null)
             {
-                WebManager.OutPutResponse(e.Context.Response, CreateSensorSelectionSite(""));
+                WebManager.OutPutResponse(e.Context.Response, CreateSensorSettingsPage(""));
                 return;
             }
 
@@ -142,16 +143,24 @@ namespace Modicus.Web
             return CreateSite("System Settings", body, message);
         }
 
-        public string CreateSensorSelectionSite(string message)
+        public string CreateSensorSettingsPage(string message)
         {
-            StringBuilder alreadyConfigured = new();
+            StringBuilder stringBuilder = new();
 
-            ////foreach (DictionaryEntry item in busDeviceManager.ConfiguredSensors)
-            ////{
-            ////    ISensor sensor = busDeviceManager.GetSensorFromName(item.Key as string);
-            ////    alreadyConfigured.Append(string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.edit_sensor), item.Key, sensor.IsRunning ? "Yes" : "No", item.Key));
-            ////}
+            stringBuilder.Append("<header><h1>Sensor Settings</h1></header>");
+            stringBuilder.Append("<form method='POST' action=\"sensor_settings\">");
+            stringBuilder.Append("<input type=\"submit\" class=\"big-button\" name=\"edit_sensor\" value=\"Edit Sensors\">");
+            stringBuilder.Append("<input type=\"submit\" class=\"big-button\" name=\"create_sensor\" value=\"Create Sensors\">");
+            stringBuilder.Append("</form>");
+            stringBuilder.Append("<br />");
+            stringBuilder.Append("<br />");
+            stringBuilder.Append("<form method='POST' action=\"sensor_settings\"><input class=\"save_back_submit\" type=\"submit\" value=\"Back\" name=\"back\"></form>");
+            
+            return CreateSite("Sensor Settings", stringBuilder.ToString(), message);
+        }
 
+        public string CreateSensorCreationSite(string message)
+        {
             StringBuilder itemString = new();
             foreach (string item in busDeviceManager.SupportedSensors.Keys)
             {
@@ -159,16 +168,29 @@ namespace Modicus.Web
             }
 
             StringBuilder bodyString = new();
-            bodyString.Append(
-                string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.select_sensor),
-                alreadyConfigured.ToString(),
-                itemString.ToString())
-            );
+            bodyString.Append(string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.select_sensor), itemString.ToString()));
 
-            alreadyConfigured.Clear();
             itemString.Clear();
 
             return CreateSite("Sensor Selection", bodyString.ToString(), message);
+        }
+
+        public string CreateSensorEditSite(string message)
+        {
+            StringBuilder alreadyConfigured = new();
+
+            foreach (DictionaryEntry item in busDeviceManager.ConfiguredSensors)
+            {
+                ISensor sensor = busDeviceManager.GetSensorFromName(item.Key as string);
+                alreadyConfigured.Append(
+                    string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.edit_sensor_table),
+                    item.Key,
+                    sensor.IsRunning ? "Yes" : "No",
+                    item.Key));
+            }
+
+            string site = string.Format(Resources.Resources.GetString(Resources.Resources.StringResources.edit_sensor), alreadyConfigured.ToString());
+            return CreateSite("Edit Sensors", site, message);
         }
 
         public string CreateI2CSettingsSite(string message, string sensortype)

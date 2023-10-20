@@ -94,7 +94,7 @@ namespace Modicus.Manager
             }
         }
 
-        /// <summary>Stops the given sensor .</summary>
+        /// <summary>Stops the given sensor.</summary>
         /// <param name="sensor"></param>
         public void StopSensor(ISensor sensor)
         {

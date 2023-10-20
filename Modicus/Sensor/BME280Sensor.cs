@@ -60,8 +60,7 @@ namespace Modicus.Sensor
                 // var altValue = WeatherHelper.CalculateAltitude(preValue, defaultSeaLevelPressure, tempValue) which would be more performant.
                 i2CBme280.TryReadAltitude(defaultSeaLevelPressure, out var altValue);
 
-                Measurement = new EnvironmentMeasurement(MeasurementCategory);
-                EnvironmentMeasurement measurement = (EnvironmentMeasurement)Measurement;
+                EnvironmentMeasurement measurement = new(MeasurementCategory);
 
                 if (readResult.TemperatureIsValid)
                 {
@@ -86,6 +85,8 @@ namespace Modicus.Sensor
                     measurement.Humidity = readResult.Humidity.Percent;
                 }
 
+                Measurement = measurement;
+
                 OnMeasurementAvailable(this, new MeasurementAvailableEventArgs(this, measurement));
 
                 Thread.Sleep(MeasurementInterval);
@@ -105,12 +106,5 @@ namespace Modicus.Sensor
 
         /// <summary>Disposes the sensor.</summary>
         public override void Dispose() => i2CBme280?.Dispose();
-
-        /// <summary>Stops the sensor.</summary>
-        public override void StopSensor()
-        {
-            sensorTokenSource?.Cancel();
-            IsRunning = false;
-        }
     }
 }

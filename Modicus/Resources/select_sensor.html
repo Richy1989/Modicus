@@ -2,32 +2,18 @@
     <h1>Sensor Selection</h1>
 </header>
 
-<h2>Configured Senors:</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Sensor Name</th>
-            <th>Is Running</th>
-            <th>Control</th>
-        </tr>
-    </thead>
-    <tbody>
-        {0}
-    </tbody>
-</table>
-
 <h2>Select Sensor to Setup:</h2>
 <form method='POST' action="configure_sensor">
     <div class="dropdown">
         <button class="dropbtn">Select Sensor</button>
         <div class="dropdown-content">
-        {1}
+        {0}
         </div>
     </div>
 </form>
 
 <br />
 
-<form method='POST' action="edit_sensor">
+<form method='POST' action="configure_sensor">
     <input class="save_back_submit" type="submit" value="Back" name="back">
 </form>

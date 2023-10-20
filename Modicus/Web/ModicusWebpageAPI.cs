@@ -214,11 +214,49 @@ namespace Modicus.Web
             WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateSystemSettingsPage(message));
         }
 
+        [Route("sensor_settings")]
+        public void SensorSettings(WebServerEventArgs e)
+        {
+            Hashtable hashPars = WebManager.ParseParamsFromStream(e.Context.Request.InputStream);
+            var edit = (string)hashPars["edit_sensor"];
+            var create = (string)hashPars["create_sensor"];
+            var back = (string)hashPars["back"];
+
+            string message = "";
+
+            if (back != null)
+            {
+                modicusWebpages.Default(e);
+                return;
+            }
+
+            if (edit != null)
+            {
+                WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateSensorEditSite(message));
+                return;
+            }
+
+            if (create != null)
+            {
+                WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateSensorCreationSite(message));
+                return;
+            }
+
+        }
+
         [Route("configure_sensor")]
         public void ConfigureSensor(WebServerEventArgs e)
         {
             Hashtable hashPars = WebManager.ParseParamsFromStream(e.Context.Request.InputStream);
             var item = (string)hashPars["item"];
+            var back = (string)hashPars["back"];
+
+            if (back != null)
+            {
+                WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateSensorSettingsPage(""));
+                return;
+            }
+
             var interfaces = ((Type)busDeviceManager.SupportedSensors[item]).GetInterfaces();
 
             foreach (Type inter in interfaces)
@@ -230,7 +268,7 @@ namespace Modicus.Web
                 }
             }
             string message = "Select your desired sensor ...";
-            WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateSensorSelectionSite(message));
+            WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateSensorCreationSite(message));
         }
 
         [Route("create_i2c_sensor")]
@@ -241,13 +279,13 @@ namespace Modicus.Web
             string message = "Error in sensor creation:\n";
             var item = (string)hashPars["sensor-type"];
             var back = (string)hashPars["back"];
-           // var sensor = busDeviceManager.SupportedSensors[item];
+            // var sensor = busDeviceManager.SupportedSensors[item];
 
             bool isOk = true;
 
             if (back != null)
             {
-                WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateSensorSelectionSite(""));
+                WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateSensorCreationSite(""));
                 return;
             }
 
@@ -308,7 +346,7 @@ namespace Modicus.Web
                     BusID = busid,
                     SensorType = item,
                     MeasurementCategory = category
-                    
+
                 };
 
                 Thread createTask = new(() =>
@@ -360,7 +398,7 @@ namespace Modicus.Web
                 return;
             }
 
-            WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateSensorSelectionSite(message));
+            WebManager.OutPutResponse(e.Context.Response, modicusWebpages.CreateSensorCreationSite(message));
         }
     }
 }

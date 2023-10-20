@@ -220,6 +220,7 @@
     <None Include="Resources\style.css" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\edit_sensor_table.html" />
     <Content Include="resources\edit_sensor.html" />
     <Content Include="Resources\head.html" />
     <Content Include="resources\i2csettings.html" />

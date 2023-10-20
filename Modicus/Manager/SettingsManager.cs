@@ -17,7 +17,7 @@ namespace Modicus.Manager
         private ManualResetEvent mreSettings = new(true);
 
         public GlobalSettings GlobalSettings { get; private set; }
-        public SensorSettings SensorSettings { get; private set; }
+        public SensorSettings SensorSettings { get; private set; } = new SensorSettings();
         public CommandSettings CommandSettings { get; private set; } = new CommandSettings();
 
         /// <summary>Initializes a new instance of the <see cref="SettingsManager"/> class.</summary>
@@ -47,34 +47,42 @@ namespace Modicus.Manager
                 Debug.WriteLine("+++++ Read settings from file +++++");
                 FileStream fs2 = new(FilePath, FileMode.Open, FileAccess.ReadWrite);
 
-                //  GlobalSettings = (GlobalSettings)JsonConvert.DeserializeObject(fs2, typeof(GlobalSettings));
+                try
+                {
+                    GlobalSettings = (GlobalSettings)JsonConvert.DeserializeObject(fs2, typeof(GlobalSettings));
+                }
+                catch
+                {
+                    GlobalSettings = new GlobalSettings();
+                }
 
-                byte[] fileContent = new byte[fs2.Length];
-                fs2.Read(fileContent, 0, (int)fs2.Length);
-                string settingsText = Encoding.UTF8.GetString(fileContent, 0, (int)fs2.Length);
                 fs2.Close();
                 fs2.Dispose();
 
-                if (string.IsNullOrEmpty(settingsText))
-                {
-                    CreateNewSettingsFile();
-                }
-                else
-                {
-                    Debug.WriteLine("+++++ Settings Text: +++++");
-                    Debug.WriteLine(settingsText);
-                    try
-                    {
-                        GlobalSettings = (GlobalSettings)JsonConvert.DeserializeObject(settingsText, typeof(GlobalSettings));
-                        GlobalSettings.IsFreshInstall = false;
-                    }
-                    catch
-                    {
-                        GlobalSettings = new GlobalSettings();
-                    }
+                ////byte[] fileContent = new byte[fs2.Length];
+                ////fs2.Read(fileContent, 0, (int)fs2.Length);
+                ////string settingsText = Encoding.UTF8.GetString(fileContent, 0, (int)fs2.Length);
+                ////fs2.Close();
+                ////fs2.Dispose();
 
-                    SensorSettings = new SensorSettings();
-                }
+                ////if (string.IsNullOrEmpty(settingsText))
+                ////{
+                ////    CreateNewSettingsFile();
+                ////}
+                ////else
+                ////{
+                ////    Debug.WriteLine("+++++ Settings Text: +++++");
+                ////    Debug.WriteLine(settingsText);
+                ////    try
+                ////    {
+                ////        GlobalSettings = (GlobalSettings)JsonConvert.DeserializeObject(settingsText, typeof(GlobalSettings));
+                ////        GlobalSettings.IsFreshInstall = false;
+                ////    }
+                ////    catch
+                ////    {
+                ////        GlobalSettings = new GlobalSettings();
+                ////    }
+                ////}
             }
             mreSettings.Set();
         }
@@ -87,8 +95,6 @@ namespace Modicus.Manager
             {
                 IsFreshInstall = true
             };
-
-            SensorSettings = new SensorSettings();
 
             CreateSettingFile(newSettings);
 

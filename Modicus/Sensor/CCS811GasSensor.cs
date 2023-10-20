@@ -52,7 +52,7 @@ namespace Modicus.Sensor
 
         /// <summary>
         /// Starts the the Measurement.
-        /// Implement this function with the logic to do the active measurement.
+        /// Implement this function with the logic for the active measurement.
         /// </summary>
         /// <param name="token"></param>
         protected override void DoMeasurement(CancellationToken token)
@@ -105,7 +105,6 @@ namespace Modicus.Sensor
         {
             Debug.WriteLine("+++++ Updating Temperature and Humidity in CCS811 Sensor +++++");
 
-
             if (measurement != null)
                 sensor.SetEnvironmentData(
                     Temperature.FromDegreesCelsius(measurement.Temperature),
@@ -116,12 +115,5 @@ namespace Modicus.Sensor
 
         /// <summary>Disposes the sensor.</summary>
         public override void Dispose() => sensor?.Dispose();
-
-        /// <summary>Stops the sensor.</summary>
-        public override void StopSensor()
-        {
-            sensorTokenSource?.Cancel();
-            IsRunning = false;
-        }
     }
 }

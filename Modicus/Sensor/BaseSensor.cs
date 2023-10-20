@@ -7,7 +7,7 @@ using Modicus.Sensor.Measurement;
 
 namespace Modicus.Sensor
 {
-    // Declare the delegate (if using non-generic pattern).
+    // Delegate for the new measurement available event.
     internal delegate void MeasurementAvailableHandler(object sender, MeasurementAvailableEventArgs e);
 
     /// <summary>Base sensor class, use this class as base for all kind of sensors.</summary>
@@ -73,7 +73,11 @@ namespace Modicus.Sensor
         public abstract void Dispose();
 
         /// <summary>Stops the sensor.</summary>
-        public abstract void StopSensor();
+        public virtual void StopSensor()
+        {
+            sensorTokenSource?.Cancel();
+            IsRunning = false;
+        }
 
         /// <summary>Called when [measurement available].</summary>
         /// <param name="sender">The sender.</param>

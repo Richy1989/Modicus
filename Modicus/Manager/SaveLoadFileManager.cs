@@ -8,11 +8,9 @@ namespace Modicus.Manager
     internal class SaveLoadFileManager //: ISettingsManager
     {
         //Make sure only one thread at the time can modify the settings file
-        private ManualResetEvent mreSettings = new(true);
+        private readonly ManualResetEvent mreSettings = new(true);
 
-        /// <summary>
-        /// Reads the given settings file as string from a file
-        /// </summary>
+        /// <summary>Reads the given settings file as string from a file.</summary>
         /// <param name="filePath"></param>
         /// <param name="resetSettings"></param>
         public string LoadSettings(string filePath, bool resetSettings = false)

@@ -139,10 +139,10 @@ namespace Modicus.Web
                 mqttRestart = new Thread(() =>
                 {
                     settingsManager.UpdateSettings();
-                    commandManager.CmdMqttOnOff.Execute(new Commands.CmdMqttOnOffData { On = false });
+                    commandManager.CmdMqttOnOff.Execute(new CmdMqttOnOffData { On = false });
 
                     if (mqttSettings.ConnectToMqtt)
-                        commandManager.CmdMqttOnOff.Execute(new Commands.CmdMqttOnOffData { On = true });
+                        commandManager.CmdMqttOnOff.Execute(new CmdMqttOnOffData { On = true });
                 });
                 mqttRestart.Start();
             }

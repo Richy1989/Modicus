@@ -97,16 +97,6 @@ namespace Modicus.Sensor
         {
         }
 
-        /// <summary>Disposes the sensor.</summary>
-        public override void Dispose() => sensor?.Dispose();
-
-        /// <summary>Stops the sensor.</summary>
-        public override void StopSensor()
-        {
-            sensorTokenSource?.Cancel();
-            IsRunning = false;
-        }
-
         /// <summary>
         /// Adjusta the temperature and humidity, measured by a different sensor, in the CCS811 Sensor.
         /// Data is needed for correct measurement.
@@ -122,6 +112,16 @@ namespace Modicus.Sensor
                     RelativeHumidity.FromPercent(measurement.Humidity));
             else
                 sensor.SetEnvironmentData(Temperature.FromDegreesCelsius(21.3), RelativeHumidity.FromPercent(42.5));
+        }
+
+        /// <summary>Disposes the sensor.</summary>
+        public override void Dispose() => sensor?.Dispose();
+
+        /// <summary>Stops the sensor.</summary>
+        public override void StopSensor()
+        {
+            sensorTokenSource?.Cancel();
+            IsRunning = false;
         }
     }
 }

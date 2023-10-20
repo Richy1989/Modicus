@@ -96,6 +96,13 @@ namespace Modicus.Sensor
         protected override void PostStartMeasurement()
         { }
 
+        /// <summary>Injects the depended measurement.</summary>
+        /// <param name="measurement">The measurement.</param>
+        public override void InjectDependedMeasurement(BaseMeasurement measurement)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>Disposes the sensor.</summary>
         public override void Dispose() => i2CBme280?.Dispose();
 
@@ -104,13 +111,6 @@ namespace Modicus.Sensor
         {
             sensorTokenSource?.Cancel();
             IsRunning = false;
-        }
-
-        /// <summary>Injects the depended measurement.</summary>
-        /// <param name="measurement">The measurement.</param>
-        public override void InjectDependedMeasurement(BaseMeasurement measurement)
-        {
-            throw new NotImplementedException();
         }
     }
 }

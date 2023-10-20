@@ -88,7 +88,7 @@ namespace Modicus.Manager
                 IsFreshInstall = true
             };
 
-            this.SensorSettings = new SensorSettings();
+            SensorSettings = new SensorSettings();
 
             CreateSettingFile(newSettings);
 

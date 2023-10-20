@@ -37,7 +37,7 @@ namespace Modicus.Manager
                 { "CCS811 Sensor", typeof(CCS811GasSensor) }
             };
 
-            this.ConfiguredSensors = new Hashtable();
+            ConfiguredSensors = new Hashtable();
             this.settingsManager = settingsManager;
             this.tokenManager = tokenManager;
             this.outputManager = outputManager;
@@ -76,7 +76,7 @@ namespace Modicus.Manager
         {
             outputManager.AddMeasurementData(e.Data);
 
-            //Check if all sensors is depended on received mesurement, if so inject it.
+            //Check if a sensor is depended on received mesurement. If so, inject it.
             foreach (ISensor sensor in ConfiguredSensors.Values)
             {
                 var dependedMeasurementList = sensor.DependsOnMeasurement();

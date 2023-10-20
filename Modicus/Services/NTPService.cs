@@ -5,14 +5,11 @@ namespace Modicus.Services
 {
     internal class NTPService : INtpService
     {
-        /// <summary>Creates a new Service for NTP Updates.</summary>
-        /// <param name="wiFiManager"></param>
-        /// <param name="tokenManager"></param>
+        /// <summary>Initializes a new instance of the <see cref="NTPService"/> class.</summary>
         public NTPService()
-        {
-           
-        }
+        { }
 
+        /// <summary>Starts the NTP service.</summary>
         public void Start()
         {
             Sntp.Server1 = "at.pool.ntp.org";

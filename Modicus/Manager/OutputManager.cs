@@ -226,7 +226,6 @@ namespace Modicus.Manager
             return stringBuilder.ToString();
         }
 
-       
         /// <summary>Starts the output manager sending and forwards the messages to all defined output devices.</summary>
         public void StartSending()
         {

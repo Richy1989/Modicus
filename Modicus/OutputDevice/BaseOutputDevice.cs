@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Modicus.Manager.Interfaces;
+﻿using Modicus.Manager.Interfaces;
 using Modicus.OutputDevice.Interface;
 
 namespace Modicus.OutputDevice
@@ -17,6 +14,9 @@ namespace Modicus.OutputDevice
             this.outputManager = outputManager;
         }
 
+        /// <summary>Publishes all gived data to all defined output devices.</summary>
+        /// <param name="state">The state.</param>
+        /// <param name="sensorData">The sensor data.</param>
         public abstract void PublishAll(string state, string sensorData);
     }
 }
